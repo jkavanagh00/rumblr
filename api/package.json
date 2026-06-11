@@ -12,7 +12,8 @@
     "dev": "nodemon src/index.mjs",
     "start": "node src/index.mjs",
     "format": "npx prettier . --write",
-    "check": "npx eslint . --fix"
+    "check": "npx eslint . --fix",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -32,5 +33,9 @@
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "supertest": "^7.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
   }
 }
