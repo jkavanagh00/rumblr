@@ -2,6 +2,7 @@ import request from "supertest";
 import app from "../../../app.js";
 
 // NOTE: This is an example test, it does not conform to our actual database schema
+// this test uses supertest to make an HTTP request to the app, which is a more realistic test of the API endpoints, as it tests the entire request-response cycle, including routing, middleware, controllers, and models, and it also allows us to make assertions about the actual HTTP response that would be sent to a client
 // the describe function groups related tests together, in this case all tests related to the Accounts API
 describe("Accounts API", () => {
   // a second describe block can be used to group tests related to a specific endpoint or functionality, in this case the signup endpoint  
