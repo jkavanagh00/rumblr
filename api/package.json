@@ -36,6 +36,12 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "transform": {}
+    "transform": {},
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
+    "setupFilesAfterFramework": [
+      "./__tests__/setup/jest.setup.js"
+    ]
   }
 }
