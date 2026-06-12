@@ -14,15 +14,15 @@ export function up(knex) {
       .inTable('rumble_requests')
       .onDelete('CASCADE');
       
-    // Foreign Key: Fighter 1
-    table.uuid('user1_id')
+    // Foreign Key: The user who initiated the challenge
+    table.uuid('requester_id')
       .notNullable()
       .references('id')
       .inTable('users')
       .onDelete('CASCADE');
       
-    // Foreign Key: Fighter 2
-    table.uuid('user2_id')
+    // Foreign Key: The user receiving the challenge
+    table.uuid('receiver_id')
       .notNullable()
       .references('id')
       .inTable('users')

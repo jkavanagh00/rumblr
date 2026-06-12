@@ -25,9 +25,6 @@ export function up(knex) {
     // ENUM status (e.g., pending challenge, accepted, or declined)
     table.enum('status', ['pending', 'accepted', 'declined']).notNullable().defaultTo('pending');
     
-    // DECIMAL compatibility_score 
-    table.decimal('compatibility_score', 5, 2).nullable();
-    
     // TIMESTAMP created_at
     table.timestamp('created_at').defaultTo(knex.fn.now());
   });
