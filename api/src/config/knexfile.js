@@ -1,11 +1,19 @@
+
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 const client = process.env.DB_CLIENT || "sqlite3";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const knexConfig = {
   client,
   connection:
     client === "sqlite3"
       ? {
-          filename: process.env.DB_SQLITE_FILENAME || "./src/database.sqlite3",
+          filename:
+            process.env.DB_SQLITE_FILENAME ||
+            path.resolve(__dirname, "../database.sqlite3"),
         }
       : {
           host: process.env.DB_HOST,
@@ -23,10 +31,10 @@ const knexConfig = {
       ? process.env.DB_USE_NULL_AS_DEFAULT === "true"
       : undefined,
   migrations: {
-    directory: "./src/database/migrations",
+    directory: path.resolve(__dirname, "../database/migrations"),
   },
   seeds: {
-    directory: "./src/database/seeds",
+    directory: path.resolve(__dirname, "../database/seeds"),
   },
 };
 
