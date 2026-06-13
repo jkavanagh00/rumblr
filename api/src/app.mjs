@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import knex from "./database_client.js";
+import db from "./database/db.js";
 import nestedRouter from "./routes/nested.mjs";
 
 const app = express();
@@ -15,7 +15,7 @@ const apiRouter = express.Router();
 apiRouter.get("/", async (req, res) => {
   // Here is an example of making a query to the database you set up:
   const query = "SELECT 'Hello, world!' AS message;";
-  const result = await knex.raw(query);
+  const result = await db.raw(query);
   res.json(result);
 });
 
