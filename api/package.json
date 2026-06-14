@@ -11,6 +11,9 @@
   "scripts": {
     "dev": "nodemon src/index.mjs",
     "start": "node src/index.mjs",
+    "db:migrate": "knex --knexfile src/config/knexfile.js migrate:latest",
+    "db:rollback": "knex --knexfile src/config/knexfile.js migrate:rollback",
+    "db:seed": "knex --knexfile src/config/knexfile.js seed:run",
     "format": "npx prettier . --write",
     "check": "npx eslint . --fix",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
