@@ -1,0 +1,27 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import db from "./database/db.js";
+import nestedRouter from "./routes/nested.mjs";
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+const apiRouter = express.Router();
+
+// This is an example of how to set up a route. Replace it with your own.
+apiRouter.get("/", async (req, res) => {
+  // Here is an example of making a query to the database you set up:
+  const query = "SELECT 'Hello, world!' AS message;";
+  const result = await db.raw(query);
+  res.json(result);
+});
+
+// Here is an example of optionally setting up nested routes. Replace it or delete as needed.
+apiRouter.use("/nested", nestedRouter);
+
+app.use("/api", apiRouter);
+
+export default app;

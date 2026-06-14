@@ -12,7 +12,8 @@
     "dev": "nodemon src/index.mjs",
     "start": "node src/index.mjs",
     "format": "npx prettier . --write",
-    "check": "npx eslint . --fix"
+    "check": "npx eslint . --fix",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -26,9 +27,22 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9.0.0",
     "globals": "^15.0.0",
+    "jest": "^30.4.2",
     "nodemon": "^3.1.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "supertest": "^7.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
+    "setupFilesAfterEnv": [
+      "./__tests__/setup/jest.setup.js"
+    ]
   }
 }
