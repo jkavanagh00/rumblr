@@ -71,22 +71,30 @@ describe("questions controller", () => {
   });
   describe("listQuestions_Controller", () => {
     test("calls listQuestions_Model and returns the result", async () => {
+      // Mock the model response so this test stays focused on controller orchestration only.
       const mockQuestions = [
         { id: "1", content: "Question 1" },
         { id: "2", content: "Question 2" },
       ];
       listQuestions_Model.mockResolvedValue(mockQuestions);
 
+      // The controller should delegate to the model and forward the resolved value unchanged.
       const result = await listQuestions_Controller();
+
+      // This confirms the controller does not add parameters, transform the payload, or skip the model call.
       expect(listQuestions_Model).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockQuestions);
     });
     test("throws an error when listQuestions_Model throws an error", async () => {
+      // Force a model failure so the test covers the controller's error propagation path.
       listQuestions_Model.mockRejectedValue(new Error("Database error"));
 
+      // The route layer relies on the controller to reject when the underlying read fails.
       await expect(listQuestions_Controller()).rejects.toThrow(
         "Database error",
       );
+
+      // Even in the failure case, the controller should still have attempted the model call once.
       expect(listQuestions_Model).toHaveBeenCalledTimes(1);
     });
   });

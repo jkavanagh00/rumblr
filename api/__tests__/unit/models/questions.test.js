@@ -19,15 +19,23 @@ describe("questions model", () => {
 
   describe("listQuestions_Model", () => {
     test("returns an array of questions", async () => {
+      // Seed two rows so this test verifies the normal read path, not an empty-table edge case.
       await testDb(TABLE).insert([
         { content: "Content data 1" },
         { content: "Content data 2" },
       ]);
+
+      // Call the model directly with the in-memory test database to confirm it reads persisted questions.
       const result = await listQuestions_Model(testDb);
+
+      // The list endpoint depends on this model returning every stored question in an array.
       expect(result).toHaveLength(2);
     });
     test("returns null when no questions exist", async () => {
+      // Call the model function with an empty table to test the model's explicit no-data behavior.
       const result = await listQuestions_Model(testDb);
+
+      // This documents the current contract: no questions returns null instead of an empty array.
       expect(result).toBeNull();
     });
   });
