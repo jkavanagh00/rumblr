@@ -18,8 +18,20 @@
     "check": "npx eslint . --fix",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:model": "npm run test -- __tests__/unit/models",
+    "test:model:accounts": "npm run test -- __tests__/unit/models/accounts.test.js",
+    "test:model:chats": "npm run test -- __tests__/unit/models/chats.test.js",
+    "test:model:mismatches": "npm run test -- __tests__/unit/models/mismatches.test.js",
+    "test:model:questions": "npm run test -- __tests__/unit/models/questions.test.js",
     "test:controller": "npm run test -- __tests__/unit/controllers",
-    "test:integration": "npm run test -- __tests__/integration"
+    "test:controller:accounts": "npm run test -- __tests__/unit/controllers/accounts.test.js",
+    "test:controller:chats": "npm run test -- __tests__/unit/controllers/chats.test.js",
+    "test:controller:mismatches": "npm run test -- __tests__/unit/controllers/mismatches.test.js",
+    "test:controller:questions": "npm run test -- __tests__/unit/controllers/questions.test.js",
+    "test:integration": "npm run test -- __tests__/integration",
+    "test:integration:accounts": "npm run test -- __tests__/integration/accounts.test.js",
+    "test:integration:chats": "npm run test -- __tests__/integration/chats.test.js",
+    "test:integration:mismatches": "npm run test -- __tests__/integration/mismatches.test.js",
+    "test:integration:questions": "npm run test -- __tests__/integration/questions.test.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
