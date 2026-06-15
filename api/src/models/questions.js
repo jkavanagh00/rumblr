@@ -12,21 +12,57 @@ examples:
 */
 import db from "./../database/db.js";
 
-const TABLE = 'questions'
+const TABLE = "questions";
 
 function baseQuery(trx = db) {
-    return trx(TABLE);
+  return trx(TABLE);
 }
 
-export async function getQuestion() {
-    const qb = baseQuery();
-    const user = qb.accounts()
-    const answeredQuestions = qb.select('*').where()
-    const unansweredQuestions = qb.select('*').where
+export async function listQuestions_Model(trx = db) {
+  const qb = baseQuery(trx);
+  const questions = await qb.select("*");
+  return questions.length > 0 ? questions : null;
 }
 
-export async function listAllQuestions(trx = db) {
-    const qb = baseQuery(trx);
-    const questions = await qb.select('*');
-    return questions.length > 0 ? questions : null;
-};
+export async function addQuestion_Model(question, trx = db) {
+  const qb = baseQuery(trx);
+  return await qb.insert(question);
+}
+
+export async function getQuestionById_Model(id, trx = db) {
+  const qb = baseQuery(trx);
+  return await qb.select("*").where("id", id).first();
+}
+
+export async function updateQuestion_Model(id, updateData, trx = db) {
+  const existingQuestion = await baseQuery(trx)
+    .select("*")
+    .where("id", id)
+    .first();
+
+  if (!existingQuestion) {
+    return undefined;
+  }
+
+  await baseQuery(trx).where("id", id).update(updateData);
+
+  return await baseQuery(trx)
+    .select("*")
+    .where("id", id)
+    .first();
+}
+
+export async function deleteQuestion_Model(id, trx = db) {
+    const existingQuestion = await baseQuery(trx)
+    .select("*")
+    .where("id", id)
+    .first();
+
+  if (!existingQuestion) {
+    return undefined;
+  }
+
+  await baseQuery(trx).where("id", id).delete();
+
+  return existingQuestion;
+}
