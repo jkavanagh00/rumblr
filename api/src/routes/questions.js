@@ -20,4 +20,13 @@ questionsRouter.get("/list", async (req, res) => {
     }
 });
 
+questionsRouter.get("/:id", async (req, res) => {
+    try {
+        const result = await getQuestionById_Controller(req.params.id);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export default questionsRouter;
