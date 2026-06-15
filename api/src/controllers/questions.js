@@ -7,3 +7,14 @@ examples:
 - submitAnswer
 - addQuestion?
 */
+
+import { addQuestion_Model } from "../models/questions.js";
+
+export async function addQuestion_Controller(question) {
+  try {
+    const result = await addQuestion_Model(question);
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
