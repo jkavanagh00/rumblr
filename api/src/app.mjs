@@ -3,7 +3,8 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import db from "./database/db.js";
-import nestedRouter from "./routes/nested.mjs";
+import chatsRouter from "./routes/chats.js";
+import nestedRouter from "./routes/nested.js";
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ apiRouter.get("/", async (req, res) => {
 
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/nested", nestedRouter);
+apiRouter.use("/chats", chatsRouter);
 
 app.use("/api", apiRouter);
 
