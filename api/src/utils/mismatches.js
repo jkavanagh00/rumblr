@@ -11,11 +11,9 @@
 export function calculateMismatchScore(sharedResponses) {
   const totalResponses = sharedResponses.length;
   if (totalResponses < 20) {
-    return {
-      mismatchPercentage: null,
-      confidence: null,
-      totalResponses,
-    };
+    throw new Error(
+      "At least 20 shared responses are required to calculate a reliable mismatch score.",
+    );
   }
 
   // stores both the total weighted difference and the maximum possible weighted difference, which is used to calculate the mismatch percentage
