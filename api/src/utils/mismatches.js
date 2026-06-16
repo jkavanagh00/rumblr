@@ -30,7 +30,7 @@ export function calculateMismatchScore(sharedResponses) {
   return {
     mismatchScore: Math.round((total / maxTotal) * 100),
     confidence:
-      totalResponses > 70 ? "high" : totalResponses > 40 ? "medium" : "low",
+      totalResponses > 69 ? "high" : totalResponses > 39 ? "medium" : "low",
     sharedResponses: totalResponses,
   };
 }
