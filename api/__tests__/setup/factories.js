@@ -30,12 +30,29 @@ export async function seedQuestion(testDb, overrides = {}) {
 }
 
 export async function seedResponse(testDb, overrides = {}) {
+  const user_id =
+    overrides.user_id ??
+    (await seedUser(testDb, {
+      id: randomUUID(),
+      username: "response_user",
+      email: "response_user@example.com",
+    })).id;
+
+  const question_id =
+    overrides.question_id ??
+    (await seedQuestion(testDb, {
+      id: randomUUID(),
+      content: "Response question",
+    })).id;
+
   const defaultData = {
+    user_id,
+    question_id,
     agreement_score: 3,
     importance_score: 3,
   };
 
-  const data = { ...defaultData, ...overrides };
+  const data = { ...defaultData, ...overrides, user_id, question_id };
 
   await testDb("responses").insert(data);
   return data;
