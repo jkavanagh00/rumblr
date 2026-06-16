@@ -69,7 +69,8 @@ describe("questions model", () => {
       expect(result.id).toBe(testId);
     });
     test("returns undefined when question cannot be found", async () => {
-      await expect(await getQuestionById_Model(1, testDb)).toBe(undefined);
+      const result = await getQuestionById_Model(testId, testDb);
+      expect(result).toBe(undefined);
     });
   });
 
@@ -85,9 +86,8 @@ describe("questions model", () => {
       expect(result.content).toBe("Updated content");
     });
     test("returns undefined when question cannot be found", async () => {
-      await expect(
-        await updateQuestion_Model(1, { content: "Updated content" }, testDb),
-      ).toBe(undefined);
+      const result = await updateQuestion_Model(1, { content: "Updated content" }, testDb);
+      expect(result).toBe(undefined);
     });
   });
 
@@ -99,7 +99,8 @@ describe("questions model", () => {
       expect(result).toHaveLength(0);
     });
     test("returns undefined when the question cannot be found", async () => {
-      await expect(await deleteQuestion_Model(testId, testDb)).toBe(undefined);
+      const result = await deleteQuestion_Model(testId, testDb);
+      expect(result).toBe(undefined);
     });
   });
 });
