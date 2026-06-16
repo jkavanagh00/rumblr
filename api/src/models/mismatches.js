@@ -33,32 +33,32 @@ export async function fetchSharedResponses(user1Id, user2Id) {
 }
 
 export async function upsertMismatch(user1Id, user2Id) {
-  const sharedResponses = await fetchSharedResponses(user1Id, user2Id);
-  const mismatchData = calculateMismatchScore(sharedResponses);
+  const [leftUserId, rightUserId] =
+    user1Id < user2Id ? [user1Id, user2Id] : [user2Id, user1Id];
 
+  const sharedResponses = await fetchSharedResponses(leftUserId, rightUserId);
   const existingMismatch = await db("mismatches")
-    .where(function () {
-      this.where({ user1_id: user1Id, user2_id: user2Id }).orWhere({
-        user1_id: user2Id,
-        user2_id: user1Id,
-      });
-    })
+    .where({ user1_id: leftUserId, user2_id: rightUserId })
     .first();
 
-  if (existingMismatch) {
+  if (existingMismatch && sharedResponses.length < 20) {
+    await db("mismatches").where("id", existingMismatch.id).delete();
+  } else if (existingMismatch) {
+    const mismatchData = calculateMismatchScore(sharedResponses);
     await db("mismatches").where("id", existingMismatch.id).update({
-      mismatch_score: mismatchData.mismatchPercentage,
+      mismatch_score: mismatchData.mismatchScore,
       confidence: mismatchData.confidence,
-      shared_responses: mismatchData.totalResponses,
+      shared_responses: mismatchData.sharedResponses,
       updated_at: new Date(),
     });
-  } else {
+  } else if (!existingMismatch && sharedResponses.length >= 20) {
+    const mismatchData = calculateMismatchScore(sharedResponses);
     await db("mismatches").insert({
-      user1_id: user1Id < user2Id ? user1Id : user2Id,
-      user2_id: user1Id < user2Id ? user2Id : user1Id,
-      mismatch_score: mismatchData.mismatchPercentage,
+      user1_id: leftUserId,
+      user2_id: rightUserId,
+      mismatch_score: mismatchData.mismatchScore,
       confidence: mismatchData.confidence,
-      shared_responses: mismatchData.totalResponses,
+      shared_responses: mismatchData.sharedResponses,
     });
   }
 }
