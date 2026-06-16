@@ -6,9 +6,10 @@
 import { randomUUID } from "node:crypto";
 
 export async function seedUser(testDb, overrides = {}) {
+  const unique = randomUUID();
   const defaultData = {
-    username: "test_user",
-    email: "test@example.com",
+    username: `test_user_${unique}`,
+    email: `test_${unique}@example.com`,
     password_hash: "hashed_password",
   };
 
