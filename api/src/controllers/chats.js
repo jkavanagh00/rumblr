@@ -1,14 +1,3 @@
-/*
-all controllers related to chats should be here
-
-examples:
-
-- getChats
-- getChatById
-- sendMessage
-- receiveMessage
-*/
-
 import {
   addChat_model,
   addMessage_model,
@@ -16,46 +5,35 @@ import {
   getMessagesByRumbleId_model,
   getRumbleById_model,
   isUserParticipantInRumble_model,
-  removeChat_model,
-  removeMessage_model,
-  updateChat_model,
-  updateMessage_model,
+  updateRumbleStatus_model,
 } from "../models/chats.js";
 
-function getCurrentUserId(req) {
-  if (req.user?.id) {
-    return req.user.id;
-  }
-
-  const headerUserId = req.headers["x-user-id"];
-  if (Array.isArray(headerUserId)) {
-    return headerUserId[0];
-  }
-
-  return headerUserId;
+export function getCurrentUserId(req) {
+  return req.user?.id || req.headers["x-user-id"];
 }
 
 export async function addChat_controller(req, res, next) {
   try {
-    const { rumble_request_id, requester_id, receiver_id, status } = req.body;
+    const chat = await addChat_model(req.validatedBody);
+    return res.status(201).json(chat);
+  } catch (error) {
+    next(error);
+  }
+}
 
-    if (!rumble_request_id || !requester_id || !receiver_id) {
-      return res.status(400).json({
-        error: "Validation failed",
-        details: {
-          rumble_request_id: "rumble_request_id is required",
-          requester_id: "requester_id is required",
-          receiver_id: "receiver_id is required",
-        },
+export async function getChats_controller(req, res, next) {
+  try {
+    const userId = getCurrentUserId(req);
+    if (!userId) {
+      return res.status(401).json({
+        error: "Unauthorized",
       });
     }
-    const chat = await addChat_model({
-      rumble_request_id,
-      requester_id,
-      receiver_id,
-      status,
+
+    const chats = await getActiveChatsByUserId_model(userId);
+    return res.status(200).json({
+      data: chats,
     });
-    return res.status(201).json(chat);
   } catch (error) {
     next(error);
   }
@@ -64,34 +42,15 @@ export async function addChat_controller(req, res, next) {
 export async function addMessage_controller(req, res, next) {
   try {
     const rumbleId = req.params.id;
-    const content = req.body.content;
-    const userId = getCurrentUserId(req);
+    const userId = req.userId; // Set by validation middleware
 
-    if (!userId) {
-      return res.status(401).json({
-        error: "Unauthorized",
-      });
-    }
-
-    if (!rumbleId) {
-      return res.status(400).json({
-        error: "Invalid rumble id",
-      });
-    }
-    if (!content || !content.trim()) {
-      return res.status(400).json({
-        error: "validation failed",
-        details: {
-          content: "Content is required",
-        },
-      });
-    }
     const rumble = await getRumbleById_model(rumbleId);
     if (!rumble) {
       return res.status(404).json({
         error: "Rumble not found",
       });
     }
+
     const isParticipant = await isUserParticipantInRumble_model(
       rumbleId,
       userId,
@@ -101,11 +60,13 @@ export async function addMessage_controller(req, res, next) {
         error: "You are not a participant in this rumble",
       });
     }
-    const message = await addMessage_model({
-      rumble_id: rumbleId,
-      sender_id: userId,
-      content: content.trim(),
-    });
+
+    // First message moves chat from pending to active.
+    if (rumble.status === "pending") {
+      await updateRumbleStatus_model(rumbleId, "active");
+    }
+
+    const message = await addMessage_model(req.validatedBody);
     const io = req.app.get("io");
 
     if (io) {
@@ -121,60 +82,14 @@ export async function addMessage_controller(req, res, next) {
   }
 }
 
-//Get chat By Id will be added 
-
-export async function getChats_controller(req, res, next) {
-  try {
-    const userId = getCurrentUserId(req);
-
-    if (!userId) {
-      return res.status(401).json({
-        error: "Unauthorized",
-      });
-    }
-
-    const chats = await getActiveChatsByUserId_model(userId);
-
-    return res.status(200).json({
-      data: chats,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function getMessages_controller(req, res, next) {
   try {
     const rumbleId = req.params.id;
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 20;
-    const userId = getCurrentUserId(req);
-
-    if (!userId) {
-      return res.status(401).json({
-        error: "Unauthorized",
-      });
-    }
-
-    if (!rumbleId) {
-      return res.status(400).json({
-        error: "Invalid rumble id",
-      });
-    }
-
-    if (
-      !Number.isInteger(page) ||
-      !Number.isInteger(limit) ||
-      page < 1 ||
-      limit < 1
-    ) {
-      return res.status(400).json({
-        error: "Invalid pagination values",
-      });
-    }
+    const page = req.pagination.page; // Set by validation middleware
+    const limit = req.pagination.limit; // Set by validation middleware
+    const userId = req.userId; // Set by validation middleware
 
     const rumble = await getRumbleById_model(rumbleId);
-
     if (!rumble) {
       return res.status(404).json({
         error: "Rumble not found",
@@ -185,7 +100,6 @@ export async function getMessages_controller(req, res, next) {
       rumbleId,
       userId,
     );
-
     if (!isParticipant) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
@@ -201,12 +115,3 @@ export async function getMessages_controller(req, res, next) {
     next(error);
   }
 }
-
-/* will be added
-- Remove chat 
-- remove message
-- update chat
-- update message 
-*/
-
-

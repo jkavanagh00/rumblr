@@ -22,7 +22,7 @@ export async function getActiveChatsByUserId_model(userId, trx = db) {
     .where((builder) => {
       builder.where({ requester_id: userId }).orWhere({ receiver_id: userId });
     })
-    .andWhere({ status: "scheduled" }) // I'll update the scheduled when status change in migration
+    .andWhere({ status: "active" })
     .orderBy("created_at", "desc");
 }
 
@@ -53,7 +53,20 @@ export async function getRumbleById_model(id, trx = db) {
   return await rumblesQuery(trx).where({ id }).first();
 }
 
-export async function isUserParticipantInRumble_model(rumbleId, userId, trx = db) {
+export async function updateRumbleStatus_model(id, status, trx = db) {
+  const [updated] = await rumblesQuery(trx)
+    .where({ id })
+    .update({ status })
+    .returning("*");
+
+  return updated;
+}
+
+export async function isUserParticipantInRumble_model(
+  rumbleId,
+  userId,
+  trx = db,
+) {
   const rumble = await rumblesQuery(trx)
     .where({ id: rumbleId })
     .andWhere((builder) => {
@@ -63,22 +76,11 @@ export async function isUserParticipantInRumble_model(rumbleId, userId, trx = db
 
   return Boolean(rumble);
 }
-export async function updateChat_model(id, updates, trx = db) {
-  const [chat] = await rumblesQuery(trx)
-    .where({ id })
-    .update(updates)
-    .returning("*");
 
-  return chat;
-}
-
-export async function removeChat_model(id, trx = db) {
-  const [chat] = await rumblesQuery(trx).where({ id }).del().returning("*");
-
-  return chat;
-}
-
-export async function addMessage_model({ rumble_id, sender_id, content }, trx = db) {
+export async function addMessage_model(
+  { rumble_id, sender_id, content },
+  trx = db,
+) {
   const [message] = await messagesQuery(trx)
     .insert({
       rumble_id,
@@ -88,33 +90,4 @@ export async function addMessage_model({ rumble_id, sender_id, content }, trx = 
     .returning("*");
 
   return message;
-}
-
-// This function  can be use for the message update and delete in controller
-export async function getMessageById_model(messageId, trx = db) {
-  return await messagesQuery(trx).select("*").where({ id: messageId }).first();
-}
-
-export async function updateMessage_model(messageId, updateData, trx = db) {
-  const existingMessage = await getMessageById_model(messageId, trx);
-
-  if (!existingMessage) {
-    return undefined;
-  }
-
-  await messagesQuery(trx).where({ id: messageId }).update(updateData);
-
-  return await getMessageById_model(messageId, trx);
-}
-
-export async function removeMessage_model(messageId, trx = db) {
-  const existingMessage = await getMessageById_model(messageId, trx);
-
-  if (!existingMessage) {
-    return undefined;
-  }
-
-  await messagesQuery(trx).where({ id: messageId }).delete();
-
-  return existingMessage;
 }

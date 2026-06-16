@@ -35,7 +35,7 @@ export function up(knex) {
     table
       .enum("status", ["pending", "active", "completed", "cancelled"])
       .notNullable()
-      .defaultTo("scheduled");
+      .defaultTo("pending");
 
     // TIMESTAMP created_at
     table.timestamp("created_at").defaultTo(knex.fn.now());
