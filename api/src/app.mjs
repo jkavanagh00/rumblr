@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import db from "./database/db.js";
 import chatsRouter from "./routes/chats.js";
 import nestedRouter from "./routes/nested.js";
+import { errorHandler } from "./middlewares/errors.js";
 
 const app = express();
 app.use(cors());
@@ -25,5 +26,8 @@ apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/chats", chatsRouter);
 
 app.use("/api", apiRouter);
+
+// Register error handler middleware (must be last)
+app.use(errorHandler);
 
 export default app;
