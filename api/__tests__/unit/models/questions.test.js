@@ -13,7 +13,6 @@ import {
 
 const TABLE = "questions";
 const RESPONSES_TABLE = "responses";
-const testId = "11111111-1111-4111-8111-111111111111";
 const userId = "22222222-2222-4222-8222-222222222222";
 const otherUserId = "33333333-3333-4333-8333-333333333333";
 const questionId = "44444444-4444-4444-8444-444444444444";
@@ -42,10 +41,8 @@ describe("questions model", () => {
   describe("listQuestions_Model", () => {
     test("returns an array of questions", async () => {
       // Seed two rows so this test verifies the normal read path, not an empty-table edge case.
-      await testDb(TABLE).insert([
-        { content: "Content data 1" },
-        { content: "Content data 2" },
-      ]);
+      await seedQuestion(questionId, "Content data 1");
+      await seedQuestion(otherQuestionId, "Content data 2")
 
       // Call the model directly with the in-memory test database to confirm it reads persisted questions.
       const result = await listQuestions_Model(testDb);
@@ -85,26 +82,26 @@ describe("questions model", () => {
 
   describe("getQuestionById_Model", () => {
     test("returns a single question with the correct id", async () => {
-      await testDb(TABLE).insert({ id: testId, content: "Content data" });
-      const result = await getQuestionById_Model(testId, testDb);
+      await seedQuestion(questionId, "Content data");
+      const result = await getQuestionById_Model(questionId, testDb);
       expect(result.content).toBe("Content data");
-      expect(result.id).toBe(testId);
+      expect(result.id).toBe(questionId);
     });
     test("returns undefined when question cannot be found", async () => {
-      const result = await getQuestionById_Model(testId, testDb);
+      const result = await getQuestionById_Model(questionId, testDb);
       expect(result).toBe(undefined);
     });
   });
 
   describe("updateQuestion_Model", () => {
     test("returns updated question data after a successful update", async () => {
-      await testDb(TABLE).insert({ id: testId, content: "Original content" });
+      await testDb(TABLE).insert({ id: questionId, content: "Original content" });
       const result = await updateQuestion_Model(
-        testId,
+        questionId,
         { content: "Updated content" },
         testDb,
       );
-      expect(result.id).toBe(testId);
+      expect(result.id).toBe(questionId);
       expect(result.content).toBe("Updated content");
     });
     test("returns undefined when question cannot be found", async () => {
@@ -115,13 +112,13 @@ describe("questions model", () => {
 
   describe("deleteQuestion_Model", () => {
     test("returns deleted question data after a successful deletion", async () => {
-      await testDb(TABLE).insert({ id: testId, content: "Content data" });
-      await deleteQuestion_Model(testId, testDb);
+      await testDb(TABLE).insert({ id: questionId, content: "Content data" });
+      await deleteQuestion_Model(questionId, testDb);
       const result = await testDb(TABLE).select("*");
       expect(result).toHaveLength(0);
     });
     test("returns undefined when the question cannot be found", async () => {
-      const result = await deleteQuestion_Model(testId, testDb);
+      const result = await deleteQuestion_Model(questionId, testDb);
       expect(result).toBe(undefined);
     });
   });
