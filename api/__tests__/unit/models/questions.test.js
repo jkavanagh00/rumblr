@@ -1,4 +1,5 @@
 import testDb from "../../setup/testDb.js";
+import { seedUser, seedQuestion } from "../../setup/factories.js";
 import {
   addQuestion_Model,
   getQuestionById_Model,
@@ -18,19 +19,6 @@ const otherUserId = "33333333-3333-4333-8333-333333333333";
 const questionId = "44444444-4444-4444-8444-444444444444";
 const otherQuestionId = "55555555-5555-4555-8555-555555555555";
 
-async function seedUser(userSeedId, suffix) {
-  await testDb("users").insert({
-    id: userSeedId,
-    username: `user_${suffix}`,
-    email: `user_${suffix}@example.com`,
-    password_hash: "hashed_password",
-  });
-}
-
-async function seedQuestion(questionSeedId, content) {
-  await testDb(TABLE).insert({ id: questionSeedId, content });
-}
-
 describe("questions model", () => {
   beforeEach(async () => {
     await testDb("responses").del();
@@ -41,8 +29,8 @@ describe("questions model", () => {
   describe("listQuestions_Model", () => {
     test("returns an array of questions", async () => {
       // Seed two rows so this test verifies the normal read path, not an empty-table edge case.
-      await seedQuestion(questionId, "Content data 1");
-      await seedQuestion(otherQuestionId, "Content data 2")
+      await seedQuestion(testDb, { id: questionId, content: "Content data 1" });
+      await seedQuestion(testDb, { id: otherQuestionId, content: "Content data 2" });
 
       // Call the model directly with the in-memory test database to confirm it reads persisted questions.
       const result = await listQuestions_Model(testDb);
@@ -82,7 +70,7 @@ describe("questions model", () => {
 
   describe("getQuestionById_Model", () => {
     test("returns a single question with the correct id", async () => {
-      await seedQuestion(questionId, "Content data");
+      await seedQuestion(testDb, { id: questionId, content: "Content data" });
       const result = await getQuestionById_Model(questionId, testDb);
       expect(result.content).toBe("Content data");
       expect(result.id).toBe(questionId);
@@ -125,8 +113,8 @@ describe("questions model", () => {
 
   describe("addResponse_model", () => {
     test("inserts a response row with valid scores", async () => {
-      await seedUser(userId, "main");
-      await seedQuestion(questionId, "Test question");
+      await seedUser(testDb, { id: userId, username: "user_main", email: "user_main@example.com" });
+      await seedQuestion(testDb, { id: questionId, content: "Test question" });
 
       const response = {
         user_id: userId,
@@ -144,8 +132,8 @@ describe("questions model", () => {
     });
 
     test("throws when required score fields are missing", async () => {
-      await seedUser(userId, "missing-scores");
-      await seedQuestion(questionId, "Test question");
+      await seedUser(testDb, { id: userId, username: "user_missing-scores", email: "user_missing-scores@example.com" });
+      await seedQuestion(testDb, { id: questionId, content: "Test question" });
 
       await expect(
         addResponse_model(
@@ -162,8 +150,8 @@ describe("questions model", () => {
 
   describe("updateResponse_model", () => {
     test("updates and returns the response", async () => {
-      await seedUser(userId, "update");
-      await seedQuestion(questionId, "Test question");
+      await seedUser(testDb, { id: userId, username: "user_update", email: "user_update@example.com" });
+      await seedQuestion(testDb, { id: questionId, content: "Test question" });
 
       await testDb(RESPONSES_TABLE).insert({
         user_id: userId,
@@ -200,8 +188,8 @@ describe("questions model", () => {
 
   describe("deleteResponse_model", () => {
     test("deletes and returns the existing response", async () => {
-      await seedUser(userId, "delete");
-      await seedQuestion(questionId, "Test question");
+      await seedUser(testDb, { id: userId, username: "user_delete", email: "user_delete@example.com" });
+      await seedQuestion(testDb, { id: questionId, content: "Test question" });
 
       await testDb(RESPONSES_TABLE).insert({
         user_id: userId,
@@ -231,10 +219,10 @@ describe("questions model", () => {
 
   describe("listResponses_model", () => {
     test("returns all responses for a specific user", async () => {
-      await seedUser(userId, "list-main");
-      await seedUser(otherUserId, "list-other");
-      await seedQuestion(questionId, "Question one");
-      await seedQuestion(otherQuestionId, "Question two");
+      await seedUser(testDb, { id: userId, username: "user_list-main", email: "user_list-main@example.com" });
+      await seedUser(testDb, { id: otherUserId, username: "user_list-other", email: "user_list-other@example.com" });
+      await seedQuestion(testDb, { id: questionId, content: "Question one" });
+      await seedQuestion(testDb, { id: otherQuestionId, content: "Question two" });
 
       await testDb(RESPONSES_TABLE).insert([
         {
@@ -264,7 +252,7 @@ describe("questions model", () => {
     });
 
     test("returns null when the user has no responses", async () => {
-      await seedUser(userId, "list-empty");
+      await seedUser(testDb, { id: userId, username: "user_list-empty", email: "user_list-empty@example.com" });
 
       const result = await listResponses_model(userId, testDb);
 
