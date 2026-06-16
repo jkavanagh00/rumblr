@@ -28,10 +28,10 @@ export function calculateMismatchScore(sharedResponses) {
 
   // calculate the mismatch percentage by dividing the total weighted difference by the maximum possible weighted difference and multiplying by 100 to get a percentage
   return {
-    mismatchPercentage: Math.round((total / maxTotal) * 100),
+    mismatchScore: Math.round((total / maxTotal) * 100),
     confidence:
       totalResponses > 70 ? "high" : totalResponses > 40 ? "medium" : "low",
-    totalResponses,
+    sharedResponses: totalResponses,
   };
 }
 
