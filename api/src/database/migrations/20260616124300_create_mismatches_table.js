@@ -12,7 +12,7 @@ export function up(knex) {
     table.integer("shared_responses").notNullable();
     table.string("confidence").notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
-    table.timestamp("updated_at").defaultTo(knex.fn.now()).onUpdate(knex.fn.now()).notNullable();
+    table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
 
     // add unique constraint to prevent duplicate mismatches between the same pair of users
     table.unique(["user1_id", "user2_id"], "mismatch_unique_user_pair");
