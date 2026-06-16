@@ -4,6 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import db from "./database/db.js";
 import nestedRouter from "./routes/nested.mjs";
+// Import global error handler
+import { errorHandler } from "./middlewares/errors.js";
 
 const app = express();
 app.use(cors());
@@ -23,5 +25,8 @@ apiRouter.get("/", async (req, res) => {
 apiRouter.use("/nested", nestedRouter);
 
 app.use("/api", apiRouter);
+
+// Register error handler middleware (must be last)
+app.use(errorHandler);
 
 export default app;
