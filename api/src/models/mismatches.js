@@ -1,12 +1,12 @@
 import db from "./../database/db.js";
 import { calculateMismatchScore } from "./../utils/mismatches.js";
 
-export async function fetchSharedResponses(user1Id, user2Id) {
-  const user1Responses = await db("responses")
+export async function fetchSharedResponses(user1Id, user2Id, trx = db) {
+  const user1Responses = await trx("responses")
     .where("user_id", user1Id)
     .select("question_id", "agreement_score", "importance_score");
 
-  const user2Responses = await db("responses")
+  const user2Responses = await trx("responses")
     .where("user_id", user2Id)
     .select("question_id", "agreement_score", "importance_score");
 
@@ -32,20 +32,20 @@ export async function fetchSharedResponses(user1Id, user2Id) {
   return sharedResponses;
 }
 
-export async function upsertMismatch(user1Id, user2Id) {
+export async function upsertMismatch(user1Id, user2Id, trx = db) {
   const [leftUserId, rightUserId] =
     user1Id < user2Id ? [user1Id, user2Id] : [user2Id, user1Id];
 
-  const sharedResponses = await fetchSharedResponses(leftUserId, rightUserId);
-  const existingMismatch = await db("mismatches")
+  const sharedResponses = await fetchSharedResponses(leftUserId, rightUserId, trx);
+  const existingMismatch = await trx("mismatches")
     .where({ user1_id: leftUserId, user2_id: rightUserId })
     .first();
 
   if (existingMismatch && sharedResponses.length < 20) {
-    await db("mismatches").where("id", existingMismatch.id).delete();
+    await trx("mismatches").where("id", existingMismatch.id).delete();
   } else if (existingMismatch) {
     const mismatchData = calculateMismatchScore(sharedResponses);
-    await db("mismatches").where("id", existingMismatch.id).update({
+    await trx("mismatches").where("id", existingMismatch.id).update({
       mismatch_score: mismatchData.mismatchScore,
       confidence: mismatchData.confidence,
       shared_responses: mismatchData.sharedResponses,
@@ -53,7 +53,7 @@ export async function upsertMismatch(user1Id, user2Id) {
     });
   } else if (!existingMismatch && sharedResponses.length >= 20) {
     const mismatchData = calculateMismatchScore(sharedResponses);
-    await db("mismatches").insert({
+    await trx("mismatches").insert({
       user1_id: leftUserId,
       user2_id: rightUserId,
       mismatch_score: mismatchData.mismatchScore,
@@ -63,8 +63,8 @@ export async function upsertMismatch(user1Id, user2Id) {
   }
 }
 
-export async function listMismatchesForUser(userId) {
-  return await db("mismatches")
+export async function listMismatchesForUser(userId, trx = db) {
+  return await trx("mismatches")
     .where("user1_id", userId)
     .orWhere("user2_id", userId)
     .select("*")
