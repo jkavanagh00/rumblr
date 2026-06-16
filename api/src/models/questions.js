@@ -46,14 +46,11 @@ export async function updateQuestion_Model(id, updateData, trx = db) {
 
   await baseQuery(trx).where("id", id).update(updateData);
 
-  return await baseQuery(trx)
-    .select("*")
-    .where("id", id)
-    .first();
+  return await baseQuery(trx).select("*").where("id", id).first();
 }
 
 export async function deleteQuestion_Model(id, trx = db) {
-    const existingQuestion = await baseQuery(trx)
+  const existingQuestion = await baseQuery(trx)
     .select("*")
     .where("id", id)
     .first();
@@ -65,4 +62,57 @@ export async function deleteQuestion_Model(id, trx = db) {
   await baseQuery(trx).where("id", id).delete();
 
   return existingQuestion;
+}
+
+
+/**
+ * @param {Object} response - The response data to be inserted into the database.
+ * The response object should contain the following properties:
+ * - question_id: The ID of the question being responded to (required).
+ * - user_id: The ID of the user submitting the response (required).
+ * - agreement_score: A numeric score representing the level of agreement with the question (required).
+ * - importance_score: A numeric score representing the importance of the question to the user (required).
+ * @param {Object} trx - An optional Knex transaction object. If not provided, the default database connection will be used.
+ * @returns {Promise<Array>} - A promise that resolves to an array containing the ID of the newly inserted response.
+ * @throws {Error} - Throws an error if the database operation fails.
+ */
+export async function addResponse_model(response, trx = db) {
+  const qb = trx("responses");
+  return await qb.insert(response);
+}
+
+export async function updateResponse_model(id, updateData, trx = db) {
+  const existingResponse = await trx("responses")
+    .select("*")
+    .where("id", id)
+    .first();
+
+  if (!existingResponse) {
+    return undefined;
+  }
+
+  await trx("responses").where("id", id).update(updateData);
+
+  return await trx("responses").select("*").where("id", id).first();
+}
+
+export async function deleteResponse_model(id, trx = db) {
+  const existingResponse = await trx("responses")
+    .select("*")
+    .where("id", id)
+    .first();
+
+  if (!existingResponse) {
+    return undefined;
+  }
+
+  await trx("responses").where("id", id).delete();
+
+  return existingResponse;
+}
+
+export async function listResponses_model(userId, trx = db) {
+  const qb = trx("responses");
+  const responses = await qb.select("*").where("user_id", userId);
+  return responses.length > 0 ? responses : null;
 }
