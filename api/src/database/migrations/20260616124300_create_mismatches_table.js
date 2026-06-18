@@ -14,7 +14,7 @@ export function up(knex) {
     table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
     table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
 
-    // add unique constraint to prevent duplicate mismatches between the same pair of users
+    // add unique constraint for faster lookups and prevention of duplicates
     table.unique(["user1_id", "user2_id"], "mismatch_unique_user_pair");
 
     // add indexes on user1_id and user2_id for faster lookups
