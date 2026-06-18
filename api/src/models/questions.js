@@ -64,7 +64,6 @@ export async function deleteQuestion_Model(id, trx = db) {
   return existingQuestion;
 }
 
-
 /**
  * @param {Object} response - The response data to be inserted into the database.
  * The response object should contain the following properties:
@@ -115,4 +114,12 @@ export async function listResponses_model(userId, trx = db) {
   const qb = trx("responses");
   const responses = await qb.select("*").where("user_id", userId);
   return responses.length > 0 ? responses : null;
+}
+
+export async function listUsersWhoResponded_model(questionId, excludedUserId) {
+  const userIds = trx("responses")
+    .where("questions_id", questionId)
+    .whereNot("user_id", excludedUserId)
+    .pluck("user_id");
+  return userIds;
 }
