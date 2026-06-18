@@ -1,10 +1,13 @@
 import { z } from "zod";
 
-export const createMessageSchema = z.object({
-  rumble_id: z
+export const createMessageParamsSchema = z.object({
+  id: z
     .string({ required_error: "Rumble ID is required" })
     .uuid({ message: "Invalid Rumble ID format. Must be a UUID" }),
 
+});
+
+export const createMessageSchema = z.object({
   sender_id: z
     .string({ required_error: "Sender ID is required" })
     .uuid({ message: "Invalid Sender ID format. Must be a UUID" }),
