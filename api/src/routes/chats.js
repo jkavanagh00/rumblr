@@ -17,7 +17,6 @@ import {
   addMessage_controller,
   getChats_controller,
   getMessages_controller,
-  getCurrentUserId,
 } from "../controllers/chats.js";
 
 const router = express.Router();
@@ -32,7 +31,8 @@ const validateBody = (schema) => (req, res, next) => {
 };
 
 const validateAddMessage = (req, res, next) => {
-  const userId = getCurrentUserId(req);
+  // Reminder: req.userId must be set by auth middleware before chat routes.
+  const userId = req.userId;
   if (!userId) {
     const error = new Error("Unauthorized");
     error.status = 401;
@@ -54,7 +54,7 @@ const validateAddMessage = (req, res, next) => {
 
 // Validation middleware for getting messages (pagination + auth)
 const validateGetMessages = (req, res, next) => {
-  const userId = getCurrentUserId(req);
+  const userId = req.userId;
   if (!userId) {
     const error = new Error("Unauthorized");
     error.status = 401;

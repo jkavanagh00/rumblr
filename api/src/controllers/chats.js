@@ -8,10 +8,6 @@ import {
   updateRumbleStatus_model,
 } from "../models/chats.js";
 
-export function getCurrentUserId(req) {
-  return req.user?.id || req.headers["x-user-id"];
-}
-
 export async function addChat_controller(req, res, next) {
   try {
     const chat = await addChat_model(req.validatedBody);
@@ -23,7 +19,7 @@ export async function addChat_controller(req, res, next) {
 
 export async function getChats_controller(req, res, next) {
   try {
-    const userId = getCurrentUserId(req);
+    const userId = req.userId;
     if (!userId) {
       return res.status(401).json({
         error: "Unauthorized",
