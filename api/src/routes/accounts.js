@@ -18,19 +18,9 @@ import {
   updateAccount_controller,
   deleteAccount_controller,
 } from "../controllers/accounts.js";
+import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();
-
-const validateBody = (schema) => (req, res, next) => {
-  const result = schema.safeParse(req.body);
-
-  if (!result.success) {
-    return next(result.error);
-  }
-
-  req.validatedBody = result.data;
-  next();
-};
 
 router.get("/", getAccount_controller);
 router.put("/", validateBody(updateAccountSchema), updateAccount_controller);

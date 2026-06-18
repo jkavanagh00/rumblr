@@ -6,6 +6,17 @@ all middlewares related to error handling
 examples:
 handleError - a middleware that handles errors and sends appropriate responses
 */
+export const validateBody = schema => (req, res, next) => {
+  const result = schema.safeParse(req.body);
+
+  if (!result.success) {
+    return next(result.error);
+  }
+
+  req.validatedBody = result.data;
+  next();
+};
+
 export const errorHandler = (err, req, res, next) => {
   // Handle Zod validation errors
   if (err instanceof ZodError || err?.name === "ZodError" || Array.isArray(err?.issues)) {
