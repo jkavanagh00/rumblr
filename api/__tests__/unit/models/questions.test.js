@@ -1,5 +1,5 @@
 import testDb from "../../setup/testDb.js";
-import { seedUser, seedQuestion } from "../../setup/factories.js";
+import { seedUser, seedQuestion, seedResponse } from "../../setup/factories.js";
 import {
   addQuestion_Model,
   getQuestionById_Model,
@@ -10,6 +10,7 @@ import {
   updateResponse_model,
   deleteResponse_model,
   listResponses_model,
+  listUsersWhoResponded_model
 } from "../../../src/models/questions.js";
 
 const TABLE = "questions";
@@ -257,6 +258,32 @@ describe("questions model", () => {
       const result = await listResponses_model(userId, testDb);
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe("listUsersWhoResponded", () => {
+    test("returns an array of ids for all other users who have responded to a question", async () => {
+      await seedUser(testDb, { id: userId });
+      await seedUser(testDb, { id: otherUserId });
+      await seedQuestion(testDb, { id: questionId });
+      await seedResponse(testDb, { user_id: userId, question_id: questionId });
+      await seedResponse(testDb, { user_id: otherUserId, question_id: questionId });
+
+      const result = await listUsersWhoResponded_model(questionId, userId, testDb);
+      expect(result).toHaveLength(1);
+      expect(Array.isArray(result)).toBe(true);
+      expect(result[0]).toBe(otherUserId);
+    });
+    test("does not return the ids of users without shared responses", async () => {
+      await seedUser(testDb, { id: userId });
+      await seedUser(testDb, { id: otherUserId });
+      await seedQuestion(testDb, { id: questionId });
+      await seedResponse(testDb, { user_id: userId, question_id: questionId });
+      await seedResponse(testDb, { user_id: otherUserId, question_id: otherQuestionId });
+
+      const result = await listUsersWhoResponded_model(questionId, userId, testDb);
+      expect(result).toHaveLength(0);
+      expect(Array.isArray(result)).toBe(true);
     });
   });
 });
