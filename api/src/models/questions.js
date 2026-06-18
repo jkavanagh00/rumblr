@@ -18,23 +18,23 @@ function baseQuery(trx = db) {
   return trx(TABLE);
 }
 
-export async function listQuestions_Model(trx = db) {
+export async function listQuestions_model(trx = db) {
   const qb = baseQuery(trx);
   const questions = await qb.select("*");
   return questions.length > 0 ? questions : null;
 }
 
-export async function addQuestion_Model(question, trx = db) {
+export async function addQuestion_model(question, trx = db) {
   const qb = baseQuery(trx);
   return await qb.insert(question);
 }
 
-export async function getQuestionById_Model(id, trx = db) {
+export async function getQuestionById_model(id, trx = db) {
   const qb = baseQuery(trx);
   return await qb.select("*").where("id", id).first();
 }
 
-export async function updateQuestion_Model(id, updateData, trx = db) {
+export async function updateQuestion_model(id, updateData, trx = db) {
   const existingQuestion = await baseQuery(trx)
     .select("*")
     .where("id", id)
@@ -49,7 +49,7 @@ export async function updateQuestion_Model(id, updateData, trx = db) {
   return await baseQuery(trx).select("*").where("id", id).first();
 }
 
-export async function deleteQuestion_Model(id, trx = db) {
+export async function deleteQuestion_model(id, trx = db) {
   const existingQuestion = await baseQuery(trx)
     .select("*")
     .where("id", id)

@@ -8,12 +8,12 @@ examples:
 */
 
 import express from "express";
-import { addQuestion_Controller, getQuestionById_Controller, listQuestions_Controller, updateQuestion_Controller, deleteQuestion_Controller } from "../controllers/questions.js";
+import { addQuestion_controller, getQuestionById_controller, listQuestions_controller, updateQuestion_controller, deleteQuestion_controller } from "../controllers/questions.js";
 const questionsRouter = express.Router();
 
 questionsRouter.get("/list", async (req, res) => {
     try {
-        const result = await listQuestions_Controller();
+        const result = await listQuestions_controller();
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -22,7 +22,7 @@ questionsRouter.get("/list", async (req, res) => {
 
 questionsRouter.get("/:id", async (req, res) => {
     try {
-        const result = await getQuestionById_Controller(req.params.id);
+        const result = await getQuestionById_controller(req.params.id);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -1,11 +1,11 @@
 import testDb from "../../setup/testDb.js";
 import { seedUser, seedQuestion, seedResponse } from "../../setup/factories.js";
 import {
-  addQuestion_Model,
-  getQuestionById_Model,
-  listQuestions_Model,
-  updateQuestion_Model,
-  deleteQuestion_Model,
+  addQuestion_model,
+  getQuestionById_model,
+  listQuestions_model,
+  updateQuestion_model,
+  deleteQuestion_model,
   addResponse_model,
   updateResponse_model,
   deleteResponse_model,
@@ -27,37 +27,37 @@ describe("questions model", () => {
     await testDb("users").del();
   });
 
-  describe("listQuestions_Model", () => {
+  describe("listQuestions_model", () => {
     test("returns an array of questions", async () => {
       // Seed two rows so this test verifies the normal read path, not an empty-table edge case.
       await seedQuestion(testDb, { id: questionId, content: "Content data 1" });
       await seedQuestion(testDb, { id: otherQuestionId, content: "Content data 2" });
 
       // Call the model directly with the in-memory test database to confirm it reads persisted questions.
-      const result = await listQuestions_Model(testDb);
+      const result = await listQuestions_model(testDb);
 
       // The list endpoint depends on this model returning every stored question in an array.
       expect(result).toHaveLength(2);
     });
     test("returns null when no questions exist", async () => {
       // Call the model function with an empty table to test the model's explicit no-data behavior.
-      const result = await listQuestions_Model(testDb);
+      const result = await listQuestions_model(testDb);
 
       // This documents the current contract: no questions returns null instead of an empty array.
       expect(result).toBeNull();
     });
   });
 
-  describe("addQuestion_Model", () => {
+  describe("addQuestion_model", () => {
     test("inserts a single question into the questions table", async () => {
-      await addQuestion_Model({ content: "Content data" }, testDb);
+      await addQuestion_model({ content: "Content data" }, testDb);
 
       const rows = await testDb(TABLE).select("*");
       expect(rows).toHaveLength(1);
       expect(rows[0].content).toBe("Content data");
     });
     test("returns a knex insert response of the correct shape", async () => {
-      const result = await addQuestion_Model(
+      const result = await addQuestion_model(
         { content: "Content data" },
         testDb,
       );
@@ -65,27 +65,27 @@ describe("questions model", () => {
       expect(result.length).toBeGreaterThan(0);
     });
     test("throws an error when content is missing", async () => {
-      await expect(addQuestion_Model({}, testDb)).rejects.toThrow();
+      await expect(addQuestion_model({}, testDb)).rejects.toThrow();
     });
   });
 
-  describe("getQuestionById_Model", () => {
+  describe("getQuestionById_model", () => {
     test("returns a single question with the correct id", async () => {
       await seedQuestion(testDb, { id: questionId, content: "Content data" });
-      const result = await getQuestionById_Model(questionId, testDb);
+      const result = await getQuestionById_model(questionId, testDb);
       expect(result.content).toBe("Content data");
       expect(result.id).toBe(questionId);
     });
     test("returns undefined when question cannot be found", async () => {
-      const result = await getQuestionById_Model(questionId, testDb);
+      const result = await getQuestionById_model(questionId, testDb);
       expect(result).toBe(undefined);
     });
   });
 
-  describe("updateQuestion_Model", () => {
+  describe("updateQuestion_model", () => {
     test("returns updated question data after a successful update", async () => {
       await testDb(TABLE).insert({ id: questionId, content: "Original content" });
-      const result = await updateQuestion_Model(
+      const result = await updateQuestion_model(
         questionId,
         { content: "Updated content" },
         testDb,
@@ -94,20 +94,20 @@ describe("questions model", () => {
       expect(result.content).toBe("Updated content");
     });
     test("returns undefined when question cannot be found", async () => {
-      const result = await updateQuestion_Model(1, { content: "Updated content" }, testDb);
+      const result = await updateQuestion_model(1, { content: "Updated content" }, testDb);
       expect(result).toBe(undefined);
     });
   });
 
-  describe("deleteQuestion_Model", () => {
+  describe("deleteQuestion_model", () => {
     test("returns deleted question data after a successful deletion", async () => {
       await testDb(TABLE).insert({ id: questionId, content: "Content data" });
-      await deleteQuestion_Model(questionId, testDb);
+      await deleteQuestion_model(questionId, testDb);
       const result = await testDb(TABLE).select("*");
       expect(result).toHaveLength(0);
     });
     test("returns undefined when the question cannot be found", async () => {
-      const result = await deleteQuestion_Model(questionId, testDb);
+      const result = await deleteQuestion_model(questionId, testDb);
       expect(result).toBe(undefined);
     });
   });
