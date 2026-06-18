@@ -8,6 +8,8 @@ examples:
 - addQuestion?
 */
 
+import { z } from "zod";
+
 import {
   addQuestion_model,
   getQuestionById_model,
@@ -15,13 +17,16 @@ import {
   updateQuestion_model,
   deleteQuestion_model,
 } from "../models/questions.js";
+import {
+  createQuestionSchema
+} from "../Schemas/questions.js"
 
 export async function addQuestion_controller(req, res, next) {
   try {
-    const result = await addQuestion_model(question);
-    return result;
+    const question = await addQuestion_model(req.validatedBody);
+    return res.status(201).json(question);
   } catch (error) {
-    throw new Error(error.message);
+    next(error);
   }
 }
 
