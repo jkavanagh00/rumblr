@@ -116,9 +116,9 @@ export async function listResponses_model(userId, trx = db) {
   return responses.length > 0 ? responses : null;
 }
 
-export async function listUsersWhoResponded_model(questionId, excludedUserId) {
-  const userIds = trx("responses")
-    .where("questions_id", questionId)
+export async function listUsersWhoResponded_model(questionId, excludedUserId, trx = db) {
+  const userIds = await trx("responses")
+    .where("question_id", questionId)
     .whereNot("user_id", excludedUserId)
     .pluck("user_id");
   return userIds;
