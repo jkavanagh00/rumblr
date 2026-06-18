@@ -39,8 +39,8 @@ describe("mismatches model", () => {
 		test("returns shared responses with the expected score field mapping", async () => {
             await seedUser(testDb, { id: userId });
             await seedUser(testDb, { id: otherUserId });
-                        await seedResponse(testDb, { user_id: userId, question_id: questionId });
-                        await seedResponse(testDb, { user_id: otherUserId, question_id: questionId });
+            await seedResponse(testDb, { user_id: userId, question_id: questionId });
+            await seedResponse(testDb, { user_id: otherUserId, question_id: questionId });
 
             const result = await fetchSharedResponses(userId, otherUserId, testDb);
                         expect(result).toHaveLength(1);
@@ -63,8 +63,25 @@ describe("mismatches model", () => {
             expect(row.user2_importance_score).toBeGreaterThanOrEqual(1);
             expect(row.user2_importance_score).toBeLessThanOrEqual(5);
         });
-		test.todo("returns an empty array when users have no shared responses");
-		test.todo("returns an empty array when either user has no responses");
+		test("returns an empty array when users have no shared responses", async () => {
+            await seedUser(testDb, { id: userId });
+            await seedUser(testDb, { id: otherUserId });
+            await seedResponse(testDb, { user_id: userId, question_id: questionId });
+            await seedResponse(testDb, { user_id: otherUserId, question_id: otherQuestionId });
+
+            const result = await fetchSharedResponses(userId, otherUserId, testDb);
+            expect(Array.isArray(result)).toBe(true);
+            expect(result).toHaveLength(0);
+        });
+		test("returns an empty array when either user has no responses", async () => {
+            await seedUser(testDb, { id: userId });
+            await seedUser(testDb, { id: otherUserId });
+            await seedResponse(testDb, { user_id: userId, question_id: questionId });
+
+            const result = await fetchSharedResponses(userId, otherUserId, testDb);
+            expect(Array.isArray(result)).toBe(true);
+            expect(result).toHaveLength(0);
+        });
 	});
 
 	describe("upsertMismatch", () => {
