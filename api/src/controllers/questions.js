@@ -17,9 +17,7 @@ import {
   updateQuestion_model,
   deleteQuestion_model,
 } from "../models/questions.js";
-import {
-  createQuestionSchema
-} from "../Schemas/questions.js"
+import { createQuestionSchema } from "../Schemas/questions.js";
 
 export async function addQuestion_controller(req, res, next) {
   try {
@@ -30,12 +28,18 @@ export async function addQuestion_controller(req, res, next) {
   }
 }
 
-export async function getQuestionById_controller(id) {
+export async function getQuestionById_controller(req, res, next) {
   try {
-    const result = await getQuestionById_model(id);
-    return result;
+    const id = req.params.id;
+    const question = await getQuestionById_model(id);
+
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    return res.status(200).json(question);
   } catch (error) {
-    throw new Error(error.message);
+    next(error);
   }
 }
 
