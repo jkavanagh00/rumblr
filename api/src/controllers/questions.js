@@ -18,6 +18,7 @@ import {
   updateQuestion_model,
   deleteQuestion_model,
   upsertResponse_model,
+  listResponses_model,
   listUsersWhoResponded_model,
   getQuestionWithNoResponse_model,
 } from "../models/questions.js";
@@ -105,6 +106,20 @@ export async function addResponse_controller(req, res, next) {
   }
 }
 
+export async function listResponses_controller(req, res, next) {
+  try {
+    const responses = await listResponses_model(req.user.id);
+
+    if (!responses) {
+      return res.status(404).json({ error: "No responses found" })
+    }
+
+    return res.status(200).json(responses);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function listQuestions_controller() {
   try {
     const result = await listQuestions_model();
@@ -131,3 +146,4 @@ export async function deleteQuestion_controller(id) {
     throw new Error(error.message);
   }
 }
+
