@@ -15,7 +15,7 @@ export const authenticateToken = (req, res, next) => {
     }
 
     try {
-        const secret = process.env.ACCESS_TOKEN_SECRET || process.env.Access_Token_Secret;
+        const secret = process.env.ACCESS_TOKEN_SECRET 
         const decodedPayload = jwt.verify(token, secret, {
             algorithms: ["HS256"],
         });
