@@ -17,7 +17,7 @@ import {
   listQuestions_model,
   updateQuestion_model,
   deleteQuestion_model,
-  addResponse_model,
+  upsertResponse_model,
   listUsersWhoResponded_model,
 } from "../models/questions.js";
 import { upsertMismatch, fetchSharedResponses } from "../models/mismatches.js";
@@ -51,22 +51,20 @@ export async function addResponse_controller(req, res, next) {
   try {
     const questionId = req.params.id;
     const userId = req.user.id;
-    const validated = req.validatedBody;
+    const payload = req.validatedBody;
     const question = await getQuestionById_model(questionId);
 
     if (!question) {
       return res.status(404).json({ error: "Question not found" });
     }
 
-    await db.transaction(async (trx) => {
-      const payload = {
-        question_id: questionId,
-        user_id: userId,
-        agreement_score: validated.agreement_score,
-        importance_score: validated.importance_score,
-      };
-
-      const response = await addResponse_model(payload, trx);
+    const response = await db.transaction(async (trx) => {
+      const upsertedResponse = await upsertResponse_model(
+        questionId,
+        userId,
+        payload,
+        trx,
+      );
 
       const otherUsersWithResponses = await listUsersWhoResponded_model(
         questionId,
@@ -77,8 +75,11 @@ export async function addResponse_controller(req, res, next) {
       for (const otherUserId of otherUsersWithResponses) {
         await upsertMismatch(userId, otherUserId, trx);
       }
+      return upsertedResponse;
     });
-    return res.status(201).json({ message: "Response submitted successfully", response });
+    return res
+      .status(201)
+      .json({ message: "Response submitted successfully", response });
   } catch (error) {
     next(error);
   }
