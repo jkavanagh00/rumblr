@@ -4,6 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import db from "./database/db.js";
 import nestedRouter from "./routes/nested.js";
+import chatsRouter from "./routes/chats.js";
+import accountsRouter from "./routes/accounts.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 
