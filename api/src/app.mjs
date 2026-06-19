@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import db from "./database/db.js";
-import nestedRouter from "./routes/nested.mjs";
+import nestedRouter from "./routes/nested.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 
