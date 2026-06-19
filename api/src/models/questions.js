@@ -75,24 +75,29 @@ export async function deleteQuestion_model(id, trx = db) {
  * @returns {Promise<Array>} - A promise that resolves to an array containing the ID of the newly inserted response.
  * @throws {Error} - Throws an error if the database operation fails.
  */
-export async function addResponse_model(response, trx = db) {
-  const qb = trx("responses");
-  return await qb.insert(response);
-}
 
-export async function updateResponse_model(id, updateData, trx = db) {
+export async function upsertResponse_model(
+  questionId,
+  userId,
+  payload,
+  trx = db,
+) {
   const existingResponse = await trx("responses")
     .select("*")
-    .where("id", id)
+    .where("question_id", questionId)
+    .andWhere("user_id", userId)
     .first();
 
-  if (!existingResponse) {
-    return undefined;
+  if (existingResponse) {
+    await trx("responses").where("id", existingResponse.id).update(payload);
+  } else {
+    await trx("responses").insert(payload);
   }
-
-  await trx("responses").where("id", id).update(updateData);
-
-  return await trx("responses").select("*").where("id", id).first();
+  return await trx("responses")
+    .select("*")
+    .where("question_id", questionId)
+    .andWhere("user_id", userId)
+    .first();
 }
 
 export async function deleteResponse_model(id, trx = db) {
@@ -116,7 +121,11 @@ export async function listResponses_model(userId, trx = db) {
   return responses.length > 0 ? responses : null;
 }
 
-export async function listUsersWhoResponded_model(questionId, excludedUserId, trx = db) {
+export async function listUsersWhoResponded_model(
+  questionId,
+  excludedUserId,
+  trx = db,
+) {
   const userIds = await trx("responses")
     .where("question_id", questionId)
     .whereNot("user_id", excludedUserId)
