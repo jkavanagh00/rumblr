@@ -12,6 +12,7 @@ examples:
 import express from "express";
 import { createRumbleSchema } from "../Schemas/rumbles.js";
 import { createMessageSchema, paginationSchema } from "../Schemas/messages.js";
+import { authenticateToken } from "../middlewares/auth.js";
 import {
   addChat_controller,
   addMessage_controller,
@@ -21,6 +22,17 @@ import {
 import { validateBody } from "../middlewares/errors.js"
 
 const router = express.Router();
+
+router.use(authenticateToken);
+
+const validateBody = (schema) => (req, res, next) => {
+  const result = schema.safeParse(req.body);
+  if (!result.success) {
+    return next(result.error);
+  }
+  req.validatedBody = result.data;
+  next();
+};
 
 const validateAddMessage = (req, res, next) => {
   // Reminder: req.userId must be set by auth middleware before chat routes.
