@@ -15,13 +15,6 @@ const questionsRouter = express.Router();
 
 questionsRouter.post("/", validateBody(createQuestionSchema), addQuestion_controller);
 
-questionsRouter.get("/:id", async (req, res) => {
-    try {
-        const result = await getQuestionById_controller(req.params.id);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+questionsRouter.get("/:id", getQuestionsById_controller);
 
 export default questionsRouter;
