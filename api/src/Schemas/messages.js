@@ -4,6 +4,7 @@ export const createMessageParamsSchema = z.object({
   id: z
     .string({ required_error: "Rumble ID is required" })
     .uuid({ message: "Invalid Rumble ID format. Must be a UUID" }),
+
 });
 
 export const createMessageSchema = z.object({
@@ -15,4 +16,9 @@ export const createMessageSchema = z.object({
     .string({ required_error: "Message content is required" })
     .trim()
     .min(1, { message: "Message content cannot be empty" }),
+});
+
+export const paginationSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().default(20),
 });

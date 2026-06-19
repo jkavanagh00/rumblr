@@ -23,6 +23,8 @@ apiRouter.get("/", async (req, res) => {
 
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/nested", nestedRouter);
+apiRouter.use("/chats", chatsRouter);
+apiRouter.use("/account", accountsRouter);
 
 app.use("/api", apiRouter);
 

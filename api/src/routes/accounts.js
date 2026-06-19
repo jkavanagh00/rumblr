@@ -10,3 +10,30 @@ examples:
 - PUT /account (update account info)
 - DELETE /account/ (delete current account)
 */
+
+import express from "express";
+import { updateAccountSchema } from "../Schemas/account.js";
+import {
+  getAccount_controller,
+  updateAccount_controller,
+  deleteAccount_controller,
+} from "../controllers/accounts.js";
+
+const router = express.Router();
+
+const validateBody = (schema) => (req, res, next) => {
+  const result = schema.safeParse(req.body);
+
+  if (!result.success) {
+    return next(result.error);
+  }
+
+  req.validatedBody = result.data;
+  next();
+};
+
+router.get("/", getAccount_controller);
+router.put("/", validateBody(updateAccountSchema), updateAccount_controller);
+router.delete("/", deleteAccount_controller);
+
+export default router;
