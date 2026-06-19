@@ -1,7 +1,7 @@
 import db from "./../database/db.js";
 import { calculateMismatchScore } from "./../utils/mismatches.js";
 
-export async function fetchSharedResponses(user1Id, user2Id, trx = db) {
+export async function fetchSharedResponses_model(user1Id, user2Id, trx = db) {
   const user1Responses = await trx("responses")
     .where("user_id", user1Id)
     .select("question_id", "agreement_score", "importance_score");
@@ -32,7 +32,7 @@ export async function fetchSharedResponses(user1Id, user2Id, trx = db) {
   return sharedResponses;
 }
 
-export async function upsertMismatch(user1Id, user2Id, trx = db) {
+export async function upsertMismatch_model(user1Id, user2Id, trx = db) {
   const [leftUserId, rightUserId] =
     user1Id < user2Id ? [user1Id, user2Id] : [user2Id, user1Id];
 
@@ -63,7 +63,7 @@ export async function upsertMismatch(user1Id, user2Id, trx = db) {
   }
 }
 
-export async function listMismatchesForUser(userId, trx = db) {
+export async function listMismatchesForUser_model(userId, trx = db) {
   return await trx("mismatches")
     .where("user1_id", userId)
     .orWhere("user2_id", userId)
