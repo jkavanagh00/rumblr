@@ -12,6 +12,7 @@ examples:
 import express from "express";
 import { createRumbleSchema } from "../Schemas/rumbles.js";
 import { createMessageSchema, paginationSchema } from "../Schemas/messages.js";
+import { authenticateToken } from "../middlewares/auth.js";
 import {
   addChat_controller,
   addMessage_controller,
@@ -20,6 +21,8 @@ import {
 } from "../controllers/chats.js";
 
 const router = express.Router();
+
+router.use(authenticateToken);
 
 const validateBody = (schema) => (req, res, next) => {
   const result = schema.safeParse(req.body);
