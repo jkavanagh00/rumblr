@@ -82,6 +82,14 @@ export async function upsertResponse_model(
   payload,
   trx = db,
 ) {
+
+  const data = {
+    question_id: questionId,
+    user_id: userId,
+    agreement_score: payload.agreement_score,
+    importance_score: payload.importance_score
+  }
+
   const existingResponse = await trx("responses")
     .select("*")
     .where("question_id", questionId)
@@ -89,9 +97,9 @@ export async function upsertResponse_model(
     .first();
 
   if (existingResponse) {
-    await trx("responses").where("id", existingResponse.id).update(payload);
+    await trx("responses").where("id", existingResponse.id).update(data);
   } else {
-    await trx("responses").insert(payload);
+    await trx("responses").insert(data);
   }
   return await trx("responses")
     .select("*")
