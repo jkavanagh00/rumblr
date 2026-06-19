@@ -19,6 +19,7 @@ import {
   updateAccount_controller,
   deleteAccount_controller,
 } from "../controllers/accounts.js";
+import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();
 

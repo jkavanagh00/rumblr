@@ -19,6 +19,7 @@ import {
   getChats_controller,
   getMessages_controller,
 } from "../controllers/chats.js";
+import { validateBody } from "../middlewares/errors.js"
 
 const router = express.Router();
 
