@@ -30,12 +30,10 @@ export async function getQuestionWithNoResponse_controller(req, res, next) {
     const question = await getQuestionWithNoResponse_model(req.user.id);
 
     if (!question) {
-      return res
-        .status(204)
-        .json({
-          error:
-            "You have responded to all of our questions! Maybe go and touch grass?",
-        });
+      return res.status(204).json({
+        error:
+          "You have responded to all of our questions! Maybe go and touch grass?",
+      });
     }
 
     return res.status(200).json(question);
@@ -111,7 +109,7 @@ export async function listResponses_controller(req, res, next) {
     const responses = await listResponses_model(req.user.id);
 
     if (!responses) {
-      return res.status(404).json({ error: "No responses found" })
+      return res.status(404).json({ error: "No responses found" });
     }
 
     return res.status(200).json(responses);
@@ -120,30 +118,39 @@ export async function listResponses_controller(req, res, next) {
   }
 }
 
-export async function listQuestions_controller() {
+export async function listQuestions_controller(req, res, next) {
   try {
-    const result = await listQuestions_model();
-    return result;
+    const questions = await listQuestions_model();
+    return res.status(200).json(questions);
   } catch (error) {
-    throw new Error(error.message);
+    next(error);
   }
 }
 
-export async function updateQuestion_controller(id, updateData) {
+export async function updateQuestion_controller(req, res, next) {
   try {
-    const result = await updateQuestion_model(id, updateData);
-    return result;
+    const question = await getQuestionById_model(req.params.id);
+
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+    const updatedQuestion = await updateQuestion_model(req.params.id, req.validatedBody);
+    return res.status(200).json(updatedQuestion);
   } catch (error) {
-    throw new Error(error.message);
+    next(error);
   }
 }
 
-export async function deleteQuestion_controller(id) {
+export async function deleteQuestion_controller(req, res, next) {
   try {
-    const result = await deleteQuestion_model(id);
-    return result;
-  } catch (error) {
-    throw new Error(error.message);
+    const question = await getQuestionById_model(req.params.id);
+
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+    const deletedQuestion = await deleteQuestion_model(req.params.id);
+    return res.status(200).json(deletedQuestion);
+    } catch (error) {
+    next(error);
   }
 }
-
