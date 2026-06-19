@@ -19,9 +19,29 @@ import {
   deleteQuestion_model,
   upsertResponse_model,
   listUsersWhoResponded_model,
+  getQuestionWithNoResponse_model,
 } from "../models/questions.js";
 import { upsertMismatch, fetchSharedResponses } from "../models/mismatches.js";
 import { createQuestionSchema } from "../Schemas/questions.js";
+
+export async function getQuestionWithNoResponse_controller(req, res, next) {
+  try {
+    const question = await getQuestionWithNoResponse_model(req.user.id);
+
+    if (!question) {
+      return res
+        .status(204)
+        .json({
+          error:
+            "You have responded to all of our questions! Maybe go and touch grass?",
+        });
+    }
+
+    return res.status(200).json(question);
+  } catch (error) {
+    next(error);
+  }
+}
 
 export async function addQuestion_controller(req, res, next) {
   try {
