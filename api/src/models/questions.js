@@ -18,6 +18,20 @@ function baseQuery(trx = db) {
   return trx(TABLE);
 }
 
+export async function getQuestionWithNoResponse_model(userId, trx = db) {
+  const existingResponses = await trx("responses")
+    .pluck("question_id")
+    .where("user_id", userId);
+  const unansweredQuestion = await trx("questions")
+    .select("*")
+    .whereNotIn("id", existingResponses)
+    .first();
+  if (!unansweredQuestion) {
+    return null;
+  }
+  return unansweredQuestion;
+}
+
 export async function listQuestions_model(trx = db) {
   const qb = baseQuery(trx);
   const questions = await qb.select("*");
@@ -82,13 +96,12 @@ export async function upsertResponse_model(
   payload,
   trx = db,
 ) {
-
   const data = {
     question_id: questionId,
     user_id: userId,
     agreement_score: payload.agreement_score,
-    importance_score: payload.importance_score
-  }
+    importance_score: payload.importance_score,
+  };
 
   const existingResponse = await trx("responses")
     .select("*")
