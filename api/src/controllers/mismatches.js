@@ -18,7 +18,7 @@ import {
   createRumble_model,
   declineRumbleRequest_model,
 } from "../models/mismatches.js";
-import db from "../database/db.js"
+import db from "../database/db.js";
 
 export async function listMismatchesForUser_controller(req, res, next) {
   try {
@@ -63,22 +63,16 @@ export async function acceptRumbleRequest_controller(req, res, next) {
     }
 
     if (rumbleRequest.receiver_id != req.user.id) {
-      return res
-        .status(401)
-        .json({
-          error: "You are not authorized to accept this rumble request",
-        });
+      return res.status(401).json({
+        error: "You are not authorized to accept this rumble request",
+      });
     }
-    const rumble = await db.transaction(async (trx) => {
-        await acceptRumbleRequest_model(req.params.id, trx);
-        const payload = {
-            rumble_request_id: rumbleRequest.id,
-            requester_id: rumbleRequest.requester_id,
-            receiver_id: req.user.id,
-        };
-        const createdRumble = await createRumble_model(payload, trx);
-        return createdRumble;
-    });
+    const payload = {
+      rumble_request_id: rumbleRequest.id,
+      requester_id: rumbleRequest.requester_id,
+      receiver_id: req.user.id,
+    };
+    const rumble = await acceptRumbleRequest_model(payload);
     return res.status(201).json(rumble);
   } catch (error) {
     next(error);
@@ -94,11 +88,9 @@ export async function declineRumbleRequest_controller(req, res, next) {
     }
 
     if (rumbleRequest.receiver_id != req.user.id) {
-      return res
-        .status(401)
-        .json({
-          error: "You are not authorized to decline this rumble request",
-        });
+      return res.status(401).json({
+        error: "You are not authorized to decline this rumble request",
+      });
     }
     await declineRumbleRequest_model(req.params.id);
     return res.status(201).json({ message: "Rumble request declined" });
