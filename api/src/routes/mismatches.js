@@ -1,10 +1,13 @@
-/*
-all routes related to mismatches should be here
+import express from "express";
+import { validateBody } from "../middlewares/errors.js";
+import { authenticateToken, requireAdmin } from "../middlewares/auth.js"
+import { listMismatchesForUser_controller, sendRumbleRequest_controller } from "../controllers/mismatches.js";
 
-examples:
+const mismatchesRouter = express.Router();
+mismatchesRouter.use(authenticateToken);
 
-- GET /mismatches (list all mismatches for current user)
-- POST /mismatches/:id (users can send a rumble request to a mismatch)
-- PUT /mismatches/:id/accept (users can accept a rumble request from a mismatch)
-- PUT /mismatches/:id/reject (users can reject a rumble request from a mismatch)
-*/
+mismatchesRouter.get("/", listMismatchesForUser_controller);
+
+mismatchesRouter.post("/:id", sendRumbleRequest_controller);
+
+export default mismatchesRouter;
