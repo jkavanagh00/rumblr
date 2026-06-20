@@ -25,17 +25,6 @@ const router = express.Router();
 
 router.use(authenticateToken);
 
-const validateBody = (schema) => (req, res, next) => {
-  const result = schema.safeParse(req.body);
-
-  if (!result.success) {
-    return next(result.error);
-  }
-
-  req.validatedBody = result.data;
-  next();
-};
-
 router.get("/", getAccount_controller);
 router.put("/", validateBody(updateAccountSchema), updateAccount_controller);
 router.delete("/", deleteAccount_controller);
