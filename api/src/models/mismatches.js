@@ -97,6 +97,12 @@ export async function acceptRumbleRequest_model(id, trx = db) {
   });
 }
 
+export async function declineRumbleRequest_model(id, trx = db) {
+  return await trx("rumble_requests").where("id", id).update({
+    status: "declined",
+  });  
+}
+
 export async function checkForPendingRumbleRequest_model(
   requester_id,
   receiver_id,
