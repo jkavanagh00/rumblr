@@ -96,7 +96,7 @@ export async function me_controller(req, res, next) {
     const user = await getPublicUserById_model(userId);
 
     if (!user) {
-      return res.status(404).json({ error: "Account not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
     return res.status(200).json(user);

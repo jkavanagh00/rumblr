@@ -1,10 +1,10 @@
 /**
  * @param {Array} sharedResponses - An array of shared response objects, where each object contains the following properties:
- * - question_id: The ID of the question being compared.
- * - user1_agreement_score: The agreement score of the first user for the question.
- * - user1_importance_score: The importance score of the first user for the question.
- * - user2_agreement_score: The agreement score of the second user for the question.
- * - user2_importance_score: The importance score of the second user for the question.
+ * - statement_id: The ID of the statement being compared.
+ * - user1_agreement_score: The agreement score of the first user for the statement.
+ * - user1_importance_score: The importance score of the first user for the statement.
+ * - user2_agreement_score: The agreement score of the second user for the statement.
+ * - user2_importance_score: The importance score of the second user for the statement.
  * @returns {object} - Mismatch percentage and confidence level between the two users
  */
 

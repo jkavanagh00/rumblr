@@ -1,11 +1,11 @@
 import { jest } from "@jest/globals";
 
-jest.unstable_mockModule("../../../src/models/questions.js", () => ({
-  addQuestion_model: jest.fn(),
-  getQuestionById_model: jest.fn(),
-  listQuestions_model: jest.fn(),
-  updateQuestion_model: jest.fn(),
-  deleteQuestion_model: jest.fn(),
+jest.unstable_mockModule("../../../src/models/statements.js", () => ({
+  addStatement_model: jest.fn(),
+  getStatementById_model: jest.fn(),
+  listStatements_model: jest.fn(),
+  updateStatement_model: jest.fn(),
+  deleteStatement_model: jest.fn(),
 }));
 
 beforeEach(() => {
@@ -13,127 +13,127 @@ beforeEach(() => {
 });
 
 const {
-  addQuestion_model,
-  getQuestionById_model,
-  listQuestions_model,
-  updateQuestion_model,
-  deleteQuestion_model,
-} = await import("../../../src/models/questions.js");
+  addStatement_model,
+  getStatementById_model,
+  listStatements_model,
+  updateStatement_model,
+  deleteStatement_model,
+} = await import("../../../src/models/statements.js");
 const {
-  addQuestion_controller,
-  getQuestionById_controller,
-  listQuestions_controller,
-  updateQuestion_controller,
-  deleteQuestion_controller,
-} = await import("../../../src/controllers/questions.js");
+  addStatement_controller,
+  getStatementById_controller,
+  listStatements_controller,
+  updateStatement_controller,
+  deleteStatement_controller,
+} = await import("../../../src/controllers/statements.js");
 
 const testId = "11111111-1111-4111-8111-111111111111";
 
-describe("questions controller", () => {
-  describe("addQuestion_controller", () => {
-    test("calls addQuestion_model with the correct parameters", async () => {
-      const mockQuestion = { content: "Test question" };
-      addQuestion_model.mockResolvedValue([1]);
+describe("statements controller", () => {
+  describe("addStatement_controller", () => {
+    test("calls addStatement_model with the correct parameters", async () => {
+      const mockStatement = { content: "Test statement" };
+      addStatement_model.mockResolvedValue([1]);
 
-      const result = await addQuestion_controller(mockQuestion);
-      expect(addQuestion_model).toHaveBeenCalledWith(mockQuestion);
-      expect(addQuestion_model).toHaveBeenCalledTimes(1);
+      const result = await addStatement_controller(mockStatement);
+      expect(addStatement_model).toHaveBeenCalledWith(mockStatement);
+      expect(addStatement_model).toHaveBeenCalledTimes(1);
       expect(result).toEqual([1]);
     });
-    test("throws an error when addQuestion_model throws an error", async () => {
-      const mockQuestion = { content: "Test question" };
-      addQuestion_model.mockRejectedValue(new Error("Database error"));
+    test("throws an error when addStatement_model throws an error", async () => {
+      const mockStatement = { content: "Test statement" };
+      addStatement_model.mockRejectedValue(new Error("Database error"));
 
-      await expect(addQuestion_controller(mockQuestion)).rejects.toThrow(
+      await expect(addStatement_controller(mockStatement)).rejects.toThrow(
         "Database error",
       );
-      expect(addQuestion_model).toHaveBeenCalledWith(mockQuestion);
+      expect(addStatement_model).toHaveBeenCalledWith(mockStatement);
     });
   });
-  describe("getQuestionById_controller", () => {
-    test("calls getQuestionById_model with the correct parameters", async () => {
-      const mockQuestion = { id: testId, content: "Test question" };
-      getQuestionById_model.mockResolvedValue(mockQuestion);
+  describe("getStatementById_controller", () => {
+    test("calls getStatementById_model with the correct parameters", async () => {
+      const mockStatement = { id: testId, content: "Test statement" };
+      getStatementById_model.mockResolvedValue(mockStatement);
 
-      const result = await getQuestionById_controller(testId);
-      expect(getQuestionById_model).toHaveBeenCalledWith(testId);
-      expect(getQuestionById_model).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockQuestion);
+      const result = await getStatementById_controller(testId);
+      expect(getStatementById_model).toHaveBeenCalledWith(testId);
+      expect(getStatementById_model).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(mockStatement);
     });
-    test("throws an error when getQuestionById_model throws an error", async () => {
-      getQuestionById_model.mockRejectedValue(new Error("Database error"));
+    test("throws an error when getStatementById_model throws an error", async () => {
+      getStatementById_model.mockRejectedValue(new Error("Database error"));
 
-      await expect(getQuestionById_controller(testId)).rejects.toThrow(
+      await expect(getStatementById_controller(testId)).rejects.toThrow(
         "Database error",
       );
-      expect(getQuestionById_model).toHaveBeenCalledWith(testId);
+      expect(getStatementById_model).toHaveBeenCalledWith(testId);
     });
   });
-  describe("listQuestions_controller", () => {
-    test("calls listQuestions_model and returns the result", async () => {
+  describe("listStatements_controller", () => {
+    test("calls listStatements_model and returns the result", async () => {
       // Mock the model response so this test stays focused on controller orchestration only.
-      const mockQuestions = [
-        { id: "1", content: "Question 1" },
-        { id: "2", content: "Question 2" },
+      const mockStatements = [
+        { id: "1", content: "Statement 1" },
+        { id: "2", content: "Statement 2" },
       ];
-      listQuestions_model.mockResolvedValue(mockQuestions);
+      listStatements_model.mockResolvedValue(mockStatements);
 
       // The controller should delegate to the model and forward the resolved value unchanged.
-      const result = await listQuestions_controller();
+      const result = await listStatements_controller();
 
       // This confirms the controller does not add parameters, transform the payload, or skip the model call.
-      expect(listQuestions_model).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockQuestions);
+      expect(listStatements_model).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(mockStatements);
     });
-    test("throws an error when listQuestions_model throws an error", async () => {
+    test("throws an error when listStatements_model throws an error", async () => {
       // Force a model failure so the test covers the controller's error propagation path.
-      listQuestions_model.mockRejectedValue(new Error("Database error"));
+      listStatements_model.mockRejectedValue(new Error("Database error"));
 
       // The route layer relies on the controller to reject when the underlying read fails.
-      await expect(listQuestions_controller()).rejects.toThrow(
+      await expect(listStatements_controller()).rejects.toThrow(
         "Database error",
       );
 
       // Even in the failure case, the controller should still have attempted the model call once.
-      expect(listQuestions_model).toHaveBeenCalledTimes(1);
+      expect(listStatements_model).toHaveBeenCalledTimes(1);
     });
   });
-  describe("updateQuestion_controller", () => {
-    test("calls updateQuestion_model with the correct parameters", async () => {
+  describe("updateStatement_controller", () => {
+    test("calls updateStatement_model with the correct parameters", async () => {
       const updateData = { content: "Updated content" };
-      const mockUpdatedQuestion = { id: testId, content: "Updated content" };
-      updateQuestion_model.mockResolvedValue(mockUpdatedQuestion);
+      const mockUpdatedStatement = { id: testId, content: "Updated content" };
+      updateStatement_model.mockResolvedValue(mockUpdatedStatement);
 
-      const result = await updateQuestion_controller(testId, updateData);
-      expect(updateQuestion_model).toHaveBeenCalledWith(testId, updateData);
-      expect(result).toEqual(mockUpdatedQuestion);
+      const result = await updateStatement_controller(testId, updateData);
+      expect(updateStatement_model).toHaveBeenCalledWith(testId, updateData);
+      expect(result).toEqual(mockUpdatedStatement);
     });
-    test("throws an error when updateQuestion_model throws an error", async () => {
+    test("throws an error when updateStatement_model throws an error", async () => {
       const updateData = { content: "Updated content" };
-      updateQuestion_model.mockRejectedValue(new Error("Database error"));
+      updateStatement_model.mockRejectedValue(new Error("Database error"));
 
       await expect(
-        updateQuestion_controller(testId, updateData),
+        updateStatement_controller(testId, updateData),
       ).rejects.toThrow("Database error");
-      expect(updateQuestion_model).toHaveBeenCalledWith(testId, updateData);
+      expect(updateStatement_model).toHaveBeenCalledWith(testId, updateData);
     });
   });
-  describe("deleteQuestion_controller", () => {
-    test("calls deleteQuestion_model with the correct parameters", async () => {
-      const mockDeletedQuestion = { id: testId, content: "Deleted content" };
-      deleteQuestion_model.mockResolvedValue(mockDeletedQuestion);
+  describe("deleteStatement_controller", () => {
+    test("calls deleteStatement_model with the correct parameters", async () => {
+      const mockDeletedStatement = { id: testId, content: "Deleted content" };
+      deleteStatement_model.mockResolvedValue(mockDeletedStatement);
 
-      const result = await deleteQuestion_controller(testId);
-      expect(deleteQuestion_model).toHaveBeenCalledWith(testId);
-      expect(result).toEqual(mockDeletedQuestion);
+      const result = await deleteStatement_controller(testId);
+      expect(deleteStatement_model).toHaveBeenCalledWith(testId);
+      expect(result).toEqual(mockDeletedStatement);
     });
-    test("throws an error when deleteQuestion_model throws an error", async () => {
-      deleteQuestion_model.mockRejectedValue(new Error("Database error"));
+    test("throws an error when deleteStatement_model throws an error", async () => {
+      deleteStatement_model.mockRejectedValue(new Error("Database error"));
 
-      await expect(deleteQuestion_controller(testId)).rejects.toThrow(
+      await expect(deleteStatement_controller(testId)).rejects.toThrow(
         "Database error",
       );
-      expect(deleteQuestion_model).toHaveBeenCalledWith(testId);
+      expect(deleteStatement_model).toHaveBeenCalledWith(testId);
     });
   });
 });

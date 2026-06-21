@@ -19,14 +19,14 @@ export async function seedUser(testDb, overrides = {}) {
   return data;
 }
 
-export async function seedQuestion(testDb, overrides = {}) {
+export async function seedStatement(testDb, overrides = {}) {
   const defaultData = {
-    content: "Test question content",
+    content: "Test statement content",
   };
 
   const data = { ...defaultData, ...overrides };
 
-  await testDb("questions").insert(data);
+  await testDb("statements").insert(data);
   return data;
 }
 
@@ -39,21 +39,21 @@ export async function seedResponse(testDb, overrides = {}) {
       email: "response_user@example.com",
     })).id;
 
-  const question_id =
-    overrides.question_id ??
-    (await seedQuestion(testDb, {
+  const statement_id =
+    overrides.statement_id ??
+    (await seedStatement(testDb, {
       id: randomUUID(),
-      content: "Response question",
+      content: "Response statement",
     })).id;
 
   const defaultData = {
     user_id,
-    question_id,
+    statement_id,
     agreement_score: 3,
     importance_score: 3,
   };
 
-  const data = { ...defaultData, ...overrides, user_id, question_id };
+  const data = { ...defaultData, ...overrides, user_id, statement_id };
 
   await testDb("responses").insert(data);
   return data;

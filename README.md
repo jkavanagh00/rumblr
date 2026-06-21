@@ -239,7 +239,7 @@ ESLint is a "linter", a tool that scans your code for common code problems, this
 ## Deploying
 
 All 3 components (database, API, web app) can be deployed for free at [Render.com](https://render.com).
-Sign in using your Github account to make the process smoother.
+Sign in using your Github user to make the process smoother.
 When you sign in you can specify which of your repositories you want Render.com to have access to.
 
 [Database and API deployment instructions](./api/README.md#deploying)  

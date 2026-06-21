@@ -4,9 +4,9 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import db from "./database/db.js";
 import authRouter from "./routes/auth.js";
-import chatsRouter from "./routes/chats.js";
+import rumblesRouter from "./routes/rumbles.js";
 import nestedRouter from "./routes/nested.js";
-import accountRouter from "./routes/account.js";
+import usersRouter from "./routes/users.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 
@@ -27,8 +27,8 @@ apiRouter.get("/", async (req, res) => {
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/nested", nestedRouter);
-apiRouter.use("/chats", chatsRouter);
-apiRouter.use("/account", accountRouter);
+apiRouter.use("/rumbles", rumblesRouter);
+apiRouter.use("/user", usersRouter);
 
 app.use("/api", apiRouter);
 

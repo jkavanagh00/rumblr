@@ -104,7 +104,7 @@ We want to deploy from a Git repository, this is called GitOps. Each time we pus
 
 ![](../images/render/api/step7.png)
 
-If you cannot find your Git repository, you may need to re-configure your Github account to allow Render to see the repository you want to deploy from.
+If you cannot find your Git repository, you may need to re-configure your Github user to allow Render to see the repository you want to deploy from.
 
 ![](../images/render/api/step8.png)
 

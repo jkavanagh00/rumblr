@@ -1,23 +1,23 @@
 import {
-  addChat_model,
+  addRumble_model,
   addMessage_model,
-  getActiveChatsByUserId_model,
+  getActiveRumblesByUserId_model,
   getMessagesByRumbleId_model,
   getRumbleById_model,
   isUserParticipantInRumble_model,
   updateRumbleStatus_model,
-} from "../models/chats.js";
+} from "../models/rumbles.js";
 
-export async function addChat_controller(req, res, next) {
+export async function addRumble_controller(req, res, next) {
   try {
-    const chat = await addChat_model(req.validatedBody);
-    return res.status(201).json(chat);
+    const rumble = await addRumble_model(req.validatedBody);
+    return res.status(201).json(rumble);
   } catch (error) {
     next(error);
   }
 }
 
-export async function getChats_controller(req, res, next) {
+export async function getRumbles_controller(req, res, next) {
   try {
     const userId = req.userId;
     if (!userId) {
@@ -26,9 +26,9 @@ export async function getChats_controller(req, res, next) {
       });
     }
 
-    const chats = await getActiveChatsByUserId_model(userId);
+    const rumbles = await getActiveRumblesByUserId_model(userId);
     return res.status(200).json({
-      data: chats,
+      data: rumbles,
     });
   } catch (error) {
     next(error);
@@ -57,7 +57,7 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    // First message moves chat from pending to active.
+    // First message moves rumble from pending to active.
     if (rumble.status === "pending") {
       await updateRumbleStatus_model(rumbleId, "active");
     }
@@ -66,8 +66,8 @@ export async function addMessage_controller(req, res, next) {
     const io = req.app.get("io");
 
     if (io) {
-      io.to(`chat:${rumbleId}`).emit("chat:message", {
-        type: "chat:message",
+      io.to(`rumble:${rumbleId}`).emit("rumble:message", {
+        type: "rumble:message",
         data: message,
       });
     }
