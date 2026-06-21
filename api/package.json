@@ -22,10 +22,10 @@
     "test:controller": "npm run test -- __tests__/unit/controllers",
     "test:integration": "npm run test -- __tests__/integration",
     
-    "test:questions": "npm run test -- __tests__/unit/models/questions.test.js __tests__/unit/controllers/questions.test.js __tests__/integration/questions.test.js",
-    "test:questions:model": "npm run test -- __tests__/unit/models/questions.test.js",
-    "test:questions:controller": "npm run test -- __tests__/unit/controllers/questions.test.js",
-    "test:questions:integration": "npm run test -- __tests__/integration/questions.test.js",
+    "test:statements": "npm run test -- __tests__/unit/models/statements.test.js __tests__/unit/controllers/statements.test.js __tests__/integration/statements.test.js",
+    "test:statements:model": "npm run test -- __tests__/unit/models/statements.test.js",
+    "test:statements:controller": "npm run test -- __tests__/unit/controllers/statements.test.js",
+    "test:statements:integration": "npm run test -- __tests__/integration/statements.test.js",
     
     "test:accounts": "npm run test -- __tests__/unit/models/accounts.test.js __tests__/unit/controllers/accounts.test.js __tests__/integration/accounts.test.js",
     "test:accounts:model": "npm run test -- __tests__/unit/models/accounts.test.js",

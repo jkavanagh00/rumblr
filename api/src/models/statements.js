@@ -1,60 +1,60 @@
 /*
-all models related to questions should be here
+all models related to statements should be here
 
 examples:
 
-- listQuestions
-- findQuestionById
-- findUnansweredQuestion
-- createQuestion?
-- updateQuestion?
-- removeQuestion?
+- listStatements
+- findStatementById
+- findUnansweredStatement
+- createStatement?
+- updateStatement?
+- removeStatement?
 */
-import db from "./../database/db.js";
+import db from "../database/db.js";
 
-const TABLE = "questions";
+const TABLE = "statements";
 
 function baseQuery(trx = db) {
   return trx(TABLE);
 }
 
-export async function getQuestionWithNoResponse_model(userId, trx = db) {
+export async function getStatementWithNoResponse_model(userId, trx = db) {
   const existingResponses = await trx("responses")
-    .pluck("question_id")
+    .pluck("statement_id")
     .where("user_id", userId);
-  const unansweredQuestion = await trx("questions")
+  const unansweredStatement = await trx("statements")
     .select("*")
     .whereNotIn("id", existingResponses)
     .first();
-  if (!unansweredQuestion) {
+  if (!unansweredStatement) {
     return null;
   }
-  return unansweredQuestion;
+  return unansweredStatement;
 }
 
-export async function listQuestions_model(trx = db) {
+export async function listStatements_model(trx = db) {
   const qb = baseQuery(trx);
-  const questions = await qb.select("*");
-  return questions.length > 0 ? questions : null;
+  const statements = await qb.select("*");
+  return statements.length > 0 ? statements : null;
 }
 
-export async function addQuestion_model(question, trx = db) {
+export async function addStatement_model(statement, trx = db) {
   const qb = baseQuery(trx);
-  return await qb.insert(question);
+  return await qb.insert(statement);
 }
 
-export async function getQuestionById_model(id, trx = db) {
+export async function getStatementById_model(id, trx = db) {
   const qb = baseQuery(trx);
   return await qb.select("*").where("id", id).first();
 }
 
-export async function updateQuestion_model(id, updateData, trx = db) {
-  const existingQuestion = await baseQuery(trx)
+export async function updateStatement_model(id, updateData, trx = db) {
+  const existingStatement = await baseQuery(trx)
     .select("*")
     .where("id", id)
     .first();
 
-  if (!existingQuestion) {
+  if (!existingStatement) {
     return undefined;
   }
 
@@ -63,41 +63,41 @@ export async function updateQuestion_model(id, updateData, trx = db) {
   return await baseQuery(trx).select("*").where("id", id).first();
 }
 
-export async function deleteQuestion_model(id, trx = db) {
-  const existingQuestion = await baseQuery(trx)
+export async function deleteStatement_model(id, trx = db) {
+  const existingStatement = await baseQuery(trx)
     .select("*")
     .where("id", id)
     .first();
 
-  if (!existingQuestion) {
+  if (!existingStatement) {
     return undefined;
   }
 
   await baseQuery(trx).where("id", id).delete();
 
-  return existingQuestion;
+  return existingStatement;
 }
 
 /**
  * @param {Object} response - The response data to be inserted into the database.
  * The response object should contain the following properties:
- * - question_id: The ID of the question being responded to (required).
+ * - statement_id: The ID of the statement being responded to (required).
  * - user_id: The ID of the user submitting the response (required).
- * - agreement_score: A numeric score representing the level of agreement with the question (required).
- * - importance_score: A numeric score representing the importance of the question to the user (required).
+ * - agreement_score: A numeric score representing the level of agreement with the statement (required).
+ * - importance_score: A numeric score representing the importance of the statement to the user (required).
  * @param {Object} trx - An optional Knex transaction object. If not provided, the default database connection will be used.
  * @returns {Promise<Array>} - A promise that resolves to an array containing the ID of the newly inserted response.
  * @throws {Error} - Throws an error if the database operation fails.
  */
 
 export async function upsertResponse_model(
-  questionId,
+  statementId,
   userId,
   payload,
   trx = db,
 ) {
   const data = {
-    question_id: questionId,
+    statement_id: statementId,
     user_id: userId,
     agreement_score: payload.agreement_score,
     importance_score: payload.importance_score,
@@ -105,7 +105,7 @@ export async function upsertResponse_model(
 
   const existingResponse = await trx("responses")
     .select("*")
-    .where("question_id", questionId)
+    .where("statement_id", statementId)
     .andWhere("user_id", userId)
     .first();
 
@@ -116,7 +116,7 @@ export async function upsertResponse_model(
   }
   return await trx("responses")
     .select("*")
-    .where("question_id", questionId)
+    .where("statement_id", statementId)
     .andWhere("user_id", userId)
     .first();
 }
@@ -143,12 +143,12 @@ export async function listResponses_model(userId, trx = db) {
 }
 
 export async function listUsersWhoResponded_model(
-  questionId,
+  statementId,
   excludedUserId,
   trx = db,
 ) {
   const userIds = await trx("responses")
-    .where("question_id", questionId)
+    .where("statement_id", statementId)
     .whereNot("user_id", excludedUserId)
     .pluck("user_id");
   return userIds;

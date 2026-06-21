@@ -1,63 +1,63 @@
 import testDb from "../../setup/testDb.js";
-import { seedUser, seedQuestion, seedResponse } from "../../setup/factories.js";
+import { seedUser, seedStatement, seedResponse } from "../../setup/factories.js";
 import {
-  addQuestion_model,
-  getQuestionById_model,
-  listQuestions_model,
-  updateQuestion_model,
-  deleteQuestion_model,
+  addStatement_model,
+  getStatementById_model,
+  listStatements_model,
+  updateStatement_model,
+  deleteStatement_model,
   addResponse_model,
   updateResponse_model,
   deleteResponse_model,
   listResponses_model,
   listUsersWhoResponded_model
-} from "../../../src/models/questions.js";
+} from "../../../src/models/statements.js";
 
-const TABLE = "questions";
+const TABLE = "statements";
 const RESPONSES_TABLE = "responses";
 const userId = "22222222-2222-4222-8222-222222222222";
 const otherUserId = "33333333-3333-4333-8333-333333333333";
-const questionId = "44444444-4444-4444-8444-444444444444";
-const otherQuestionId = "55555555-5555-4555-8555-555555555555";
+const statementId = "44444444-4444-4444-8444-444444444444";
+const otherStatementId = "55555555-5555-4555-8555-555555555555";
 
-describe("questions model", () => {
+describe("statements model", () => {
   beforeEach(async () => {
     await testDb("responses").del();
     await testDb(TABLE).del();
     await testDb("users").del();
   });
 
-  describe("listQuestions_model", () => {
-    test("returns an array of questions", async () => {
+  describe("listStatements_model", () => {
+    test("returns an array of statements", async () => {
       // Seed two rows so this test verifies the normal read path, not an empty-table edge case.
-      await seedQuestion(testDb, { id: questionId, content: "Content data 1" });
-      await seedQuestion(testDb, { id: otherQuestionId, content: "Content data 2" });
+      await seedStatement(testDb, { id: statementId, content: "Content data 1" });
+      await seedStatement(testDb, { id: otherStatementId, content: "Content data 2" });
 
-      // Call the model directly with the in-memory test database to confirm it reads persisted questions.
-      const result = await listQuestions_model(testDb);
+      // Call the model directly with the in-memory test database to confirm it reads persisted statements.
+      const result = await listStatements_model(testDb);
 
-      // The list endpoint depends on this model returning every stored question in an array.
+      // The list endpoint depends on this model returning every stored statement in an array.
       expect(result).toHaveLength(2);
     });
-    test("returns null when no questions exist", async () => {
+    test("returns null when no statements exist", async () => {
       // Call the model function with an empty table to test the model's explicit no-data behavior.
-      const result = await listQuestions_model(testDb);
+      const result = await listStatements_model(testDb);
 
-      // This documents the current contract: no questions returns null instead of an empty array.
+      // This documents the current contract: no statements returns null instead of an empty array.
       expect(result).toBeNull();
     });
   });
 
-  describe("addQuestion_model", () => {
-    test("inserts a single question into the questions table", async () => {
-      await addQuestion_model({ content: "Content data" }, testDb);
+  describe("addStatement_model", () => {
+    test("inserts a single statement into the statements table", async () => {
+      await addStatement_model({ content: "Content data" }, testDb);
 
       const rows = await testDb(TABLE).select("*");
       expect(rows).toHaveLength(1);
       expect(rows[0].content).toBe("Content data");
     });
     test("returns a knex insert response of the correct shape", async () => {
-      const result = await addQuestion_model(
+      const result = await addStatement_model(
         { content: "Content data" },
         testDb,
       );
@@ -65,49 +65,49 @@ describe("questions model", () => {
       expect(result.length).toBeGreaterThan(0);
     });
     test("throws an error when content is missing", async () => {
-      await expect(addQuestion_model({}, testDb)).rejects.toThrow();
+      await expect(addStatement_model({}, testDb)).rejects.toThrow();
     });
   });
 
-  describe("getQuestionById_model", () => {
-    test("returns a single question with the correct id", async () => {
-      await seedQuestion(testDb, { id: questionId, content: "Content data" });
-      const result = await getQuestionById_model(questionId, testDb);
+  describe("getStatementById_model", () => {
+    test("returns a single statement with the correct id", async () => {
+      await seedStatement(testDb, { id: statementId, content: "Content data" });
+      const result = await getStatementById_model(statementId, testDb);
       expect(result.content).toBe("Content data");
-      expect(result.id).toBe(questionId);
+      expect(result.id).toBe(statementId);
     });
-    test("returns undefined when question cannot be found", async () => {
-      const result = await getQuestionById_model(questionId, testDb);
+    test("returns undefined when statement cannot be found", async () => {
+      const result = await getStatementById_model(statementId, testDb);
       expect(result).toBe(undefined);
     });
   });
 
-  describe("updateQuestion_model", () => {
-    test("returns updated question data after a successful update", async () => {
-      await testDb(TABLE).insert({ id: questionId, content: "Original content" });
-      const result = await updateQuestion_model(
-        questionId,
+  describe("updateStatement_model", () => {
+    test("returns updated statement data after a successful update", async () => {
+      await testDb(TABLE).insert({ id: statementId, content: "Original content" });
+      const result = await updateStatement_model(
+        statementId,
         { content: "Updated content" },
         testDb,
       );
-      expect(result.id).toBe(questionId);
+      expect(result.id).toBe(statementId);
       expect(result.content).toBe("Updated content");
     });
-    test("returns undefined when question cannot be found", async () => {
-      const result = await updateQuestion_model(1, { content: "Updated content" }, testDb);
+    test("returns undefined when statement cannot be found", async () => {
+      const result = await updateStatement_model(1, { content: "Updated content" }, testDb);
       expect(result).toBe(undefined);
     });
   });
 
-  describe("deleteQuestion_model", () => {
-    test("returns deleted question data after a successful deletion", async () => {
-      await testDb(TABLE).insert({ id: questionId, content: "Content data" });
-      await deleteQuestion_model(questionId, testDb);
+  describe("deleteStatement_model", () => {
+    test("returns deleted statement data after a successful deletion", async () => {
+      await testDb(TABLE).insert({ id: statementId, content: "Content data" });
+      await deleteStatement_model(statementId, testDb);
       const result = await testDb(TABLE).select("*");
       expect(result).toHaveLength(0);
     });
-    test("returns undefined when the question cannot be found", async () => {
-      const result = await deleteQuestion_model(questionId, testDb);
+    test("returns undefined when the statement cannot be found", async () => {
+      const result = await deleteStatement_model(statementId, testDb);
       expect(result).toBe(undefined);
     });
   });
@@ -115,11 +115,11 @@ describe("questions model", () => {
   describe("addResponse_model", () => {
     test("inserts a response row with valid scores", async () => {
       await seedUser(testDb, { id: userId, username: "user_main", email: "user_main@example.com" });
-      await seedQuestion(testDb, { id: questionId, content: "Test question" });
+      await seedStatement(testDb, { id: statementId, content: "Test statement" });
 
       const response = {
         user_id: userId,
-        question_id: questionId,
+        statement_id: statementId,
         agreement_score: 5,
         importance_score: 4,
       };
@@ -134,13 +134,13 @@ describe("questions model", () => {
 
     test("throws when required score fields are missing", async () => {
       await seedUser(testDb, { id: userId, username: "user_missing-scores", email: "user_missing-scores@example.com" });
-      await seedQuestion(testDb, { id: questionId, content: "Test question" });
+      await seedStatement(testDb, { id: statementId, content: "Test statement" });
 
       await expect(
         addResponse_model(
           {
             user_id: userId,
-            question_id: questionId,
+            statement_id: statementId,
             agreement_score: 5,
           },
           testDb,
@@ -152,11 +152,11 @@ describe("questions model", () => {
   describe("updateResponse_model", () => {
     test("updates and returns the response", async () => {
       await seedUser(testDb, { id: userId, username: "user_update", email: "user_update@example.com" });
-      await seedQuestion(testDb, { id: questionId, content: "Test question" });
+      await seedStatement(testDb, { id: statementId, content: "Test statement" });
 
       await testDb(RESPONSES_TABLE).insert({
         user_id: userId,
-        question_id: questionId,
+        statement_id: statementId,
         agreement_score: 2,
         importance_score: 2,
       });
@@ -190,11 +190,11 @@ describe("questions model", () => {
   describe("deleteResponse_model", () => {
     test("deletes and returns the existing response", async () => {
       await seedUser(testDb, { id: userId, username: "user_delete", email: "user_delete@example.com" });
-      await seedQuestion(testDb, { id: questionId, content: "Test question" });
+      await seedStatement(testDb, { id: statementId, content: "Test statement" });
 
       await testDb(RESPONSES_TABLE).insert({
         user_id: userId,
-        question_id: questionId,
+        statement_id: statementId,
         agreement_score: 1,
         importance_score: 5,
       });
@@ -222,25 +222,25 @@ describe("questions model", () => {
     test("returns all responses for a specific user", async () => {
       await seedUser(testDb, { id: userId, username: "user_list-main", email: "user_list-main@example.com" });
       await seedUser(testDb, { id: otherUserId, username: "user_list-other", email: "user_list-other@example.com" });
-      await seedQuestion(testDb, { id: questionId, content: "Question one" });
-      await seedQuestion(testDb, { id: otherQuestionId, content: "Question two" });
+      await seedStatement(testDb, { id: statementId, content: "Statement one" });
+      await seedStatement(testDb, { id: otherStatementId, content: "Statement two" });
 
       await testDb(RESPONSES_TABLE).insert([
         {
           user_id: userId,
-          question_id: questionId,
+          statement_id: statementId,
           agreement_score: 5,
           importance_score: 5,
         },
         {
           user_id: userId,
-          question_id: otherQuestionId,
+          statement_id: otherStatementId,
           agreement_score: 2,
           importance_score: 1,
         },
         {
           user_id: otherUserId,
-          question_id: questionId,
+          statement_id: statementId,
           agreement_score: 3,
           importance_score: 3,
         },
@@ -262,14 +262,14 @@ describe("questions model", () => {
   });
 
   describe("listUsersWhoResponded", () => {
-    test("returns an array of ids for all other users who have responded to a question", async () => {
+    test("returns an array of ids for all other users who have responded to a statement", async () => {
       await seedUser(testDb, { id: userId });
       await seedUser(testDb, { id: otherUserId });
-      await seedQuestion(testDb, { id: questionId });
-      await seedResponse(testDb, { user_id: userId, question_id: questionId });
-      await seedResponse(testDb, { user_id: otherUserId, question_id: questionId });
+      await seedStatement(testDb, { id: statementId });
+      await seedResponse(testDb, { user_id: userId, statement_id: statementId });
+      await seedResponse(testDb, { user_id: otherUserId, statement_id: statementId });
 
-      const result = await listUsersWhoResponded_model(questionId, userId, testDb);
+      const result = await listUsersWhoResponded_model(statementId, userId, testDb);
       expect(result).toHaveLength(1);
       expect(Array.isArray(result)).toBe(true);
       expect(result[0]).toBe(otherUserId);
@@ -277,11 +277,11 @@ describe("questions model", () => {
     test("does not return the ids of users without shared responses", async () => {
       await seedUser(testDb, { id: userId });
       await seedUser(testDb, { id: otherUserId });
-      await seedQuestion(testDb, { id: questionId });
-      await seedResponse(testDb, { user_id: userId, question_id: questionId });
-      await seedResponse(testDb, { user_id: otherUserId, question_id: otherQuestionId });
+      await seedStatement(testDb, { id: statementId });
+      await seedResponse(testDb, { user_id: userId, statement_id: statementId });
+      await seedResponse(testDb, { user_id: otherUserId, statement_id: otherStatementId });
 
-      const result = await listUsersWhoResponded_model(questionId, userId, testDb);
+      const result = await listUsersWhoResponded_model(statementId, userId, testDb);
       expect(result).toHaveLength(0);
       expect(Array.isArray(result)).toBe(true);
     });
