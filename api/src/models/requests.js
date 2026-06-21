@@ -1,4 +1,4 @@
-import db from "../database/db.js"
+import db from "../database/db.js";
 
 export async function sendRumbleRequest_model(
   requester_id,
@@ -15,12 +15,11 @@ export async function getRumbleRequestById_model(id, trx = db) {
   return await trx("rumble_requests").select("*").where("id", id).first();
 }
 
-export async function acceptRumbleRequest_model(data, trx = db) {
-  return trx.transaction(async (trx) => {
-    await trx("rumble_requests").where("id", data.rumble_request_id).update({ status: "accepted" });
-    const [rumble] = await trx("rumbles").insert(data).returning("*");
-    return rumble;
-  });
+export async function acceptRumbleRequest_model(id, trx = db) {
+  return await trx("rumble_requests")
+    .where("id", id)
+    .andWhere("status", "pending")
+    .update({ status: "accepted" });
 }
 
 export async function declineRumbleRequest_model(id, trx = db) {

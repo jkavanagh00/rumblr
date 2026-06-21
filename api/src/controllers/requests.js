@@ -2,10 +2,9 @@ import {
   sendRumbleRequest_model,
   checkForPendingRumbleRequest_model,
   getRumbleRequestById_model,
-  acceptRumbleRequest_model,
   declineRumbleRequest_model,
 } from "../models/requests.js";
-import db from "../database/db.js";
+import { acceptRumbleRequest_service } from "../services/requests.js";
 
 export async function sendRumbleRequest_controller(req, res, next) {
   try {
@@ -46,7 +45,7 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       requester_id: rumbleRequest.requester_id,
       receiver_id: req.user.id,
     };
-    const rumble = await acceptRumbleRequest_model(payload);
+    const rumble = await acceptRumbleRequest_service(payload);
     return res.status(201).json(rumble);
   } catch (error) {
     next(error);
