@@ -11,19 +11,49 @@
   "scripts": {
     "dev": "nodemon src/index.mjs",
     "start": "node src/index.mjs",
+    "db:migrate": "knex --knexfile src/config/knexfile.js migrate:latest",
+    "db:rollback": "knex --knexfile src/config/knexfile.js migrate:rollback",
+    "db:seed": "knex --knexfile src/config/knexfile.js seed:run",
     "format": "npx prettier . --write",
     "check": "npx eslint . --fix",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:model": "npm run test -- __tests__/unit/models",
+    "test:controller": "npm run test -- __tests__/unit/controllers",
+    "test:integration": "npm run test -- __tests__/integration",
+    
+    "test:questions": "npm run test -- __tests__/unit/models/questions.test.js __tests__/unit/controllers/questions.test.js __tests__/integration/questions.test.js",
+    "test:questions:model": "npm run test -- __tests__/unit/models/questions.test.js",
+    "test:questions:controller": "npm run test -- __tests__/unit/controllers/questions.test.js",
+    "test:questions:integration": "npm run test -- __tests__/integration/questions.test.js",
+    
+    "test:accounts": "npm run test -- __tests__/unit/models/accounts.test.js __tests__/unit/controllers/accounts.test.js __tests__/integration/accounts.test.js",
+    "test:accounts:model": "npm run test -- __tests__/unit/models/accounts.test.js",
+    "test:accounts:controller": "npm run test -- __tests__/unit/controllers/accounts.test.js",
+    "test:accounts:integration": "npm run test -- __tests__/integration/accounts.test.js",
+    
+    "test:chats": "npm run test -- __tests__/unit/models/chats.test.js __tests__/unit/controllers/chats.test.js __tests__/integration/chats.test.js",
+    "test:chats:model": "npm run test -- __tests__/unit/models/chats.test.js",
+    "test:chats:controller": "npm run test -- __tests__/unit/controllers/chats.test.js",
+    "test:chats:integration": "npm run test -- __tests__/integration/chats.test.js",
+    
+    "test:mismatches": "npm run test -- __tests__/unit/models/mismatches.test.js __tests__/unit/controllers/mismatches.test.js __tests__/integration/mismatches.test.js",
+    "test:mismatches:model": "npm run test -- __tests__/unit/models/mismatches.test.js",
+    "test:mismatches:controller": "npm run test -- __tests__/unit/controllers/mismatches.test.js",
+    "test:mismatches:integration": "npm run test -- __tests__/integration/mismatches.test.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
     "knex": "^3.1.0",
     "mysql2": "^3.10.0",
     "pg": "^8.11.5",
-    "sqlite3": "^5.1.7"
+    "socket.io": "^4.8.3",
+    "sqlite3": "^5.1.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

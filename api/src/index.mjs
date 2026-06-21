@@ -1,6 +1,9 @@
+
+
+import express from "express";
 import app from "./app.mjs";
   
-app.use("/api", apiRouter);
-app.listen(process.env.PORT, () => {
-  console.log(`API listening on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`API listening on port ${PORT}`);
 });
