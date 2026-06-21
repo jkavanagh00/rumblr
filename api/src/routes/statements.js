@@ -18,10 +18,10 @@ import {
   listStatements_controller,
   updateStatement_controller,
   deleteStatement_controller,
-  addResponse_controller,
   getStatementWithNoResponse_controller,
   listResponses_controller
 } from "../controllers/statements.js";
+import { addResponse_controller } from "../controllers/responses.js";
 import { validateBody } from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js"
 import { createResponseSchema } from "../Schemas/response.js";
