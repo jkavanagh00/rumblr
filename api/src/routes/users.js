@@ -12,13 +12,13 @@ examples:
 */
 
 import express from "express";
-import { updateAccountSchema } from "../Schemas/account.js";
+import { updateAccountSchema } from "../Schemas/users.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   getAccount_controller,
   updateAccount_controller,
   deleteAccount_controller,
-} from "../controllers/accounts.js";
+} from "../controllers/users.js";
 import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();

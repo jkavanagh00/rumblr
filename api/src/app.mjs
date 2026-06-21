@@ -6,7 +6,7 @@ import db from "./database/db.js";
 import authRouter from "./routes/auth.js";
 import chatsRouter from "./routes/chats.js";
 import nestedRouter from "./routes/nested.js";
-import accountsRouter from "./routes/accounts.js";
+import accountsRouter from "./routes/users.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 

@@ -15,7 +15,7 @@ import {
   getAccountById_model,
   updateAccountById_model,
   deleteAccountById_model,
-} from "../models/accounts.js";
+} from "../models/users.js";
 
 export async function getAccount_controller(req, res, next) {
   try {
