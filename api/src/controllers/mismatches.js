@@ -11,12 +11,6 @@ examples:
 
 import {
   listMismatchesForUser_model,
-  sendRumbleRequest_model,
-  checkForPendingRumbleRequest_model,
-  getRumbleRequestById_model,
-  acceptRumbleRequest_model,
-  createRumble_model,
-  declineRumbleRequest_model,
 } from "../models/mismatches.js";
 import db from "../database/db.js";
 
