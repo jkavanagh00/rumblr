@@ -4,6 +4,7 @@ import {
   login_controller,
   signup_controller,
 } from "../controllers/auth.js";
+import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();
 
