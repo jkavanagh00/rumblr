@@ -32,10 +32,10 @@
     "test:users:controller": "npm run test -- __tests__/unit/controllers/users.test.js",
     "test:users:integration": "npm run test -- __tests__/integration/users.test.js",
     
-    "test:chats": "npm run test -- __tests__/unit/models/chats.test.js __tests__/unit/controllers/chats.test.js __tests__/integration/chats.test.js",
-    "test:chats:model": "npm run test -- __tests__/unit/models/chats.test.js",
-    "test:chats:controller": "npm run test -- __tests__/unit/controllers/chats.test.js",
-    "test:chats:integration": "npm run test -- __tests__/integration/chats.test.js",
+    "test:rumbles": "npm run test -- __tests__/unit/models/rumbles.test.js __tests__/unit/controllers/rumbles.test.js __tests__/integration/rumbles.test.js",
+    "test:rumbles:model": "npm run test -- __tests__/unit/models/rumbles.test.js",
+    "test:rumbles:controller": "npm run test -- __tests__/unit/controllers/rumbles.test.js",
+    "test:rumbles:integration": "npm run test -- __tests__/integration/rumbles.test.js",
     
     "test:mismatches": "npm run test -- __tests__/unit/models/mismatches.test.js __tests__/unit/controllers/mismatches.test.js __tests__/integration/mismatches.test.js",
     "test:mismatches:model": "npm run test -- __tests__/unit/models/mismatches.test.js",

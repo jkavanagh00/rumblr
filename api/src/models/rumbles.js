@@ -11,12 +11,12 @@ function messagesQuery(trx = db) {
   return trx(MESSAGES_TABLE);
 }
 
-export async function addChat_model(chatData, trx = db) {
-  const [chat] = await rumblesQuery(trx).insert(chatData).returning("*");
-  return chat;
+export async function addRumble_model(rumbleData, trx = db) {
+  const [rumble] = await rumblesQuery(trx).insert(rumbleData).returning("*");
+  return rumble;
 }
 
-export async function getActiveChatsByUserId_model(userId, trx = db) {
+export async function getActiveRumblesByUserId_model(userId, trx = db) {
   return await rumblesQuery(trx)
     .select("*")
     .where((builder) => {

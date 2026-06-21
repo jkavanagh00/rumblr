@@ -14,14 +14,14 @@ export function up(knex) {
       .inTable('rumbles')
       .onDelete('CASCADE');
       
-    // Foreign Key: The user who sent the chat message
+    // Foreign Key: The user who sent the rumble message
     table.uuid('sender_id')
       .notNullable()
       .references('id')
       .inTable('users')
       .onDelete('CASCADE');
       
-    // TEXT content for the chat bubble
+    // TEXT content for the rumble bubble
     table.text('content').notNullable();
     
     // TIMESTAMP sent_at

@@ -1,12 +1,12 @@
 /*
-all routes related to chats should be here
+all routes related to rumbles should be here
 
 examples:
 
-- POST/chats
-- GET /chats (get all chats for current user)
-- GET /chats/:id/messages (get all messages for a specific chat)
-- POST /chats/:id/messages (create a new chat message)
+- POST/rumbles
+- GET /rumbles (get all rumbles for current user)
+- GET /rumbles/:id/messages (get all messages for a specific rumble)
+- POST /rumbles/:id/messages (create a new rumble message)
 */
 
 import express from "express";
@@ -14,11 +14,11 @@ import { createRumbleSchema } from "../Schemas/rumbles.js";
 import { createMessageSchema, paginationSchema } from "../Schemas/messages.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
-  addChat_controller,
+  addRumble_controller,
   addMessage_controller,
-  getChats_controller,
+  getRumbles_controller,
   getMessages_controller,
-} from "../controllers/chats.js";
+} from "../controllers/rumbles.js";
 import { validateBody } from "../middlewares/errors.js"
 
 const router = express.Router();
@@ -35,7 +35,7 @@ const validateBody = (schema) => (req, res, next) => {
 };
 
 const validateAddMessage = (req, res, next) => {
-  // Reminder: req.userId must be set by auth middleware before chat routes.
+  // Reminder: req.userId must be set by auth middleware before rumble routes.
   const userId = req.userId;
   if (!userId) {
     const error = new Error("Unauthorized");
@@ -77,8 +77,8 @@ const validateGetMessages = (req, res, next) => {
   next();
 };
 
-router.get("/", getChats_controller);
-router.post("/", validateBody(createRumbleSchema), addChat_controller);
+router.get("/", getRumbles_controller);
+router.post("/", validateBody(createRumbleSchema), addRumble_controller);
 router.get("/:id/messages", validateGetMessages, getMessages_controller);
 router.post("/:id/messages", validateAddMessage, addMessage_controller);
 
