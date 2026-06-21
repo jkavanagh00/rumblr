@@ -1,5 +1,5 @@
 import express from "express";
-import { loginSchema, signupSchema } from "../schemas/auth.js";
+import { loginSchema, signupSchema } from "../Schemas/auth.js";
 import {
   login_controller,
   signup_controller,

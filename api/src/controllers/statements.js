@@ -8,21 +8,14 @@ examples:
 - addStatement?
 */
 
-import { z } from "zod";
-import db from "../database/db.js";
-
 import {
   addStatement_model,
   getStatementById_model,
   listStatements_model,
   updateStatement_model,
   deleteStatement_model,
-  upsertResponse_model,
-  listResponses_model,
   getStatementWithNoResponse_model,
-  addResponse_model,
 } from "../models/statements.js";
-import { upsertMismatch, fetchSharedResponses } from "../models/mismatches.js";
 
 export async function getStatementWithNoResponse_controller(req, res, next) {
   try {
@@ -81,7 +74,10 @@ export async function updateStatement_controller(req, res, next) {
     if (!statement) {
       return res.status(404).json({ error: "Statement not found" });
     }
-    const updatedStatement = await updateStatement_model(req.params.id, req.validatedBody);
+    const updatedStatement = await updateStatement_model(
+      req.params.id,
+      req.validatedBody,
+    );
     return res.status(200).json(updatedStatement);
   } catch (error) {
     next(error);
@@ -97,7 +93,7 @@ export async function deleteStatement_controller(req, res, next) {
     }
     const deletedStatement = await deleteStatement_model(req.params.id);
     return res.status(200).json(deletedStatement);
-    } catch (error) {
+  } catch (error) {
     next(error);
   }
 }

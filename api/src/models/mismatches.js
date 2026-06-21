@@ -1,5 +1,6 @@
 import db from "./../database/db.js";
 import { calculateMismatchScore } from "./../utils/mismatches.js";
+import { fetchSharedResponses_model } from "./responses.js";
 
 export async function upsertMismatch_model(user1Id, user2Id, trx = db) {
   const [leftUserId, rightUserId] =

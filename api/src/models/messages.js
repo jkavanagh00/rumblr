@@ -1,5 +1,11 @@
 import db from "../database/db.js";
 
+const MESSAGES_TABLE = "messages";
+
+function messagesQuery(trx = db) {
+  return trx(MESSAGES_TABLE);
+}
+
 export async function getMessagesByRumbleId_model(
   rumbleId,
   { page = 1, limit = 20 } = {},

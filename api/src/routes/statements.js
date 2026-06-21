@@ -19,11 +19,13 @@ import {
   updateStatement_controller,
   deleteStatement_controller,
   getStatementWithNoResponse_controller,
-  listResponses_controller
 } from "../controllers/statements.js";
-import { addResponse_controller } from "../controllers/responses.js";
+import {
+  addResponse_controller,
+  listResponses_controller,
+} from "../controllers/responses.js";
 import { validateBody } from "../middlewares/errors.js";
-import { authenticateToken, requireAdmin } from "../middlewares/auth.js"
+import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import { createResponseSchema } from "../Schemas/response.js";
 const statementsRouter = express.Router();
 statementsRouter.use(authenticateToken);
@@ -32,10 +34,14 @@ statementsRouter.use(authenticateToken);
 statementsRouter.get("/", getStatementWithNoResponse_controller);
 
 // submit a response
-statementsRouter.post("/:id/respond", validateBody(createResponseSchema), addResponse_controller);
+statementsRouter.post(
+  "/:id/respond",
+  validateBody(createResponseSchema),
+  addResponse_controller,
+);
 
 // get all responses for the current user
-statementsRouter.get("/responses", listResponses_controller)
+statementsRouter.get("/responses", listResponses_controller);
 
 // get a list of all statements
 statementsRouter.get("/list", requireAdmin, listStatements_controller);
@@ -44,10 +50,20 @@ statementsRouter.get("/list", requireAdmin, listStatements_controller);
 statementsRouter.get("/:id", getStatementById_controller);
 
 // post a new statement
-statementsRouter.post("/", requireAdmin, validateBody(createStatementSchema), addStatement_controller);
+statementsRouter.post(
+  "/",
+  requireAdmin,
+  validateBody(createStatementSchema),
+  addStatement_controller,
+);
 
 // updates an existing statement
-statementsRouter.patch("/:id", requireAdmin, validateBody(updateStatementSchema), updateStatement_controller);
+statementsRouter.patch(
+  "/:id",
+  requireAdmin,
+  validateBody(updateStatementSchema),
+  updateStatement_controller,
+);
 
 // delete a statement
 statementsRouter.delete("/:id", requireAdmin, deleteStatement_controller);

@@ -1,11 +1,6 @@
 import {
   addRumble_model,
-  addMessage_model,
   getActiveRumblesByUserId_model,
-  getMessagesByRumbleId_model,
-  getRumbleById_model,
-  isUserParticipantInRumble_model,
-  updateRumbleStatus_model,
 } from "../models/rumbles.js";
 
 export async function addRumble_controller(req, res, next) {

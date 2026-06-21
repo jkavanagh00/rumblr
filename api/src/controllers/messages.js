@@ -1,4 +1,12 @@
-import { addMessage_model, getMessages_controller } from "../models/messages.js";
+import {
+  addMessage_model,
+  getMessagesByRumbleId_model,
+} from "../models/messages.js";
+import {
+  getRumbleById_model,
+  isUserParticipantInRumble_model,
+  updateRumbleStatus_model,
+} from "../models/rumbles.js";
 
 export async function addMessage_controller(req, res, next) {
   try {
