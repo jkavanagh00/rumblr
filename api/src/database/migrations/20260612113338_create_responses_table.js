@@ -24,23 +24,10 @@ export function up (knex) {
       .onDelete("CASCADE");
 
     // NUMBER value (using integer for scale/numeric metrics)
-    table.integer("agreement_score").notNullable();
-    table.integer("importance_score").notNullable();
-
-    table.check("agreement_score >= 1 AND agreement_score <= 5");
-    table.check("importance_score >= 1 AND importance_score <= 5");
-
-    // add indexes on user_id and question_id for faster lookups
-    table.index(["user_id", "question_id"], "user_response_index");
-
-    // add a unique constraint to prevent duplicate responses from the same user to the same question
-    table.unique(["user_id", "question_id"], "unique_user_question_response");
+    table.integer("value").notNullable();
 
     // TIMESTAMP created_at
-    table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
-
-    // TIMESTAMP updated_at
-    table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
+    table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 }
 
