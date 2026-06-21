@@ -1,0 +1,82 @@
+import {
+  upsertResponse_model,
+  fetchSharedResponses_model,
+  listUsersWhoResponded_model,
+} from "../models/responses.js";
+import { upsertMismatch_model } from "../models/mismatches.js";
+import { getStatementById_model } from "../models/statements.js";
+import db from "../database/db.js";
+
+export async function addResponse_service(userId, statementId, responseData) {
+  const response = await db.transaction(async (trx) => {
+    
+    const statement = await getStatementById_model(statementId);
+    if (!statement) {
+      throw new Error("No statement with provided id found");
+    }
+
+    const upsertedResponse = await upsertResponse_model(
+      statementId,
+      userId,
+      responseData,
+      trx,
+    );
+
+    const otherUsersWithResponses = await listUsersWhoResponded_model(
+      statementId,
+      userId,
+      trx,
+    );
+
+    let totalUpsertedMismatches = 0;
+    for (const otherUserId of otherUsersWithResponses) {
+      await upsertMismatch_model(userId, otherUserId, trx);
+      totalUpsertedMismatches++;
+    }
+
+    return {
+      upsertedResponse,
+      totalUpsertedMismatches,
+    };
+  });
+
+  return response;
+}
+
+// export async function addResponse_controller(req, res, next) {
+//   try {
+//     const statementId = req.params.id;
+//     const userId = req.user.id;
+//     const payload = req.validatedBody;
+//     const statement = await getStatementById_model(statementId);
+
+//     if (!statement) {
+//       return res.status(404).json({ error: "Statement not found" });
+//     }
+
+//     const response = await db.transaction(async (trx) => {
+//       const upsertedResponse = await upsertResponse_model(
+//         statementId,
+//         userId,
+//         payload,
+//         trx,
+//       );
+
+//       const otherUsersWithResponses = await listUsersWhoResponded_model(
+//         statementId,
+//         userId,
+//         trx,
+//       );
+
+//       for (const otherUserId of otherUsersWithResponses) {
+//         await upsertMismatch(userId, otherUserId, trx);
+//       }
+//       return upsertedResponse;
+//     });
+//     return res
+//       .status(201)
+//       .json({ message: "Response submitted successfully", response });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
