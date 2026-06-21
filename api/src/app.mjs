@@ -28,7 +28,7 @@ apiRouter.get("/", async (req, res) => {
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/chats", chatsRouter);
-apiRouter.use("/account", accountsRouter);
+apiRouter.use("/account", accountRouter);
 
 app.use("/api", apiRouter);
 

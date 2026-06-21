@@ -21,12 +21,12 @@ import {
 } from "../controllers/accounts.js";
 import { validateBody } from "../middlewares/errors.js";
 
-const router = express.Router();
+const accountRouter = express.Router();
 
-router.use(authenticateToken);
+accountRouter.use(authenticateToken);
 
-router.get("/", getAccount_controller);
-router.put("/", validateBody(updateAccountSchema), updateAccount_controller);
-router.delete("/", deleteAccount_controller);
+accountRouter.get("/", getAccount_controller);
+accountRouter.put("/", validateBody(updateAccountSchema), updateAccount_controller);
+accountRouter.delete("/", deleteAccount_controller);
 
-export default router;
+export default accountRouter;
