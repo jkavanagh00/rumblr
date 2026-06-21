@@ -25,15 +25,6 @@ const router = express.Router();
 
 router.use(authenticateToken);
 
-const validateBody = (schema) => (req, res, next) => {
-  const result = schema.safeParse(req.body);
-  if (!result.success) {
-    return next(result.error);
-  }
-  req.validatedBody = result.data;
-  next();
-};
-
 const validateAddMessage = (req, res, next) => {
   // Reminder: req.userId must be set by auth middleware before rumble routes.
   const userId = req.userId;
