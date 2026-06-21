@@ -1,70 +1,70 @@
 /*
-all controllers related to accounts should be here
+all controllers related to users should be here
 
 examples:
 
 - signup
 - login
 - logout
-- putAccount
-- getAccount
-- deleteAccount
+- putUser
+- getUser
+- deleteUser
 */
 
 import {
-  getAccountById_model,
-  updateAccountById_model,
-  deleteAccountById_model,
+  getUserById_model,
+  updateUserById_model,
+  deleteUserById_model,
 } from "../models/users.js";
 
-export async function getAccount_controller(req, res, next) {
+export async function getUser_controller(req, res, next) {
   try {
     const userId = req.user.id;
 
-    const account = await getAccountById_model(userId);
+    const user = await getUserById_model(userId);
 
-    if (!account) {
+    if (!user) {
       return res.status(404).json({
-        error: "Account not found",
+        error: "User not found",
       });
     }
 
-    return res.status(200).json(account);
+    return res.status(200).json(user);
   } catch (error) {
     next(error);
   }
 }
 
-export async function updateAccount_controller(req, res, next) {
+export async function updateUser_controller(req, res, next) {
   try {
     const userId = req.user.id;
 
-    const updatedAccount = await updateAccountById_model(
+    const updatedUser = await updateUserById_model(
       userId,
       req.validatedBody,
     );
 
-    if (!updatedAccount) {
+    if (!updatedUser) {
       return res.status(404).json({
-        error: "Account not found",
+        error: "User not found",
       });
     }
 
-    return res.status(200).json(updatedAccount);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     next(error);
   }
 }
 
-export async function deleteAccount_controller(req, res, next) {
+export async function deleteUser_controller(req, res, next) {
   try {
     const userId = req.user.id;
 
-    const deletedAccount = await deleteAccountById_model(userId);
+    const deletedUser = await deleteUserById_model(userId);
 
-    if (!deletedAccount) {
+    if (!deletedUser) {
       return res.status(404).json({
-        error: "Account not found",
+        error: "User not found",
       });
     }
 

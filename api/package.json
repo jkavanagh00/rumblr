@@ -27,10 +27,10 @@
     "test:statements:controller": "npm run test -- __tests__/unit/controllers/statements.test.js",
     "test:statements:integration": "npm run test -- __tests__/integration/statements.test.js",
     
-    "test:accounts": "npm run test -- __tests__/unit/models/accounts.test.js __tests__/unit/controllers/accounts.test.js __tests__/integration/accounts.test.js",
-    "test:accounts:model": "npm run test -- __tests__/unit/models/accounts.test.js",
-    "test:accounts:controller": "npm run test -- __tests__/unit/controllers/accounts.test.js",
-    "test:accounts:integration": "npm run test -- __tests__/integration/accounts.test.js",
+    "test:users": "npm run test -- __tests__/unit/models/users.test.js __tests__/unit/controllers/users.test.js __tests__/integration/users.test.js",
+    "test:users:model": "npm run test -- __tests__/unit/models/users.test.js",
+    "test:users:controller": "npm run test -- __tests__/unit/controllers/users.test.js",
+    "test:users:integration": "npm run test -- __tests__/integration/users.test.js",
     
     "test:chats": "npm run test -- __tests__/unit/models/chats.test.js __tests__/unit/controllers/chats.test.js __tests__/integration/chats.test.js",
     "test:chats:model": "npm run test -- __tests__/unit/models/chats.test.js",

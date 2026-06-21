@@ -1,13 +1,13 @@
 /*
-all models related to accounts should be here
+all models related to users should be here
 
 examples:
 
-- listAccounts
-- findAccountById
-- createAccount
-- updateAccount
-- removeAccount
+- listUsers
+- findUserById
+- createUser
+- updateUser
+- removeUser
 */
 
 import db from "../database/db.js";
@@ -18,7 +18,7 @@ function baseQuery(trx = db) {
   return trx(TABLE);
 }
 
-const accountColumns = [
+const userColumns = [
   "id",
   "username",
   "email",
@@ -27,11 +27,11 @@ const accountColumns = [
   "created_at",
 ];
 
-export async function getAccountById_model(id, trx = db) {
-  return await baseQuery(trx).select(accountColumns).where({ id }).first();
+export async function getUserById_model(id, trx = db) {
+  return await baseQuery(trx).select(userColumns).where({ id }).first();
 }
 
-export async function updateAccountById_model(id, updateData, trx = db) {
+export async function updateUserById_model(id, updateData, trx = db) {
   const existingUser = await baseQuery(trx).where({ id }).first();
 
   if (!existingUser) {
@@ -41,14 +41,14 @@ export async function updateAccountById_model(id, updateData, trx = db) {
   const [updatedUser] = await baseQuery(trx)
     .where({ id })
     .update(updateData)
-    .returning(accountColumns);
+    .returning(userColumns);
 
   return updatedUser;
 }
 
-export async function deleteAccountById_model(id, trx = db) {
+export async function deleteUserById_model(id, trx = db) {
   const existingUser = await baseQuery(trx)
-    .select(accountColumns)
+    .select(userColumns)
     .where({ id })
     .first();
 

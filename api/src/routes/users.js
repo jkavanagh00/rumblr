@@ -1,23 +1,23 @@
 /*
-all routes related to accounts should be here
+all routes related to users should be here
 
 examples:
 
-- POST /account/signup
-- POST /account/login
-- POST /account/logout
-- GET /account/ (get current account info)
-- PUT /account (update account info)
-- DELETE /account/ (delete current account)
+- POST /user/signup
+- POST /user/login
+- POST /user/logout
+- GET /user/ (get current user info)
+- PUT /user (update user info)
+- DELETE /user/ (delete current user)
 */
 
 import express from "express";
-import { updateAccountSchema } from "../Schemas/users.js";
+import { updateUserSchema } from "../Schemas/users.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
-  getAccount_controller,
-  updateAccount_controller,
-  deleteAccount_controller,
+  getUser_controller,
+  updateUser_controller,
+  deleteUser_controller,
 } from "../controllers/users.js";
 import { validateBody } from "../middlewares/errors.js";
 
@@ -36,8 +36,8 @@ const validateBody = (schema) => (req, res, next) => {
   next();
 };
 
-router.get("/", getAccount_controller);
-router.put("/", validateBody(updateAccountSchema), updateAccount_controller);
-router.delete("/", deleteAccount_controller);
+router.get("/", getUser_controller);
+router.put("/", validateBody(updateUserSchema), updateUser_controller);
+router.delete("/", deleteUser_controller);
 
 export default router;

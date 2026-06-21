@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const updateAccountSchema = z.object({
+export const updateUserSchema = z.object({
   username: z
     .string({ required_error: "Username is required" })
     .trim()
