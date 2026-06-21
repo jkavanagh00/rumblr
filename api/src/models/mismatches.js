@@ -45,8 +45,3 @@ export async function listMismatchesForUser_model(userId, trx = db) {
     .orderBy("mismatch_score", "desc")
     .orderBy("shared_responses", "desc");
 }
-
-export async function createRumble_model(data, trx = db) {
-  const rumble = await trx("rumbles").insert(data);
-  return trx("rumbles").select("*").where("id", rumble.id).first();
-}
