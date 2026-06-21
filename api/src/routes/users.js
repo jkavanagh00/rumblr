@@ -12,7 +12,7 @@ examples:
 */
 
 import express from "express";
-import { updateUserSchema } from "../Schemas/users.js";
+import { updateUserSchema } from "../schemas/users.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   getUser_controller,
