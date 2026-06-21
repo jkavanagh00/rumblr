@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.js";
 import rumblesRouter from "./routes/rumbles.js";
 import nestedRouter from "./routes/nested.js";
 import usersRouter from "./routes/users.js";
+import mismatchesRouter from "./routes/mismatches.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 
@@ -29,6 +30,7 @@ apiRouter.use("/auth", authRouter);
 apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);
+apiRouter.use("/mismatches", mismatchesRouter);
 
 app.use("/api", apiRouter);
 

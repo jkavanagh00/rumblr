@@ -10,7 +10,8 @@ examples:
 - updateStatement?
 - removeStatement?
 */
-import db from "../database/db.js";
+import db from "./../database/db.js";
+import { upsertMismatch_model } from "./mismatches.js";
 
 const TABLE = "statements";
 

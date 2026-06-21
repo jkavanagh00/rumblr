@@ -8,7 +8,6 @@ import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();
 
-
 router.post("/signup", validateBody(signupSchema), signup_controller);
 router.post("/login", validateBody(loginSchema), login_controller);
 

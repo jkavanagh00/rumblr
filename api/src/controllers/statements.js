@@ -19,11 +19,10 @@ import {
   deleteStatement_model,
   upsertResponse_model,
   listResponses_model,
-  listUsersWhoResponded_model,
   getStatementWithNoResponse_model,
+  addResponse_model,
 } from "../models/statements.js";
 import { upsertMismatch, fetchSharedResponses } from "../models/mismatches.js";
-import { createStatementSchema } from "../Schemas/statements.js";
 
 export async function getStatementWithNoResponse_controller(req, res, next) {
   try {
