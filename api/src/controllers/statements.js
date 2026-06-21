@@ -19,11 +19,10 @@ import {
   deleteStatement_model,
   upsertResponse_model,
   listResponses_model,
-  listUsersWhoResponded_model,
   getStatementWithNoResponse_model,
+  addResponse_model,
 } from "../models/statements.js";
 import { upsertMismatch, fetchSharedResponses } from "../models/mismatches.js";
-import { createStatementSchema } from "../Schemas/statements.js";
 
 export async function getStatementWithNoResponse_controller(req, res, next) {
   try {
@@ -70,32 +69,19 @@ export async function addResponse_controller(req, res, next) {
   try {
     const statementId = req.params.id;
     const userId = req.user.id;
-    const payload = req.validatedBody;
+    const payload = {
+      questionId,
+      userId,
+      agreement_score: req.validatedBody.agreement_score,
+      importance_score: req.validatedBody.importance_score,
+    };
     const statement = await getStatementById_model(statementId);
 
     if (!statement) {
       return res.status(404).json({ error: "Statement not found" });
     }
 
-    const response = await db.transaction(async (trx) => {
-      const upsertedResponse = await upsertResponse_model(
-        statementId,
-        userId,
-        payload,
-        trx,
-      );
-
-      const otherUsersWithResponses = await listUsersWhoResponded_model(
-        statementId,
-        userId,
-        trx,
-      );
-
-      for (const otherUserId of otherUsersWithResponses) {
-        await upsertMismatch(userId, otherUserId, trx);
-      }
-      return upsertedResponse;
-    });
+    const response = await addResponse_model(payload);
     return res
       .status(201)
       .json({ message: "Response submitted successfully", response });

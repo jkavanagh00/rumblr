@@ -9,18 +9,92 @@ examples:
 - rejectRumbleRequest
 */
 
-import { listMismatchesForUser_model } from "../models/mismatches";
-
+import {
+  listMismatchesForUser_model,
+  sendRumbleRequest_model,
+  checkForPendingRumbleRequest_model,
+  getRumbleRequestById_model,
+  acceptRumbleRequest_model,
+  createRumble_model,
+  declineRumbleRequest_model,
+} from "../models/mismatches.js";
+import db from "../database/db.js";
 
 export async function listMismatchesForUser_controller(req, res, next) {
-    try {
-        const mismatches = await listMismatchesForUser_model(req.user.id);
+  try {
+    const mismatches = await listMismatchesForUser_model(req.user.id);
 
-        if (!mismatches) {
-            return res.status(404).json("No mismatches found")
-        }
-        return res.status(200).json(mismatches);
-    } catch (error) {
-        next(error)
+    if (!mismatches) {
+      return res.status(404).json({ error: "No mismatches found" });
     }
+    return res.status(200).json(mismatches);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function sendRumbleRequest_controller(req, res, next) {
+  try {
+    const activeRumble = await checkForPendingRumbleRequest_model(
+      req.user.id,
+      req.params.id,
+    );
+
+    if (activeRumble) {
+      return res
+        .status(400)
+        .json({ error: "Another rumble request is already pending" });
+    }
+
+    const request = await sendRumbleRequest_model(req.user.id, req.params.id);
+
+    return res.status(201).json(request);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function acceptRumbleRequest_controller(req, res, next) {
+  try {
+    const rumbleRequest = await getRumbleRequestById_model(req.params.id);
+
+    if (!rumbleRequest) {
+      return res.status(404).json({ error: "Rumble request cannot be found" });
+    }
+
+    if (rumbleRequest.receiver_id != req.user.id) {
+      return res.status(401).json({
+        error: "You are not authorized to accept this rumble request",
+      });
+    }
+    const payload = {
+      rumble_request_id: rumbleRequest.id,
+      requester_id: rumbleRequest.requester_id,
+      receiver_id: req.user.id,
+    };
+    const rumble = await acceptRumbleRequest_model(payload);
+    return res.status(201).json(rumble);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function declineRumbleRequest_controller(req, res, next) {
+  try {
+    const rumbleRequest = await getRumbleRequestById_model(req.params.id);
+
+    if (!rumbleRequest) {
+      return res.status(404).json({ error: "Rumble request cannot be found" });
+    }
+
+    if (rumbleRequest.receiver_id != req.user.id) {
+      return res.status(401).json({
+        error: "You are not authorized to decline this rumble request",
+      });
+    }
+    await declineRumbleRequest_model(req.params.id);
+    return res.status(201).json({ message: "Rumble request declined" });
+  } catch (error) {
+    next(error);
+  }
 }

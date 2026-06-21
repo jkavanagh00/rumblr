@@ -10,7 +10,8 @@ examples:
 - updateStatement?
 - removeStatement?
 */
-import db from "../database/db.js";
+import db from "./../database/db.js";
+import { upsertMismatch_model } from "./mismatches.js";
 
 const TABLE = "statements";
 
@@ -90,23 +91,12 @@ export async function deleteStatement_model(id, trx = db) {
  * @throws {Error} - Throws an error if the database operation fails.
  */
 
-export async function upsertResponse_model(
-  statementId,
-  userId,
-  payload,
-  trx = db,
-) {
-  const data = {
-    statement_id: statementId,
-    user_id: userId,
-    agreement_score: payload.agreement_score,
-    importance_score: payload.importance_score,
-  };
+export async function upsertResponse_model(data, trx = db) {
 
   const existingResponse = await trx("responses")
     .select("*")
-    .where("statement_id", statementId)
-    .andWhere("user_id", userId)
+    .where("question_id", data.questionId)
+    .andWhere("user_id", data.userId)
     .first();
 
   if (existingResponse) {
@@ -116,8 +106,8 @@ export async function upsertResponse_model(
   }
   return await trx("responses")
     .select("*")
-    .where("statement_id", statementId)
-    .andWhere("user_id", userId)
+    .where("question_id", data.questionId)
+    .andWhere("user_id", data.userId)
     .first();
 }
 
@@ -152,4 +142,16 @@ export async function listUsersWhoResponded_model(
     .whereNot("user_id", excludedUserId)
     .pluck("user_id");
   return userIds;
+}
+
+export async function addResponse_model(data, trx = db) {
+  return trx.transaction(async (trx) => {
+    const userId = data.userId;
+    const upsertedResponse = await upsertResponse_model(data, trx);
+    const otherUsersWithResponses = await listUsersWhoResponded_model(data.questionId, userId, trx);
+    for (const otherUserId of otherUsersWithResponses) {
+      await upsertMismatch_model(userId, otherUserId, trx);
+    }
+    return upsertedResponse;
+  });
 }
