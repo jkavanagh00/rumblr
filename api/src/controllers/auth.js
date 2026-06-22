@@ -25,7 +25,7 @@ function createAccessToken(user) {
     secret,
     {
       algorithm: "HS256",
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || "1h",
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || "7d",
     },
   );
 }
