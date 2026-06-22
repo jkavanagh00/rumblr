@@ -27,6 +27,14 @@ const userColumns = [
   "created_at",
 ];
 
+export async function createUser_model(userData, trx = db) {
+  const [createdUser] = await baseQuery(trx)
+    .insert(userData)
+    .returning(publicUserColumns);
+
+  return createdUser;
+}
+
 export async function getUserById_model(id, trx = db) {
   return await baseQuery(trx).select(userColumns).where({ id }).first();
 }
@@ -59,4 +67,17 @@ export async function deleteUserById_model(id, trx = db) {
   await baseQuery(trx).where({ id }).delete();
 
   return existingUser;
+}
+
+export async function findUserByEmail_model(email, trx = db) {
+  return baseQuery(trx).where({ email }).first();
+}
+
+export async function findUserByUsername_model(username, trx = db) {
+  return baseQuery(trx).where({ username }).first();
+}
+
+// this serves the same purpose as getUserById_model
+export async function getPublicUserById_model(id, trx = db) {
+  return baseQuery(trx).select(publicUserColumns).where({ id }).first();
 }

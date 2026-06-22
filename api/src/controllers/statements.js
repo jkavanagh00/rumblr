@@ -8,21 +8,14 @@ examples:
 - addStatement?
 */
 
-import { z } from "zod";
-import db from "../database/db.js";
-
 import {
   addStatement_model,
   getStatementById_model,
   listStatements_model,
   updateStatement_model,
   deleteStatement_model,
-  upsertResponse_model,
-  listResponses_model,
   getStatementWithNoResponse_model,
-  addResponse_model,
 } from "../models/statements.js";
-import { upsertMismatch, fetchSharedResponses } from "../models/mismatches.js";
 
 export async function getStatementWithNoResponse_controller(req, res, next) {
   try {
@@ -65,45 +58,6 @@ export async function getStatementById_controller(req, res, next) {
   }
 }
 
-export async function addResponse_controller(req, res, next) {
-  try {
-    const statementId = req.params.id;
-    const userId = req.user.id;
-    const payload = {
-      questionId,
-      userId,
-      agreement_score: req.validatedBody.agreement_score,
-      importance_score: req.validatedBody.importance_score,
-    };
-    const statement = await getStatementById_model(statementId);
-
-    if (!statement) {
-      return res.status(404).json({ error: "Statement not found" });
-    }
-
-    const response = await addResponse_model(payload);
-    return res
-      .status(201)
-      .json({ message: "Response submitted successfully", response });
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function listResponses_controller(req, res, next) {
-  try {
-    const responses = await listResponses_model(req.user.id);
-
-    if (!responses) {
-      return res.status(404).json({ error: "No responses found" });
-    }
-
-    return res.status(200).json(responses);
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function listStatements_controller(req, res, next) {
   try {
     const statements = await listStatements_model();
@@ -120,7 +74,10 @@ export async function updateStatement_controller(req, res, next) {
     if (!statement) {
       return res.status(404).json({ error: "Statement not found" });
     }
-    const updatedStatement = await updateStatement_model(req.params.id, req.validatedBody);
+    const updatedStatement = await updateStatement_model(
+      req.params.id,
+      req.validatedBody,
+    );
     return res.status(200).json(updatedStatement);
   } catch (error) {
     next(error);
@@ -136,7 +93,7 @@ export async function deleteStatement_controller(req, res, next) {
     }
     const deletedStatement = await deleteStatement_model(req.params.id);
     return res.status(200).json(deletedStatement);
-    } catch (error) {
+  } catch (error) {
     next(error);
   }
 }

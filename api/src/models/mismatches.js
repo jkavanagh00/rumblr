@@ -1,36 +1,6 @@
 import db from "./../database/db.js";
 import { calculateMismatchScore } from "./../utils/mismatches.js";
-
-export async function fetchSharedResponses_model(user1Id, user2Id, trx = db) {
-  const user1Responses = await trx("responses")
-    .where("user_id", user1Id)
-    .select("statement_id", "agreement_score", "importance_score");
-
-  const user2Responses = await trx("responses")
-    .where("user_id", user2Id)
-    .select("statement_id", "agreement_score", "importance_score");
-
-  const user2ResponsesMap = new Map();
-  user2Responses.forEach((response) => {
-    user2ResponsesMap.set(response.statement_id, response);
-  });
-
-  const sharedResponses = [];
-  user1Responses.forEach((response) => {
-    if (user2ResponsesMap.has(response.statement_id)) {
-      const user2Response = user2ResponsesMap.get(response.statement_id);
-      sharedResponses.push({
-        statement_id: response.statement_id,
-        user1_agreement_score: response.agreement_score,
-        user1_importance_score: response.importance_score,
-        user2_agreement_score: user2Response.agreement_score,
-        user2_importance_score: user2Response.importance_score,
-      });
-    }
-  });
-
-  return sharedResponses;
-}
+import { fetchSharedResponses_model } from "./responses.js";
 
 export async function upsertMismatch_model(user1Id, user2Id, trx = db) {
   const [leftUserId, rightUserId] =
@@ -74,52 +44,4 @@ export async function listMismatchesForUser_model(userId, trx = db) {
     .select("*")
     .orderBy("mismatch_score", "desc")
     .orderBy("shared_responses", "desc");
-}
-
-export async function sendRumbleRequest_model(
-  requester_id,
-  receiver_id,
-  trx = db,
-) {
-  return await trx("rumble_requests").insert({
-    requester_id,
-    receiver_id,
-  });
-}
-
-export async function getRumbleRequestById_model(id, trx = db) {
-  return await trx("rumble_requests").select("*").where("id", id).first();
-}
-
-export async function acceptRumbleRequest_model(data, trx = db) {
-  return trx.transaction(async (trx) => {
-    await trx("rumble_requests").where("id", data.rumble_request_id).update({ status: "accepted" });
-    const [rumble] = await trx("rumbles").insert(data).returning("*");
-    return rumble;
-  });
-}
-
-export async function declineRumbleRequest_model(id, trx = db) {
-  return await trx("rumble_requests").where("id", id).update({
-    status: "declined",
-  });
-}
-
-export async function checkForPendingRumbleRequest_model(
-  requester_id,
-  receiver_id,
-  trx = db,
-) {
-  const pendingRequest = await trx("rumble_requests")
-    .select("*")
-    .where("requester_id", requester_id)
-    .andWhere("receiver_id", receiver_id)
-    .andWhere("status", "pending")
-    .first();
-  return pendingRequest;
-}
-
-export async function createRumble_model(data, trx = db) {
-  const rumble = await trx("rumbles").insert(data);
-  return trx("rumbles").select("*").where("id", rumble.id).first();
 }

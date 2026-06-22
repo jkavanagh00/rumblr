@@ -10,16 +10,18 @@ examples:
 */
 
 import express from "express";
-import { createRumbleSchema } from "../schemas/rumbles.js";
-import { createMessageSchema, paginationSchema } from "../schemas/messages.js";
+import { createRumbleSchema } from "../Schemas/rumbles.js";
+import { createMessageSchema, paginationSchema } from "../Schemas/messages.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   addRumble_controller,
-  addMessage_controller,
   getRumbles_controller,
-  getMessages_controller,
 } from "../controllers/rumbles.js";
-import { validateBody } from "../middlewares/errors.js"
+import {
+  addMessage_controller,
+  getMessages_controller,
+} from "../controllers/messages.js";
+import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();
 
