@@ -65,6 +65,24 @@ export async function seed(knex) {
     { content: "People want to work." },
     { content: "Hard work is a virtue." },
     { content: "Teachers are not paid enough for their labour." },
-    { content: "Universal basic income will become a necessity in the 21st century." }
+    { content: "Universal basic income will become a necessity in the 21st century." },
+    { content: "Social media is making us stupid." },
+    { content: "Women need men to look after them." },
+    { content: "Contraception and abortion are wiping humanity out." },
+    { content: "It would have been better if eastern and central Europe had stayed communist." },
+    { content: "AI will become conscious and force us to change." },
+    { content: "Data centres are reversing progress on green energy." },
+    { content: "Donald Trump has changed American politics for the better." },
+    { content: "Multiculturalism doesn’t work." },
+    { content: "Tourism should be banned." },
+    { content: "Things are better now than they were before." },
+    { content: "Young people today …" },
+    { content: "Old people are a waste of resources." },
+    { content: "Global warming is a hoax." },
+    { content: "Brigitte Macron and Michelle Obama are men." },
+    { content: "There are only two genders." },
+    { content: "Liberal democracy has had its time and needs to be replaced by something else." },
+    { content: "There will be a Third World War within the next decade." },
+    { content: "Immigrants will outnumber natives in Europe within the next decade." }
   ]);
 }
