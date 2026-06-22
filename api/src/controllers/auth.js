@@ -4,7 +4,7 @@ import {
   findUserByEmail_model,
   findUserByUsername_model,
   getPublicUserById_model,
-} from "../models/auth.js";
+} from "../models/users.js";
 import { hashPassword, verifyPassword } from "../utils/helpers.js";
 
 function createAccessToken(user) {
