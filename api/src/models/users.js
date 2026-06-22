@@ -24,6 +24,7 @@ const userColumns = [
   "email",
   "bio",
   "status",
+  "role",
   "created_at",
 ];
 
