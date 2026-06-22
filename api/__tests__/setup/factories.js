@@ -20,7 +20,7 @@ export async function seedUser(testDb, overrides = {}) {
     .insert(data)
     .returning("id");
 
-  return { id: insertedId, ...data };
+  return { ...data, id: insertedId };
 }
 
 export async function seedStatement(testDb, overrides = {}) {
@@ -34,7 +34,7 @@ export async function seedStatement(testDb, overrides = {}) {
     .insert(data)
     .returning("id");
 
-  return { id: insertedId, ...data };
+  return { ...data, id: insertedId };
 }
 
 export async function seedResponse(testDb, overrides = {}) {
@@ -68,7 +68,7 @@ export async function seedResponse(testDb, overrides = {}) {
     .insert(data)
     .returning("id");
 
-  return { id: insertedId, ...data };
+  return { ...data, id: insertedId };
 }
 
 export async function seedMismatch(testDb, overrides = {}) {
@@ -115,5 +115,5 @@ export async function seedMismatch(testDb, overrides = {}) {
     .insert(data)
     .returning("id");
 
-  return { id: insertedId, ...data };
+  return { ...data, id: insertedId };
 }
