@@ -1,20 +1,24 @@
-import testDb from "../../setup/testDb.js";
+import db from "../../../src/database/db.js";
 import { seedUser, seedStatement, seedResponse } from "../../setup/factories.js";
 import { addResponse_service } from "../../../src/services/responses.js";
 import { randomUUID } from "node:crypto";
 
 describe("addResponse_service", () => {
+  beforeAll(async () => {
+    await db.migrate.latest({ directory: "./src/database/migrations" });
+  });
+
   beforeEach(async () => {
-    await testDb("mismatches").del();
-    await testDb("responses").del();
-    await testDb("statements").del();
-    await testDb("users").del();
+    await db("mismatches").del();
+    await db("responses").del();
+    await db("statements").del();
+    await db("users").del();
   });
 
   describe("happy path", () => {
     test("successfully adds a response and returns expected structure", async () => {
-      const user = await seedUser(testDb, { username: "user_1" });
-      const statement = await seedStatement(testDb, { content: "Test statement" });
+      const user = await seedUser(db, { username: "user_1" });
+      const statement = await seedStatement(db, { content: "Test statement" });
 
       const responseData = {
         agreement_score: 5,
@@ -31,13 +35,13 @@ describe("addResponse_service", () => {
     });
 
     test("creates mismatches for users who already responded to the statement", async () => {
-      const user1 = await seedUser(testDb, { username: "user_1" });
-      const user2 = await seedUser(testDb, { username: "user_2" });
-      const user3 = await seedUser(testDb, { username: "user_3" });
-      const statement = await seedStatement(testDb, { content: "Test statement" });
+      const user1 = await seedUser(db, { username: "user_1" });
+      const user2 = await seedUser(db, { username: "user_2" });
+      const user3 = await seedUser(db, { username: "user_3" });
+      const statement = await seedStatement(db, { content: "Test statement" });
 
-      await seedResponse(testDb, { user_id: user2.id, statement_id: statement.id });
-      await seedResponse(testDb, { user_id: user3.id, statement_id: statement.id });
+      await seedResponse(db, { user_id: user2.id, statement_id: statement.id });
+      await seedResponse(db, { user_id: user3.id, statement_id: statement.id });
 
       const responseData = { agreement_score: 3, importance_score: 3 };
       const result = await addResponse_service(user1.id, statement.id, responseData);
@@ -47,11 +51,11 @@ describe("addResponse_service", () => {
     });
 
     test("handles updating an existing response", async () => {
-      const user = await seedUser(testDb, { username: "user_1" });
-      const statement = await seedStatement(testDb, { content: "Test statement" });
+      const user = await seedUser(db, { username: "user_1" });
+      const statement = await seedStatement(db, { content: "Test statement" });
 
       // Add initial response
-      await seedResponse(testDb, {
+      await seedResponse(db, {
         user_id: user.id,
         statement_id: statement.id,
         agreement_score: 2,
@@ -69,7 +73,7 @@ describe("addResponse_service", () => {
 
   describe("error handling", () => {
     test("throws error when statement does not exist", async () => {
-      const user = await seedUser(testDb, { username: "user_1" });
+      const user = await seedUser(db, { username: "user_1" });
       const nonexistentStatementId = randomUUID();
 
       const responseData = { agreement_score: 3, importance_score: 3 };
@@ -80,8 +84,8 @@ describe("addResponse_service", () => {
     });
 
     test("transaction rolls back if an error occurs", async () => {
-      const user = await seedUser(testDb, { username: "user_1" });
-      const statement = await seedStatement(testDb, { content: "Test statement" });
+      const user = await seedUser(db, { username: "user_1" });
+      const statement = await seedStatement(db, { content: "Test statement" });
 
       // This would require mocking or creating a scenario where the transaction fails
       // For now, this documents what should be tested
@@ -94,24 +98,24 @@ describe("addResponse_service", () => {
 
   describe("edge cases", () => {
     test("handles response from first user on a statement (no mismatches)", async () => {
-      const user = await seedUser(testDb, { username: "user_1" });
-      const statement = await seedStatement(testDb, { content: "Test statement" });
+      const user = await seedUser(db, { username: "user_1" });
+      const statement = await seedStatement(db, { content: "Test statement" });
 
       const responseData = { agreement_score: 3, importance_score: 3 };
       const result = await addResponse_service(user.id, statement.id, responseData);
 
       expect(result.totalUpsertedMismatches).toBe(0);
-      const responses = await testDb("responses").select("*");
+      const responses = await db("responses").select("*");
       expect(responses).toHaveLength(1);
     });
 
     test("excludes the responding user from mismatch creation", async () => {
-      const user1 = await seedUser(testDb, { username: "user_1" });
-      const user2 = await seedUser(testDb, { username: "user_2" });
-      const statement = await seedStatement(testDb, { content: "Test statement" });
+      const user1 = await seedUser(db, { username: "user_1" });
+      const user2 = await seedUser(db, { username: "user_2" });
+      const statement = await seedStatement(db, { content: "Test statement" });
 
       // Only user2 responded
-      await seedResponse(testDb, { user_id: user2.id, statement_id: statement.id });
+      await seedResponse(db, { user_id: user2.id, statement_id: statement.id });
 
       // User1 adds response
       const responseData = { agreement_score: 3, importance_score: 3 };
