@@ -39,6 +39,10 @@ export async function updateRumbleStatus_model(id, status, trx = db) {
   return updated;
 }
 
+export async function terminateRumble_model(id, trx = db) {
+  return updateRumbleStatus_model(id, "terminated", trx);
+}
+
 export async function isUserParticipantInRumble_model(
   rumbleId,
   userId,
