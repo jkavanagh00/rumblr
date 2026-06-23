@@ -46,14 +46,14 @@ describe("rumbles model", () => {
         rumble_request_id: requestId,
         requester_id: userId,
         receiver_id: otherUserId,
-        status: "pending",
+        status: "inactive",
       };
 
       const result = await addRumble_model(rumbleData, testDb);
       const row = await testDb("rumbles").where({ id: rumbleId }).first();
 
       expect(result.id).toBe(rumbleId);
-      expect(result.status).toBe("pending");
+      expect(result.status).toBe("inactive");
       expect(row.requester_id).toBe(userId);
       expect(row.receiver_id).toBe(otherUserId);
     });
@@ -89,7 +89,7 @@ describe("rumbles model", () => {
           rumble_request_id: requestId,
           requester_id: userId,
           receiver_id: otherUserId,
-          status: "pending",
+          status: "inactive",
         },
         {
           id: "99999999-9999-4999-8999-999999999999",
@@ -97,6 +97,13 @@ describe("rumbles model", () => {
           requester_id: outsiderId,
           receiver_id: otherUserId,
           status: "active",
+        },
+        {
+          id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+          rumble_request_id: requestId,
+          requester_id: userId,
+          receiver_id: otherUserId,
+          status: "terminated",
         },
       ]);
 
@@ -119,13 +126,13 @@ describe("rumbles model", () => {
         rumble_request_id: requestId,
         requester_id: userId,
         receiver_id: otherUserId,
-        status: "pending",
+        status: "inactive",
       });
 
       const result = await getRumbleById_model(rumbleId, testDb);
 
       expect(result.id).toBe(rumbleId);
-      expect(result.status).toBe("pending");
+      expect(result.status).toBe("inactive");
     });
 
     test("returns undefined when rumble does not exist", async () => {
@@ -145,7 +152,7 @@ describe("rumbles model", () => {
         rumble_request_id: requestId,
         requester_id: userId,
         receiver_id: otherUserId,
-        status: "pending",
+        status: "inactive",
       });
 
       const updated = await updateRumbleStatus_model(

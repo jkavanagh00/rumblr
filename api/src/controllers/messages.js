@@ -5,7 +5,6 @@ import {
 import {
   getRumbleById_model,
   isUserParticipantInRumble_model,
-  updateRumbleStatus_model,
 } from "../models/rumbles.js";
 
 export async function addMessage_controller(req, res, next) {
@@ -28,11 +27,6 @@ export async function addMessage_controller(req, res, next) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });
-    }
-
-    // First message moves rumble from pending to active.
-    if (rumble.status === "pending") {
-      await updateRumbleStatus_model(rumbleId, "active");
     }
 
     const message = await addMessage_model(req.validatedBody);
