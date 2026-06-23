@@ -1,3 +1,4 @@
+import testDb from "../../setup/testDb.js";
 import {
   sendRumbleRequest_model,
   getRumbleRequestById_model,
