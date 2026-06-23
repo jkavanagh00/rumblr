@@ -92,7 +92,7 @@ export async function deleteResponse_model(id, trx = db) {
 export async function listResponses_model(userId, trx = db) {
   const qb = trx("responses");
   const responses = await qb.select("*").where("user_id", userId);
-  return responses.length > 0 ? responses : null;
+  return responses;
 }
 
 export async function listUsersWhoResponded_model(

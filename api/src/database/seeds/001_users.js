@@ -5,9 +5,28 @@
 export async function seed(knex) {
   // Deletes ALL existing entries
   await knex("users").del();
+  
+  // admin user  
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
 
-  // Inserts seed entries with diverse test data
-  await knex("users").insert([
+  if (!email || !password) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required");
+  }
+
+  await knex("users").where({ email }).del();
+
+  await knex("users").insert({
+    username: "admin",
+    email,
+    password_hash: await hashPassword(password),
+    bio: "Admin user",
+    role: "admin",
+  });
+  
+    // Inserts seed entries with diverse test data
+    await knex("users").insert([
+    
     // Core test users for various scenarios
     {
       username: "alice_agrees",
@@ -94,4 +113,8 @@ export async function seed(knex) {
       status: "active",
     },
   ]);
+import { hashPassword } from "../../utils/helpers.js";
+
+export async function seed(knex) {
+
 }

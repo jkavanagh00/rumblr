@@ -10,9 +10,9 @@
 
 export function calculateMismatchScore(sharedResponses) {
   const totalResponses = sharedResponses.length;
-  if (totalResponses < 20) {
+  if (totalResponses < 10) {
     throw new Error(
-      "At least 20 shared responses are required to calculate a reliable mismatch score.",
+      "At least 10 shared responses are required to calculate a reliable mismatch score.",
     );
   }
 
