@@ -12,20 +12,22 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-const {
+import {
   addStatement_model,
   getStatementById_model,
   listStatements_model,
   updateStatement_model,
   deleteStatement_model,
-} = await import("../../../src/models/statements.js");
-const {
+  getStatementWithNoResponse_model,
+} from "../../../src/models/statements.js";
+import {
   addStatement_controller,
   getStatementById_controller,
   listStatements_controller,
   updateStatement_controller,
   deleteStatement_controller,
-} = await import("../../../src/controllers/statements.js");
+  getStatementWithNoResponse_controller,
+} from "../../../src/controllers/statements.js";
 
 const testId = "11111111-1111-4111-8111-111111111111";
 
