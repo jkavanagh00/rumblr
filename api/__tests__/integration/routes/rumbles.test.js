@@ -23,9 +23,9 @@ jest.unstable_mockModule("../../src/controllers/messages.js", () => ({
 }));
 
 const { addRumble_controller, getRumbles_controller } = await import(
-  "../../src/controllers/rumbles.js"
+  "../../../src/controllers/rumbles.js"
 );
-const { default: rumblesRouter } = await import("../../src/routes/rumbles.js");
+const { default: rumblesRouter } = await import("../../../src/routes/rumbles.js");
 
 const app = express();
 app.use(express.json());
