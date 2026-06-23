@@ -21,6 +21,7 @@ function createAccessToken(user) {
       id: user.id,
       username: user.username,
       email: user.email,
+      role: user.role,
     },
     secret,
     {
