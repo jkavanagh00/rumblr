@@ -5,19 +5,19 @@ import { jest } from "@jest/globals";
 const testUserId = "11111111-1111-4111-8111-111111111111";
 const rumbleId = "22222222-2222-4222-8222-222222222222";
 
-jest.unstable_mockModule("../../src/middlewares/auth.js", () => ({
+jest.unstable_mockModule("../../../src/middlewares/auth.js", () => ({
   authenticateToken: jest.fn((req, _res, next) => {
     req.userId = testUserId;
     next();
   }),
 }));
 
-jest.unstable_mockModule("../../src/controllers/rumbles.js", () => ({
+jest.unstable_mockModule("../../../src/controllers/rumbles.js", () => ({
   addRumble_controller: jest.fn(),
   getRumbles_controller: jest.fn(),
 }));
 
-jest.unstable_mockModule("../../src/controllers/messages.js", () => ({
+jest.unstable_mockModule("../../../src/controllers/messages.js", () => ({
   addMessage_controller: jest.fn(),
   getMessages_controller: jest.fn(),
 }));

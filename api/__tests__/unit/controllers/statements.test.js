@@ -1,36 +1,3 @@
-import { jest } from "@jest/globals";
-
-jest.unstable_mockModule("../../../src/models/statements.js", () => ({
-  addStatement_model: jest.fn(),
-  getStatementById_model: jest.fn(),
-  listStatements_model: jest.fn(),
-  updateStatement_model: jest.fn(),
-  deleteStatement_model: jest.fn(),
-}));
-
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
-import {
-  addStatement_model,
-  getStatementById_model,
-  listStatements_model,
-  updateStatement_model,
-  deleteStatement_model,
-  getStatementWithNoResponse_model,
-} from "../../../src/models/statements.js";
-import {
-  addStatement_controller,
-  getStatementById_controller,
-  listStatements_controller,
-  updateStatement_controller,
-  deleteStatement_controller,
-  getStatementWithNoResponse_controller,
-} from "../../../src/controllers/statements.js";
-
-const testId = "11111111-1111-4111-8111-111111111111";
-
 describe("statements controller", () => {
   describe("getStatementWithNoResponse_controller", () => {
     test.todo("calls getStatementWithNoResponse_model with req.user.id");

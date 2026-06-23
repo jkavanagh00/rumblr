@@ -2,13 +2,25 @@ import express from "express";
 import request from "supertest";
 import { jest } from "@jest/globals";
 
+const testUserId = "11111111-1111-4111-8111-111111111111";
 
-jest.unstable_mockModule("../../src/controllers/statements.js", () => ({
+jest.unstable_mockModule("../../../src/middlewares/auth.js", () => ({
+	authenticateToken: jest.fn((req, _res, next) => {
+		req.userId = testUserId;
+		req.user = { id: testUserId, role: "admin" };
+		next();
+	}),
+	requireAdmin: jest.fn((_req, _res, next) => next()),
+}));
+
+
+jest.unstable_mockModule("../../../src/controllers/statements.js", () => ({
 	addStatement_controller: jest.fn(),
 	getStatementById_controller: jest.fn(),
 	listStatements_controller: jest.fn(),
 	updateStatement_controller: jest.fn(),
 	deleteStatement_controller: jest.fn(),
+	getStatementWithNoResponse_controller: jest.fn(),
 }));
 
 const { listStatements_controller, getStatementById_controller, addStatement_controller, updateStatement_controller, deleteStatement_controller } = await import(
