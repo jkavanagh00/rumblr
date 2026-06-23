@@ -6,12 +6,12 @@ import {
   listStatements_model,
   updateStatement_model,
   deleteStatement_model,
-  addResponse_model,
+} from "../../../src/models/statements.js";
+import {  addResponse_model,
   updateResponse_model,
   deleteResponse_model,
   listResponses_model,
-  listUsersWhoResponded_model
-} from "../../../src/models/statements.js";
+  listUsersWhoResponded_model} from "../../../src/models/responses.js"
 
 const TABLE = "statements";
 const RESPONSES_TABLE = "responses";

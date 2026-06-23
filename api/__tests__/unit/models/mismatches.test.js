@@ -1,7 +1,6 @@
 import {
-	fetchSharedResponses,
-	upsertMismatch,
-	listMismatchesForUser,
+	upsertMismatch_model,
+	listMismatchesForUser_model,
 } from "../../../src/models/mismatches.js";
 import testDb from "../../setup/testDb.js";
 import {
