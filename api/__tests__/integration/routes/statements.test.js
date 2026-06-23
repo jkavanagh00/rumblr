@@ -31,6 +31,9 @@ const { default: statementsRouter } = await import("../../../src/routes/statemen
 const app = express();
 app.use(express.json());
 app.use("/statements", statementsRouter);
+app.use((err, _req, res, _next) => {
+	res.status(err.status || 500).json({ error: err.message });
+});
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -42,7 +45,9 @@ describe("statements integration routes", () => {
     describe("GET /statements/:id", () => {
         test("returns a statement by ID", async () => {
             const mockStatement = { id: testId, content: "Statement 1" };
-            getStatementById_controller.mockResolvedValue(mockStatement);
+			getStatementById_controller.mockImplementation(async (_req, res) => {
+				return res.status(200).json(mockStatement);
+			});
 
             const response = await request(app).get(`/statements/${testId}`);
 
@@ -51,7 +56,9 @@ describe("statements integration routes", () => {
             expect(getStatementById_controller).toHaveBeenCalledTimes(1);
         });
         test("returns 500 when the controller throws", async () => {
-            getStatementById_controller.mockRejectedValue(new Error("Database error"));
+			getStatementById_controller.mockImplementation(async (_req, _res, next) => {
+				next(new Error("Database error"));
+			});
 
             const response = await request(app).get(`/statements/${testId}`);
 
@@ -68,7 +75,9 @@ describe("statements integration routes", () => {
 				{ id: "22222222-2222-4222-8222-222222222222", content: "Statement 2" },
 			];
 
-			listStatements_controller.mockResolvedValue(mockStatements);
+			listStatements_controller.mockImplementation(async (_req, res) => {
+				return res.status(200).json(mockStatements);
+			});
 
 			// Send a real HTTP request through Express to verify GET /statements/list reaches the correct handler.
 			const response = await request(app).get("/statements/list");
@@ -82,7 +91,9 @@ describe("statements integration routes", () => {
 
 		test("returns 500 when the controller throws", async () => {
 			// Simulate an unexpected controller failure to verify the route's catch block behavior.
-			listStatements_controller.mockRejectedValue(new Error("Database error"));
+			listStatements_controller.mockImplementation(async (_req, _res, next) => {
+				next(new Error("Database error"));
+			});
 
 			// The request should still complete cleanly even though the controller rejected.
 			const response = await request(app).get("/statements/list");
