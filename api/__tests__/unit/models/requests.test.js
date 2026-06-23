@@ -1,22 +1,42 @@
-import testDb from "../../setup/testDb";
 import {
-  upsertMismatch_model,
-  listMismatchesForUser_model,
-} from "../../../src/models/mismatches";
+  sendRumbleRequest_model,
+  getRumbleRequestById_model,
+  acceptRumbleRequest_model,
+  declineRumbleRequest_model,
+  checkForPendingRumbleRequest_model,
+} from "../../../src/models/requests.js";
 
-describe("upsertMismatch_model", () => {
-  test.todo("creates a new mismatch if no mismatch already exists");
-  test.todo("updates the existing mismatch if one already exists");
-  test.todo("deletes an existing mismatch if shared responses falls below 10");
-  test.todo(
-    "targets the correct mismatch without regard to the order of user ids passed",
-  );
-});
+describe("requests model", () => {
+  describe("sendRumbleRequest_model", () => {
+    test.todo("inserts a new rumble request with requester_id and receiver_id");
+    test.todo("defaults status to pending for new requests");
+    test.todo("returns the knex insert response for the created request");
+    test.todo("uses the provided transaction object when trx is passed");
+  });
 
-describe("list mismatches for user", () => {
-  test.todo("returns an array containing the user's mismatches");
-  test.todo("returns an empty array when no mismatches exist");
-  test.todo(
-    "returns an array of objects ordered first by mismatch score and then by total shared answers",
-  );
+  describe("getRumbleRequestById_model", () => {
+    test.todo("returns the matching rumble request for a valid id");
+    test.todo("returns undefined when no request exists for the provided id");
+    test.todo("uses the provided transaction object when trx is passed");
+  });
+
+  describe("acceptRumbleRequest_model", () => {
+    test.todo("updates status to accepted when the request exists and is pending");
+    test.todo("returns 0 when request does not exist");
+    test.todo("returns 0 when request exists but status is not pending");
+    test.todo("uses the provided transaction object when trx is passed");
+  });
+
+  describe("declineRumbleRequest_model", () => {
+    test.todo("updates status to declined for an existing request id");
+    test.todo("returns 0 when request does not exist");
+    test.todo("uses the provided transaction object when trx is passed");
+  });
+
+  describe("checkForPendingRumbleRequest_model", () => {
+    test.todo("returns the pending request for the requester/receiver pair when it exists");
+    test.todo("returns undefined when no pending request exists for the pair");
+    test.todo("ignores non-pending requests for the same requester/receiver pair");
+    test.todo("uses the provided transaction object when trx is passed");
+  });
 });
