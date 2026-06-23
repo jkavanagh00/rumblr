@@ -77,3 +77,22 @@ export async function deleteStatement_model(id, trx = db) {
 
   return existingStatement;
 }
+
+export async function getOnboardingStatement_model(statementNumber, trx = db) {
+  const qb = baseQuery(trx);
+
+  const content = {
+    1: "Donald Trump is a force for good in the world.",
+    2: "LGBT people face discrimination in society.",
+    3: "There are only two genders.",
+    4: "Multiculturalism doesn’t work.",
+    5: "Abortion should be available to all who want it.",
+    6: "Taxation is theft.",
+    7: "Religion is a cancer on society.",
+    8: "People should require a license in order to become parents.",
+    9: "Murderers deserve the death penalty.",
+    10: "True equality is impossible to achieve.",
+  };
+
+  return await qb.select("*").where("content", content[statementNumber]).first();
+}

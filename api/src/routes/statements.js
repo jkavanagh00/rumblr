@@ -19,6 +19,7 @@ import {
   updateStatement_controller,
   deleteStatement_controller,
   getStatementWithNoResponse_controller,
+  getOnboardingStatement_controller,
 } from "../controllers/statements.js";
 import {
   addResponse_controller,
@@ -39,6 +40,8 @@ statementsRouter.post(
   validateBody(createResponseSchema),
   addResponse_controller,
 );
+
+statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
 
 // get all responses for the current user
 statementsRouter.get("/responses", listResponses_controller);

@@ -15,7 +15,7 @@ export async function upsertMismatch_model(user1Id, user2Id, trx = db) {
     .where({ user1_id: leftUserId, user2_id: rightUserId })
     .first();
 
-  if (existingMismatch && sharedResponses.length < 20) {
+  if (existingMismatch && sharedResponses.length < 10) {
     await trx("mismatches").where("id", existingMismatch.id).delete();
   } else if (existingMismatch) {
     const mismatchData = calculateMismatchScore(sharedResponses);
@@ -25,7 +25,7 @@ export async function upsertMismatch_model(user1Id, user2Id, trx = db) {
       shared_responses: mismatchData.sharedResponses,
       updated_at: new Date(),
     });
-  } else if (!existingMismatch && sharedResponses.length >= 20) {
+  } else if (!existingMismatch && sharedResponses.length >= 10) {
     const mismatchData = calculateMismatchScore(sharedResponses);
     await trx("mismatches").insert({
       user1_id: leftUserId,
