@@ -258,7 +258,7 @@ describe("listResponses_model", () => {
     result.forEach((row) => expect(row.user_id).toBe(userId));
   });
 
-  test("returns null when the user has no responses", async () => {
+  test("returns an empty array when the user has no responses", async () => {
     await seedUser(testDb, {
       id: userId,
       username: "user_list-empty",
@@ -267,7 +267,8 @@ describe("listResponses_model", () => {
 
     const result = await listResponses_model(userId, testDb);
 
-    expect(result).toBeNull();
+    expect(Array.isArray(result)).toBe(true);
+    expect(result).toHaveLength(0);
   });
 });
 
