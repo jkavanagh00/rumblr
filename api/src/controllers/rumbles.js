@@ -31,7 +31,6 @@ export async function getRumbles_controller(req, res, next) {
   }
 }
 
-// rumbles controller
 export async function terminateRumble_controller(req, res, next) {
   try {
     const userId = req.userId;
