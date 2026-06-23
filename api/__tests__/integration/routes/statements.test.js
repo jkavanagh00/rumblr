@@ -20,6 +20,7 @@ jest.unstable_mockModule("../../../src/controllers/statements.js", () => ({
   updateStatement_controller: jest.fn(),
   deleteStatement_controller: jest.fn(),
   getStatementWithNoResponse_controller: jest.fn(),
+  getOnboardingStatement_controller: jest.fn(), // add this
 }));
 
 const {
