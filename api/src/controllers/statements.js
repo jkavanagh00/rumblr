@@ -103,7 +103,7 @@ export async function getOnboardingStatement_controller(req, res, next) {
   try {
     const statementNumber = Number(req.params.number);
 
-    if (typeof statementNumber !== "number") {
+    if (Number.isNaN(statementNumber)) {
       return res
         .status(400)
         .json({ error: "Onboarding statement number must be a number" });
