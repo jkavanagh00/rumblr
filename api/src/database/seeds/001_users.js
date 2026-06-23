@@ -1,3 +1,5 @@
+import { hashPassword } from "../../utils/helpers.js";
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -113,8 +115,4 @@ export async function seed(knex) {
       status: "active",
     },
   ]);
-import { hashPassword } from "../../utils/helpers.js";
-
-export async function seed(knex) {
-
 }
