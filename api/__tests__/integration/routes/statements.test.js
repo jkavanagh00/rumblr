@@ -22,14 +22,17 @@ jest.unstable_mockModule("../../../src/controllers/statements.js", () => ({
   getStatementWithNoResponse_controller: jest.fn(),
 }));
 
-import {
-  listStatements_controller,
-  getStatementById_controller,
-  addStatement_controller,
-  updateStatement_controller,
-  deleteStatement_controller,
-} from "../../../src/controllers/statements.js";
-import statementsRouter from "../../../src/routes/statements.js";
+const {
+listStatements_controller,
+getStatementById_controller,
+addStatement_controller,
+updateStatement_controller,
+deleteStatement_controller,
+} = await import("../../../src/controllers/statements.js");
+
+const { default: statementsRouter } = await import(
+"../../../src/routes/statements.js"
+);
 
 const app = express();
 app.use(express.json());
