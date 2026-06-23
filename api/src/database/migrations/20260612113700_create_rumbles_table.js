@@ -31,7 +31,7 @@ export function up(knex) {
       .inTable("users")
       .onDelete("CASCADE");
 
-    // ENUM status (inactive before play, active during play, terminated after end)
+    // Status lifecycle: inactive at creation, active during conversation, terminated when the rumble is ended.
     table
       .enum("status", ["active", "inactive", "terminated"])
       .notNullable()
