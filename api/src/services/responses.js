@@ -26,7 +26,10 @@ export async function addResponse_service(userId, statementId, responseData) {
     const totalResponses = await listResponses_model(userId, trx);
 
     if (totalResponses.length < 10) {
-      return;
+      return {
+        upsertedResponse,
+        totalUpsertedMismatches: 0,
+      };
     }
 
     const otherUsersWithResponses = await listUsersWhoResponded_model(
