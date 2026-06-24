@@ -13,6 +13,6 @@ export async function hashPassword(password) {
 export async function verifyPassword(password, passwordHash) {
   if (typeof password !== "string" || password.length < 8) {
     return false;
-  };
-  return bcrypt.compareSync(password, passwordHash);
+  }
+  return bcrypt.compare(password, passwordHash);
 }
