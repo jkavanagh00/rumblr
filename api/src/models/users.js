@@ -21,12 +21,13 @@ function baseQuery(trx = db) {
 const userColumns = [
   "id",
   "username",
-  "email",
   "bio",
   "status",
   "role",
   "created_at",
 ];
+
+const publicUserColumns = userColumns;
 
 export async function createUser_model(userData, trx = db) {
   const [createdUser] = await baseQuery(trx)

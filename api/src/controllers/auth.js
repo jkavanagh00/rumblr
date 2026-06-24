@@ -20,7 +20,6 @@ function createAccessToken(user) {
     {
       id: user.id,
       username: user.username,
-      email: user.email,
       role: user.role,
     },
     secret,
@@ -32,7 +31,7 @@ function createAccessToken(user) {
 }
 
 function toPublicUser(user) {
-  const { password_hash: passwordHash, ...publicUser } = user;
+  const { password_hash: passwordHash, email, ...publicUser } = user;
   return publicUser;
 }
 
@@ -61,7 +60,7 @@ export async function signup_controller(req, res, next) {
 
     return res.status(201).json({
       accessToken,
-      user: createdUser,
+      user: toPublicUser(createdUser),
     });
   } catch (error) {
     next(error);
