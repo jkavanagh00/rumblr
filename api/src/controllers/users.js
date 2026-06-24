@@ -17,6 +17,8 @@ import {
   deleteUserById_model,
 } from "../models/users.js";
 
+import { getOnboardingProgress_model } from "../models/statements.js";
+
 export async function getUser_controller(req, res, next) {
   try {
     const userId = req.user.id;
@@ -39,10 +41,7 @@ export async function updateUser_controller(req, res, next) {
   try {
     const userId = req.user.id;
 
-    const updatedUser = await updateUserById_model(
-      userId,
-      req.validatedBody,
-    );
+    const updatedUser = await updateUserById_model(userId, req.validatedBody);
 
     if (!updatedUser) {
       return res.status(404).json({
@@ -69,6 +68,18 @@ export async function deleteUser_controller(req, res, next) {
     }
 
     return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getOnboardingProgress_controller(req, res, next) {
+  try {
+    const userId = req.user.id;
+
+    const progress = await getOnboardingProgress_model(userId);
+
+    return res.status(200).json(progress);
   } catch (error) {
     next(error);
   }
