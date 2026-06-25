@@ -8,7 +8,7 @@
  * Key scenarios:
  * - alice_agrees and bob_disagrees have opposing views on many topics
  * - carol_moderate provides middle-ground responses
- * - Enough shared responses (20+) between user pairs to calculate mismatches
+ * - Enough shared responses (10+) between user pairs to calculate mismatches
  */
 export async function seed(knex) {
   // Deletes ALL existing entries
