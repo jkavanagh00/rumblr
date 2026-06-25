@@ -9,3 +9,9 @@ export const createBlockSchema = z.object({
     .string({ required_error: "Blocked ID is required" })
     .uuid({ message: "Invalid Blocked ID format. Must be a UUID" }),
 });
+
+export const blockParamsSchema = z.object({
+  id: z
+    .string({ required_error: "User ID is required" })
+    .uuid({ message: "Invalid User ID format. Must be a UUID" }),
+});

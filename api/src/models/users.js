@@ -21,7 +21,6 @@ function baseQuery(trx = db) {
 const userColumns = [
   "id",
   "username",
-  "email",
   "bio",
   "status",
   "role",

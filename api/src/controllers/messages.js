@@ -29,6 +29,12 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
+    if (rumble.status === "terminated") {
+      return res.status(403).json({
+        error: "This rumble is terminated",
+      });
+    }
+
     const message = await addMessage_model(req.validatedBody);
     const io = req.app.get("io");
 

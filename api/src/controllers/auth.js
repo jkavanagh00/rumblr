@@ -20,7 +20,6 @@ function createAccessToken(user) {
     {
       id: user.id,
       username: user.username,
-      email: user.email,
       role: user.role,
     },
     secret,
@@ -32,7 +31,7 @@ function createAccessToken(user) {
 }
 
 function toPublicUser(user) {
-  const { password_hash: passwordHash, ...publicUser } = user;
+  const { password_hash: passwordHash, email, ...publicUser } = user;
   return publicUser;
 }
 
@@ -53,7 +52,7 @@ export async function signup_controller(req, res, next) {
     const createdUser = await createUser_model({
       username,
       email,
-      password_hash: hashPassword(password),
+      password_hash: await hashPassword(password),
       bio: bio ?? null,
       threat_levels,
     });
@@ -62,7 +61,7 @@ export async function signup_controller(req, res, next) {
 
     return res.status(201).json({
       accessToken,
-      user: createdUser,
+      user: toPublicUser(createdUser),
     });
   } catch (error) {
     next(error);
@@ -77,7 +76,7 @@ export async function login_controller(req, res, next) {
       ? await findUserByEmail_model(identifier)
       : await findUserByUsername_model(identifier);
 
-    if (!user || !verifyPassword(password, user.password_hash)) {
+    if (!user || !(await verifyPassword(password, user.password_hash))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
