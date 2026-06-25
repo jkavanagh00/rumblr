@@ -228,4 +228,5 @@ describe("rumbles model", () => {
       expect(isParticipant).toBe(false);
     });
   });
+  //todo("Add tests for terminateRumble_model.");
 });
