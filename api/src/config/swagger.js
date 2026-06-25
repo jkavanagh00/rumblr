@@ -15,6 +15,13 @@ const options = {
         description: "Local development server",
       },
     ],
+    tags: [
+      { name: "Auth", description: "Signup and login" },
+      { name: "Users", description: "User profile and blocking" },
+      { name: "Statements", description: "Statements and user responses" },
+      { name: "Mismatches", description: "Mismatch discovery and rumble requests" },
+      { name: "Rumbles", description: "Active rumbles and messages" },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
