@@ -1,5 +1,6 @@
 describe("requests controller", () => {
 	describe("sendRumbleRequest_controller", () => {
+		test.todo("returns 400 when threat_level is missing, invalid, or not allowed for requester/receiver");
 		test.todo("returns 400 when another pending rumble request already exists between the users");
 		test.todo("creates a new rumble request with req.user.id and req.params.id, then returns 201");
 		test.todo("forwards model errors to next");

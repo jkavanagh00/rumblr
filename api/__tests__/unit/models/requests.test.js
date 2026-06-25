@@ -9,7 +9,7 @@ import {
 
 describe("requests model", () => {
   describe("sendRumbleRequest_model", () => {
-    test.todo("inserts a new rumble request with requester_id and receiver_id");
+    test.todo("inserts a new rumble request with requester_id, receiver_id, and threat_level");
     test.todo("defaults status to pending for new requests");
     test.todo("returns the knex insert response for the created request");
     test.todo("uses the provided transaction object when trx is passed");
@@ -35,8 +35,8 @@ describe("requests model", () => {
   });
 
   describe("checkForPendingRumbleRequest_model", () => {
-    test.todo("returns the pending request for the requester/receiver pair when it exists");
-    test.todo("returns undefined when no pending request exists for the pair");
+    test.todo("returns the pending request for requester/receiver when the same threat_level exists");
+    test.todo("returns undefined when no pending request exists for that requester/receiver threat_level combination");
     test.todo("ignores non-pending requests for the same requester/receiver pair");
     test.todo("uses the provided transaction object when trx is passed");
   });

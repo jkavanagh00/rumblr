@@ -67,6 +67,8 @@ describe("rumbles integration routes", () => {
   });
 
   describe("POST /rumbles", () => {
+    test.todo("returns 400 when threat_level is missing or invalid in rumble creation payload");
+
     test("creates and returns a rumble", async () => {
       const body = {
         rumble_request_id: "33333333-3333-4333-8333-333333333333",
