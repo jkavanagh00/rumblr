@@ -37,7 +37,10 @@ export function up (knex) {
     table.unique(["user_id", "statement_id"], "unique_user_statement_response");
 
     // TIMESTAMP created_at
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
+
+    // TIMESTAMP updated_at
+    table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
   });
 }
 

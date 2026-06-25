@@ -3,26 +3,29 @@
  * @returns { Promise<void> }
  */
 export function up(knex) {
-  return knex.schema.createTable('rumbles', (table) => {
+  return knex.schema.createTable("rumbles", (table) => {
     // UUID primary key
-    table.uuid('id').primary().defaultTo(knex.fn.uuid());
-    
+    table.uuid("id").primary().defaultTo(knex.fn.uuid());
+
     // Foreign Key: Links directly to the request that generated this match
-    table.uuid('rumble_request_id')
+    table
+      .uuid("rumble_request_id")
       .notNullable()
-      .references('id')
-      .inTable('rumble_requests')
-      .onDelete('CASCADE');
-      
+      .references("id")
+      .inTable("rumble_requests")
+      .onDelete("CASCADE");
+
     // Foreign Key: The user who initiated the challenge
-    table.uuid('requester_id')
+    table
+      .uuid("requester_id")
       .notNullable()
-      .references('id')
-      .inTable('users')
-      .onDelete('CASCADE');
-      
+      .references("id")
+      .inTable("users")
+      .onDelete("CASCADE");
+
     // Foreign Key: The user receiving the challenge
-    table.uuid('receiver_id')
+    table
+      .uuid("receiver_id")
       .notNullable()
       .references("id")
       .inTable("users")
@@ -35,7 +38,7 @@ export function up(knex) {
       .defaultTo("inactive");
 
     // TIMESTAMP created_at
-    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 }
 
@@ -44,5 +47,5 @@ export function up(knex) {
  * @returns { Promise<void> }
  */
 export function down(knex) {
-  return knex.schema.dropTableIfExists('rumbles');
+  return knex.schema.dropTableIfExists("rumbles");
 }
