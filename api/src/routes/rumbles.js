@@ -16,6 +16,7 @@ import { authenticateToken } from "../middlewares/auth.js";
 import {
   addRumble_controller,
   getRumbles_controller,
+  terminateRumble_controller,
 } from "../controllers/rumbles.js";
 import {
   addMessage_controller,
@@ -72,6 +73,7 @@ const validateGetMessages = (req, res, next) => {
 
 router.get("/", getRumbles_controller);
 router.post("/", validateBody(createRumbleSchema), addRumble_controller);
+router.put("/:id/terminate", terminateRumble_controller);
 router.get("/:id/messages", validateGetMessages, getMessages_controller);
 router.post("/:id/messages", validateAddMessage, addMessage_controller);
 

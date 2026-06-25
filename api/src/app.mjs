@@ -5,7 +5,6 @@ import bodyParser from "body-parser";
 import db from "./database/db.js";
 import authRouter from "./routes/auth.js";
 import rumblesRouter from "./routes/rumbles.js";
-import nestedRouter from "./routes/nested.js";
 import usersRouter from "./routes/users.js";
 import mismatchesRouter from "./routes/mismatches.js";
 // Import global error handler
@@ -25,9 +24,7 @@ apiRouter.get("/", async (req, res) => {
   res.json(result);
 });
 
-// Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/auth", authRouter);
-apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);
 apiRouter.use("/mismatches", mismatchesRouter);

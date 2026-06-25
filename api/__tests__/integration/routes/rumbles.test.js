@@ -86,4 +86,5 @@ describe("rumbles integration routes", () => {
       expect(addRumble_controller).toHaveBeenCalledTimes(1);
     });
   });
+  // todo("Add tests for PUT /rumbles/:id/terminate route.");
 });

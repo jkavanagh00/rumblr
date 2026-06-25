@@ -22,22 +22,9 @@ describe("users controller", () => {
     test.todo("forwards model errors to next");
   });
 
-  describe("blockUser_controller", () => {
-    test.todo("returns 400 when the user tries to block themselves");
-    test.todo("returns 404 when the user to block does not exist");
-    test.todo("returns 409 when the block relationship already exists");
-    test.todo("creates a block relationship and returns 201");
-    test.todo("passes errors to next");
-  });
-
-  describe("unblockUser_controller", () => {
-    test.todo("returns 404 when the block relationship does not exist");
-    test.todo("deletes the block relationship and returns 204");
-    test.todo("passes errors to next");
-  });
-
-  describe("getBlockedUsers_controller", () => {
-    test.todo("returns blocked users for the current user");
-    test.todo("passes errors to next");
+  describe("getOnboardingProgress_controller", () => {
+    test.todo("calls getOnboardingProgress_model with req.user.id");
+    test.todo("returns 200 with onboarding progress");
+    test.todo("passes model errors to next");
   });
 });

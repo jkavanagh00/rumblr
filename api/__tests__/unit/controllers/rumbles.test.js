@@ -1,4 +1,5 @@
 import { jest } from "@jest/globals";
+import { describe, toDotPath } from "zod/v4/core";
 
 jest.unstable_mockModule("../../../src/models/rumbles.js", () => ({
   addRumble_model: jest.fn(),
@@ -31,7 +32,7 @@ describe("rumbles controller", () => {
           rumble_request_id: "11111111-1111-4111-8111-111111111111",
           requester_id: "22222222-2222-4222-8222-222222222222",
           receiver_id: "33333333-3333-4333-8333-333333333333",
-            status: "active",
+          status: "active",
         },
       };
       const res = createMockRes();
@@ -109,4 +110,5 @@ describe("rumbles controller", () => {
       expect(next).toHaveBeenCalledWith(error);
     });
   });
+  // todo("Add terminateRumble_controller unit tests (401, 404, 403, and success)");
 });
