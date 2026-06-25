@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 import db from "./database/db.js";
 import authRouter from "./routes/auth.js";
 import rumblesRouter from "./routes/rumbles.js";
@@ -30,6 +32,7 @@ apiRouter.use("/user", usersRouter);
 apiRouter.use("/mismatches", mismatchesRouter);
 
 app.use("/api", apiRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Register error handler middleware (must be last)
 app.use(errorHandler);
