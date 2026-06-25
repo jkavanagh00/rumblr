@@ -17,6 +17,13 @@ import {
   deleteUserById_model,
 } from "../models/users.js";
 
+import {
+  createBlock_model,
+  deleteBlock_model,
+  getBlockByUsers_model,
+  getBlockedUsersByBlockerId_model,
+} from "../models/blocks.js";
+
 import { getOnboardingProgress_model } from "../models/statements.js";
 
 export async function getUser_controller(req, res, next) {
@@ -68,6 +75,72 @@ export async function deleteUser_controller(req, res, next) {
     }
 
     return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function blockUser_controller(req, res, next) {
+  try {
+    const blockerId = req.user.id;
+    const blockedId = req.params.id;
+
+    if (blockerId === blockedId) {
+      return res.status(400).json({
+        error: "You cannot block yourself",
+      });
+    }
+
+    const blockedUser = await getUserById_model(blockedId);
+    if (!blockedUser) {
+      return res.status(404).json({
+        error: "User to block not found",
+      });
+    }
+
+    const existingBlock = await getBlockByUsers_model(blockerId, blockedId);
+    if (existingBlock) {
+      return res.status(409).json({
+        error: "User is already blocked",
+      });
+    }
+
+    const block = await createBlock_model(blockerId, blockedId);
+
+    return res.status(201).json(block);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function unblockUser_controller(req, res, next) {
+  try {
+    const blockerId = req.user.id;
+    const blockedId = req.params.id;
+
+    const deletedCount = await deleteBlock_model(blockerId, blockedId);
+
+    if (!deletedCount) {
+      return res.status(404).json({
+        error: "Block relationship not found",
+      });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getBlockedUsers_controller(req, res, next) {
+  try {
+    const blockerId = req.user.id;
+
+    const blockedUsers = await getBlockedUsersByBlockerId_model(blockerId);
+
+    return res.status(200).json({
+      data: blockedUsers,
+    });
   } catch (error) {
     next(error);
   }
