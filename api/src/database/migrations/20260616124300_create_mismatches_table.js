@@ -31,7 +31,7 @@ export function up(knex) {
     // add a check constraint to ensure confidence is one of the allowed values
     table.check("confidence IN ('low', 'medium', 'high')");
     // add a check constraint to ensure shared_responses is above the minimum threshold for a valid mismatch
-    table.check("shared_responses >= 20");
+    table.check("shared_responses >= 10");
 });
 }
 
