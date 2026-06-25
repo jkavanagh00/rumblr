@@ -18,13 +18,14 @@ import {
   getUser_controller,
   updateUser_controller,
   deleteUser_controller,
+  getOnboardingProgress_controller,
 } from "../controllers/users.js";
 import { validateBody } from "../middlewares/errors.js";
 
 const router = express.Router();
 
 router.use(authenticateToken);
-
+router.get("/onboarding", getOnboardingProgress_controller);
 router.get("/", getUser_controller);
 router.put("/", validateBody(updateUserSchema), updateUser_controller);
 router.delete("/", deleteUser_controller);
