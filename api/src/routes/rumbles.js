@@ -71,9 +71,175 @@ const validateGetMessages = (req, res, next) => {
   next();
 };
 
+/**
+ * @openapi
+ * /rumbles:
+ *   get:
+ *     tags:
+ *       - Rumbles
+ *     summary: Get all rumbles for the current user
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of rumbles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Rumble'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *   post:
+ *     tags:
+ *       - Rumbles
+ *     summary: Create a new rumble
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateRumbleBody'
+ *     responses:
+ *       201:
+ *         description: Rumble created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Rumble'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 router.get("/", getRumbles_controller);
 router.post("/", validateBody(createRumbleSchema), addRumble_controller);
+
+/**
+ * @openapi
+ * /rumbles/{id}/terminate:
+ *   put:
+ *     tags:
+ *       - Rumbles
+ *     summary: Terminate a rumble
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the rumble to terminate
+ *     responses:
+ *       200:
+ *         description: Rumble terminated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Rumble'
+ *       403:
+ *         description: Not a participant in this rumble
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 router.put("/:id/terminate", terminateRumble_controller);
+
+/**
+ * @openapi
+ * /rumbles/{id}/messages:
+ *   get:
+ *     tags:
+ *       - Rumbles
+ *     summary: Get messages for a rumble
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the rumble
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Paginated list of messages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginatedMessages'
+ *       403:
+ *         description: Not a participant in this rumble
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *   post:
+ *     tags:
+ *       - Rumbles
+ *     summary: Send a message to a rumble
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the rumble
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateMessageBody'
+ *     responses:
+ *       201:
+ *         description: Message sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Message'
+ *       403:
+ *         description: Not a participant or rumble is terminated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 router.get("/:id/messages", validateGetMessages, getMessages_controller);
 router.post("/:id/messages", validateAddMessage, addMessage_controller);
 
