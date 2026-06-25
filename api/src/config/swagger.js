@@ -37,6 +37,18 @@ const options = {
             created_at: { type: "string", format: "date-time" },
           },
         },
+        PublicUser: {
+          type: "object",
+          description: "User object returned by auth endpoints — email and password_hash are stripped",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            username: { type: "string" },
+            bio: { type: "string", nullable: true },
+            status: { type: "string", enum: ["active", "inactive", "suspended"] },
+            role: { type: "string", enum: ["user", "admin"] },
+            created_at: { type: "string", format: "date-time" },
+          },
+        },
         Statement: {
           type: "object",
           properties: {
@@ -49,7 +61,7 @@ const options = {
           properties: {
             id: { type: "string", format: "uuid" },
             user_id: { type: "string", format: "uuid" },
-            question_id: { type: "string", format: "uuid" },
+            statement_id: { type: "string", format: "uuid" },
             agreement_score: { type: "integer", minimum: 1, maximum: 5 },
             importance_score: { type: "integer", minimum: 1, maximum: 5 },
             created_at: { type: "string", format: "date-time" },
@@ -106,6 +118,39 @@ const options = {
             blocker_id: { type: "string", format: "uuid" },
             blocked_id: { type: "string", format: "uuid" },
             created_at: { type: "string", format: "date-time" },
+          },
+        },
+        // ── Composite response shapes ──────────────────────────────────
+        AuthResponse: {
+          type: "object",
+          properties: {
+            accessToken: { type: "string" },
+            user: { $ref: "#/components/schemas/PublicUser" },
+          },
+        },
+        PaginatedMessages: {
+          type: "object",
+          properties: {
+            data: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Message" },
+            },
+            pagination: {
+              type: "object",
+              properties: {
+                page: { type: "integer" },
+                limit: { type: "integer" },
+              },
+            },
+          },
+        },
+        OnboardingProgress: {
+          type: "object",
+          properties: {
+            completed: { type: "boolean" },
+            answeredCount: { type: "integer" },
+            requiredCount: { type: "integer" },
+            remainingCount: { type: "integer" },
           },
         },
         // ── Request bodies ─────────────────────────────────────────────
