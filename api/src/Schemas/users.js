@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { threatLevelsSchema } from "./threat_levels.js";
 
 export const updateUserSchema = z.object({
   username: z
@@ -17,4 +18,5 @@ export const updateUserSchema = z.object({
       message: "Status must be active, inactive, or suspended",
     })
     .optional(),
+  threat_levels: threatLevelsSchema.optional(),
 });

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { threatLevelSchema } from "./threat_levels.js";
 
 export const createRumbleSchema = z.object({
   rumble_request_id: z
@@ -20,4 +21,6 @@ export const createRumbleSchema = z.object({
       }),
     })
     .default("inactive"),
+
+  threat_level: threatLevelSchema,
 });

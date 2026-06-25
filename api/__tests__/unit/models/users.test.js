@@ -23,6 +23,12 @@ describe("users model", () => {
     test.todo("finds a user by email and username");
   });
 
+  describe("threat levels", () => {
+    test.todo(
+      "stores threat_levels as JSON and returns parsed array in user reads",
+    );
+  });
+
   describe("deleteUserById_model", () => {
     test.todo("deletes and returns the deleted user");
   });

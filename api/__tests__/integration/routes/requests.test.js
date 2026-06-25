@@ -2,6 +2,7 @@ describe("requests integration routes", () => {
 	describe("POST /api/mismatches/:id", () => {
 		test.todo("returns 401 when no bearer token is provided");
 		test.todo("returns 403 when bearer token is invalid or expired");
+		test.todo("returns 400 when threat_level is missing, invalid, or not shared by both users");
 		test.todo("returns 400 when another pending rumble request already exists");
 		test.todo("returns 201 with created rumble request when no pending request exists");
 	});

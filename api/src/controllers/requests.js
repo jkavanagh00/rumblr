@@ -4,13 +4,35 @@ import {
   getRumbleRequestById_model,
   declineRumbleRequest_model,
 } from "../models/requests.js";
+import { getUserById_model } from "../models/users.js";
 import { acceptRumbleRequest_service } from "../services/requests.js";
 
 export async function sendRumbleRequest_controller(req, res, next) {
   try {
+    const { threat_level } = req.validatedBody;
+    const requester = await getUserById_model(req.user.id);
+    const receiver = await getUserById_model(req.params.id);
+
+    if (!requester || !receiver) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!requester.threat_levels.includes(threat_level)) {
+      return res.status(400).json({
+        error: "Requester is not available for this threat level",
+      });
+    }
+
+    if (!receiver.threat_levels.includes(threat_level)) {
+      return res.status(400).json({
+        error: "Receiver does not accept this threat level",
+      });
+    }
+
     const activeRumble = await checkForPendingRumbleRequest_model(
       req.user.id,
       req.params.id,
+      threat_level,
     );
 
     if (activeRumble) {
@@ -19,7 +41,11 @@ export async function sendRumbleRequest_controller(req, res, next) {
         .json({ error: "Another rumble request is already pending" });
     }
 
-    const request = await sendRumbleRequest_model(req.user.id, req.params.id);
+    const request = await sendRumbleRequest_model(
+      req.user.id,
+      req.params.id,
+      threat_level, //need to be checked 
+    );
 
     return res.status(201).json(request);
   } catch (error) {
@@ -44,6 +70,7 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       rumble_request_id: rumbleRequest.id,
       requester_id: rumbleRequest.requester_id,
       receiver_id: req.user.id,
+      threat_level: rumbleRequest.threat_level,
     };
     const rumble = await acceptRumbleRequest_service(payload);
     return res.status(201).json(rumble);

@@ -2,6 +2,7 @@ describe("auth controller", () => {
 	describe("signup_controller", () => {
 		test.todo("returns 409 when an account already exists for the provided email");
 		test.todo("returns 409 when the username is already taken after email uniqueness passes");
+		test.todo("uses provided threat_levels or falls back to default [green] when creating a user");
 		test.todo("creates a user with hashed password and nullable bio, then returns 201 with accessToken and user payload");
 		test.todo("forwards an error to next when ACCESS_TOKEN_SECRET is missing during token generation");
 		test.todo("forwards model or helper errors to next");
