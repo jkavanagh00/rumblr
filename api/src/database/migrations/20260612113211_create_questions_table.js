@@ -1,21 +1,26 @@
 /**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function up(knex) {
-  return knex.schema.createTable("questions", (table) => {
-    // UUID primary key that auto-generates a unique string identifier
-    table.uuid("id").primary().defaultTo(knex.fn.uuid());
 
-    // TEXT field for the question text content
-    table.text("content").notNullable();
-  });
-}
-
+Compatibility shim:
+This file exists so environments that already recorded
+20260612113211_create_questions_table.js in knex_migrations
+can still rollback cleanly.
+Real table creation lives in 20260612113211_create_statements_table.js.
+*/
 /**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function down(knex) {
-  return knex.schema.dropTableIfExists("questions");
+
+@param { import("knex").Knex } knex
+@returns { Promise<void> }
+*/
+export async function up(knex) {
+  // Intentionally no-op: the statements table is created by
+  // 20260612113211_create_statements_table.js.
+}
+/**
+
+@param { import("knex").Knex } knex
+@returns { Promise<void> }
+*/
+export async function down(knex) {
+  // Safe in both old and new environments.
+  await knex.schema.dropTableIfExists("statements");
 }

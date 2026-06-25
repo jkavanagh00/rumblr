@@ -1,6 +1,22 @@
 import app from "./app.mjs";
-  
-app.use("/api", apiRouter);
-app.listen(process.env.PORT, () => {
-  console.log(`API listening on port ${process.env.PORT}`);
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import registerRumbleSocket from "./socket.js";
+
+const PORT = process.env.PORT || 3001;
+
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: true,
+    credentials: true,
+  },
+});
+
+registerRumbleSocket(io);
+app.set("io", io);
+
+server.listen(PORT, () => {
+  console.log(`API listening on port ${PORT}`);
+  console.log(`Socket.IO is ready on port ${PORT}`);
 });

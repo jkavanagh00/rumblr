@@ -24,13 +24,16 @@ export function up(knex) {
     // Foreign Key: The user receiving the challenge
     table.uuid('receiver_id')
       .notNullable()
-      .references('id')
-      .inTable('users')
-      .onDelete('CASCADE');
-      
-    // ENUM status (e.g., scheduled, active, completed, cancelled)
-    table.enum('status', ['scheduled', 'completed', 'cancelled']).notNullable().defaultTo('scheduled');
-    
+      .references("id")
+      .inTable("users")
+      .onDelete("CASCADE");
+
+    // Status lifecycle: inactive at creation, active during conversation, terminated when the rumble is ended.
+    table
+      .enum("status", ["active", "inactive", "terminated"])
+      .notNullable()
+      .defaultTo("inactive");
+
     // TIMESTAMP created_at
     table.timestamp('created_at').defaultTo(knex.fn.now());
   });
