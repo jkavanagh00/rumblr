@@ -11,7 +11,7 @@ import db from "../database/db.js";
 export async function addResponse_service(userId, statementId, responseData) {
   const response = await db.transaction(async (trx) => {
     
-    const statement = await getStatementById_model(statementId);
+    const statement = await getStatementById_model(statementId, trx);
     if (!statement) {
       throw new Error("No statement with provided id found");
     }
