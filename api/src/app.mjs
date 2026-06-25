@@ -9,6 +9,7 @@ import authRouter from "./routes/auth.js";
 import rumblesRouter from "./routes/rumbles.js";
 import usersRouter from "./routes/users.js";
 import mismatchesRouter from "./routes/mismatches.js";
+import statementsRouter from "./routes/statements.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 
@@ -30,6 +31,7 @@ apiRouter.use("/auth", authRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);
 apiRouter.use("/mismatches", mismatchesRouter);
+apiRouter.use("/statements", statementsRouter);
 
 app.use("/api", apiRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
