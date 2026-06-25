@@ -3,12 +3,18 @@ import db from "../database/db.js";
 export async function sendRumbleRequest_model(
   requester_id,
   receiver_id,
+  threat_level,
   trx = db,
 ) {
-  return await trx("rumble_requests").insert({
-    requester_id,
-    receiver_id,
-  });
+  const [request] = await trx("rumble_requests")
+    .insert({
+      requester_id,
+      receiver_id,
+      threat_level,
+    })
+    .returning("*");
+
+  return request;
 }
 
 export async function getRumbleRequestById_model(id, trx = db) {
@@ -31,12 +37,17 @@ export async function declineRumbleRequest_model(id, trx = db) {
 export async function checkForPendingRumbleRequest_model(
   requester_id,
   receiver_id,
+  threat_level,
   trx = db,
 ) {
   const pendingRequest = await trx("rumble_requests")
     .select("*")
-    .where("requester_id", requester_id)
-    .andWhere("receiver_id", receiver_id)
+    .where((builder) => {
+      builder
+        .where({ requester_id, receiver_id })
+        .orWhere({ requester_id: receiver_id, receiver_id: requester_id });
+    })
+    .andWhere("threat_level", threat_level)
     .andWhere("status", "pending")
     .first();
   return pendingRequest;

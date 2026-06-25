@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { threatLevelsSchema } from "./threat_levels.js";
 
 export const signupSchema = z.object({
   username: z
@@ -13,6 +14,7 @@ export const signupSchema = z.object({
     .string({ required_error: "Password is required" })
     .min(8, { message: "Password must be at least 8 characters long" }),
   bio: z.string().trim().max(280).optional(),
+  threat_levels: threatLevelsSchema.default(["green"]),
 });
 
 export const loginSchema = z.object({

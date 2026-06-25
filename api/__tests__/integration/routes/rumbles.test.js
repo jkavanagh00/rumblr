@@ -73,6 +73,7 @@ describe("rumbles integration routes", () => {
         requester_id: testUserId,
         receiver_id: "44444444-4444-4444-8444-444444444444",
         status: "active",
+        threat_level: "orange",
       };
 
       addRumble_controller.mockImplementation(async (_req, res) => {

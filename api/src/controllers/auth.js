@@ -38,7 +38,7 @@ function toPublicUser(user) {
 
 export async function signup_controller(req, res, next) {
   try {
-    const { username, email, password, bio } = req.validatedBody;
+    const { username, email, password, bio, threat_levels } = req.validatedBody;
 
     const existingEmailUser = await findUserByEmail_model(email);
     if (existingEmailUser) {
@@ -55,6 +55,7 @@ export async function signup_controller(req, res, next) {
       email,
       password_hash: hashPassword(password),
       bio: bio ?? null,
+      threat_levels,
     });
 
     const accessToken = createAccessToken(createdUser);
