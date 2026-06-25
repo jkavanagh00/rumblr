@@ -53,7 +53,7 @@ export async function signup_controller(req, res, next) {
     const createdUser = await createUser_model({
       username,
       email,
-      password_hash: hashPassword(password),
+      password_hash: await hashPassword(password),
       bio: bio ?? null,
     });
 
@@ -76,7 +76,7 @@ export async function login_controller(req, res, next) {
       ? await findUserByEmail_model(identifier)
       : await findUserByUsername_model(identifier);
 
-    if (!user || !verifyPassword(password, user.password_hash)) {
+    if (!user || !(await verifyPassword(password, user.password_hash))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
