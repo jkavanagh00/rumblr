@@ -1,6 +1,7 @@
 import express from "express";
 import request from "supertest";
 import { jest } from "@jest/globals";
+import { terminateRumble_controller } from "../../../src/controllers/rumbles.js";
 
 const testUserId = "11111111-1111-4111-8111-111111111111";
 const rumbleId = "22222222-2222-4222-8222-222222222222";
@@ -15,6 +16,7 @@ jest.unstable_mockModule("../../../src/middlewares/auth.js", () => ({
 jest.unstable_mockModule("../../../src/controllers/rumbles.js", () => ({
   addRumble_controller: jest.fn(),
   getRumbles_controller: jest.fn(),
+  terminateRumble_controller: jest.fn(),
 }));
 
 jest.unstable_mockModule("../../../src/controllers/messages.js", () => ({

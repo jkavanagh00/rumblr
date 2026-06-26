@@ -1,9 +1,11 @@
 import { jest } from "@jest/globals";
-import { describe, toDotPath } from "zod/v4/core";
 
 jest.unstable_mockModule("../../../src/models/rumbles.js", () => ({
   addRumble_model: jest.fn(),
   getActiveRumblesByUserId_model: jest.fn(),
+  getRumbleById_model: jest.fn(),
+  isUserParticipantInRumble_model: jest.fn(),
+  terminateRumble_model: jest.fn(),
 }));
 
 const { addRumble_model, getActiveRumblesByUserId_model } = await import(

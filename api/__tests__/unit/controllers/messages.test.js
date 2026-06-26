@@ -223,7 +223,7 @@ describe("messages controller", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    todoTest("Add tests for getMessages_controller when rumble is terminated.");
+    test.todo("Add tests for getMessages_controller when rumble is terminated.");
 
     test("returns paginated messages for rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
