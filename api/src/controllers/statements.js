@@ -16,6 +16,7 @@ import {
   deleteStatement_model,
   getStatementWithNoResponse_model,
   getOnboardingStatement_model,
+  getOnboardingProgress_model,
 } from "../models/statements.js";
 
 export async function getStatementWithNoResponse_controller(req, res, next) {
@@ -116,6 +117,18 @@ export async function getOnboardingStatement_controller(req, res, next) {
           error:
             "Onboarding statement number must be a whole number between one and ten",
         });
+    }
+
+    const onboardingProgress = await getOnboardingProgress_model(req.user.id);
+
+    if (
+      !onboardingProgress.completed &&
+      statementNumber !== onboardingProgress.nextNumber
+    ) {
+      return res.status(409).json({
+        error: `You must answer onboarding statement ${onboardingProgress.nextNumber} next`,
+        nextNumber: onboardingProgress.nextNumber,
+      });
     }
 
     const statement = await getOnboardingStatement_model(statementNumber);
