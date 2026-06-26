@@ -1,4 +1,10 @@
 describe("requests controller", () => {
+	describe("listRumbleRequests_controller", () => {
+		test.todo("returns 401 when req.user.id is missing");
+		test.todo("returns 200 with data from listRumbleRequestsForUser_model for authenticated user");
+		test.todo("forwards model errors to next");
+	});
+
 	describe("sendRumbleRequest_controller", () => {
 		test.todo("returns 400 when threat_level is missing, invalid, or not allowed for requester/receiver");
 		test.todo("returns 400 when another pending rumble request already exists between the users");

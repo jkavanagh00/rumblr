@@ -30,6 +30,28 @@ export async function declineRumbleRequest_model(id, trx = db) {
   });
 }
 
+export async function listRumbleRequestsForUser_model(userId, trx = db) {
+  return await trx("rumble_requests as rr")
+    .leftJoin("users as requester", "rr.requester_id", "requester.id")
+    .leftJoin("users as receiver", "rr.receiver_id", "receiver.id")
+    .select(
+      "rr.id",
+      "rr.requester_id",
+      "rr.receiver_id",
+      "rr.threat_level",
+      "rr.status",
+      "rr.created_at",
+      "requester.username as requester_username",
+      "receiver.username as receiver_username",
+    )
+    .where((builder) => {
+      builder
+        .where("rr.requester_id", userId)
+        .orWhere("rr.receiver_id", userId);
+    })
+    .orderBy("rr.created_at", "desc");
+}
+
 export async function checkForPendingRumbleRequest_model(
   requester_id,
   receiver_id,
