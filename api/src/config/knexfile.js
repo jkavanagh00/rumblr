@@ -15,9 +15,9 @@ const knexConfig = {
   connection:
     client === "sqlite3"
       ? {
-          filename:
-            process.env.DB_SQLITE_FILENAME ||
-            path.resolve(__dirname, "../database.sqlite3"),
+          filename: process.env.DB_SQLITE_FILENAME
+            ? path.resolve(__dirname, "../..", process.env.DB_SQLITE_FILENAME)
+            : path.resolve(__dirname, "../database.sqlite3"),
         }
       : {
           host: process.env.DB_HOST,
