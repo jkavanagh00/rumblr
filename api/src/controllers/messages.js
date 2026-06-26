@@ -54,8 +54,8 @@ export async function addMessage_controller(req, res, next) {
 export async function getMessages_controller(req, res, next) {
   try {
     const rumbleId = req.params.id;
-    const page = req.pagination.page; // Set by validation middleware
-    const limit = req.pagination.limit; // Set by validation middleware
+    const page = req.validatedQuery.page;
+    const limit = req.validatedQuery.limit;
     const userId = req.userId; // Set by validation middleware
 
     const rumble = await getRumbleById_model(rumbleId);

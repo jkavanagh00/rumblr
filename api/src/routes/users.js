@@ -11,21 +11,12 @@ import {
   getBlockedUsers_controller,
   getOnboardingProgress_controller,
 } from "../controllers/users.js";
-import { validateBody } from "../middlewares/errors.js";
+import { validateBody, validateParams } from "../middlewares/errors.js";
 
 const router = express.Router();
 
 router.use(authenticateToken);
 
-const validateBlockParams = (req, res, next) => {
-  const result = blockParamsSchema.safeParse(req.params);
-
-  if (!result.success) {
-    return next(result.error);
-  }
-
-  next();
-};
 
 /**
  * @openapi
@@ -115,9 +106,8 @@ router.get("/blocks", getBlockedUsers_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.post("/blocks/:id", validateBlockParams, blockUser_controller);
-router.delete("/blocks/:id", validateBlockParams, unblockUser_controller);
-
+router.post("/blocks/:id", validateParams(blockParamsSchema), blockUser_controller);
+router.delete("/blocks/:id", validateParams(blockParamsSchema), unblockUser_controller);
 /**
  * @openapi
  * /user/onboarding:
