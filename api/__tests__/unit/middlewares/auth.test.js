@@ -34,7 +34,7 @@ describe("auth middleware", () => {
 	});
     test("returns 401 when Authorization header has no bearer token", async () => {
 		const req = { headers: {
-			authorization: ""
+			authorization: "invalidToken"
 		}};
 		const res = createMockRes();
 		const next = jest.fn();
