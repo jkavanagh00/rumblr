@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals"
+import { expect, jest } from "@jest/globals"
 const mockVerify = jest.fn();
 jest.unstable_mockModule("jsonwebtoken", () => ({
   default: { verify: mockVerify },
@@ -121,8 +121,44 @@ describe("auth middleware", () => {
   });
 
   describe("requireAdmin", () => {
-    test.todo("returns 403 when req.user is missing");
-    test.todo("returns 403 when req.user.role is not admin");
-    test.todo("calls next when req.user.role is admin");
+    test("returns 403 when req.user is missing", async () => {
+		const req = {};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		await requireAdmin(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(403);
+		expect(res.json).toHaveBeenCalledWith({ error: "Access denied. Admin privileges required." })
+		expect(next).not.toHaveBeenCalled();
+	});
+    test("returns 403 when req.user.role is not admin", async () => {
+		const req = {
+			user: {
+				role: "user"
+			}
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		await requireAdmin(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(403);
+		expect(res.json).toHaveBeenCalledWith({ error: "Access denied. Admin privileges required." })
+		expect(next).not.toHaveBeenCalled();
+	});
+    test("calls next when req.user.role is admin", async () => {
+		const req = {
+			user: {
+				role: "admin"
+			}
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		await requireAdmin(req, res, next);
+
+		expect(next).toHaveBeenCalledWith();
+	});
   });
 });
