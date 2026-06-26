@@ -90,8 +90,34 @@ describe("auth middleware", () => {
 
 		expect(req.userId).toBe("123");
 	});
-    test.todo("calls next on successful token verification");
-    test.todo("returns 403 when token verification fails");
+    test("calls next on successful token verification", async () => {
+		const req = {
+			headers: {
+				authorization: "Bearer thisIsAToken"
+			},
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		mockVerify.mockReturnValue({ userId: "123", role: "user"});
+		await authenticateToken(req, res, next);
+
+		expect(next).toHaveBeenCalledWith();
+	});
+    test("returns 403 when token verification fails", async () => {
+		const req = {
+			headers: {
+				authorization: "Bearer thisIsAToken"
+			},
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		mockVerify.mockImplementation(() => { throw new Error("invalid") })
+		await authenticateToken(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(403);
+	});
   });
 
   describe("requireAdmin", () => {
