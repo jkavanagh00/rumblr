@@ -7,6 +7,8 @@ describe("requests controller", () => {
 
 	describe("sendRumbleRequest_controller", () => {
 		test.todo("returns 400 when threat_level is missing, invalid, or not allowed for requester/receiver");
+		test.todo("returns 400 with the remaining cooldown time when the latest declined request for the same requester/receiver pair is still within 7 days");
+		test.todo("allows a new request when the latest declined request for the same requester/receiver pair is older than 7 days");
 		test.todo("returns 400 when another pending rumble request already exists between the users");
 		test.todo("creates a new rumble request with req.user.id and req.params.id, then returns 201");
 		test.todo("forwards model errors to next");
