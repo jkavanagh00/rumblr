@@ -8,6 +8,12 @@ const { authenticateToken, requireAdmin } = await import(
 );
 process.env.ACCESS_TOKEN_SECRET = "test-secret";
 
+function createMockRes() {
+  return {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis(),
+  };
+}
 
 beforeEach(() => {
   jest.clearAllMocks();
