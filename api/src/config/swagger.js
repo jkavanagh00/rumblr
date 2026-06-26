@@ -105,6 +105,7 @@ const options = {
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
             status: { type: "string", enum: ["active", "inactive", "terminated"] },
+            threat_level: { type: "string", enum: ["green", "orange", "red"] },
             created_at: { type: "string", format: "date-time" },
           },
         },
@@ -169,15 +170,21 @@ const options = {
             email: { type: "string", format: "email" },
             password: { type: "string", minLength: 8 },
             bio: { type: "string", maxLength: 280 },
+            threat_levels: {
+              type: "array",
+              items: { type: "string", enum: ["green", "orange", "red"] },
+              default: ["green"],
+            },
           },
         },
         LoginBody: {
           type: "object",
           required: ["identifier", "password"],
           properties: {
-            identifier: { type: "string", description: "Email or username" },
-            password: { type: "string" },
+            identifier: { type: "string", description: "Email or username", example: "alice_agrees" },
+            password: { type: "string", example: "password123" },
           },
+          example: { identifier: "alice_agrees", password: "password123" },
         },
         UpdateUserBody: {
           type: "object",
@@ -186,24 +193,37 @@ const options = {
             email: { type: "string", format: "email" },
             bio: { type: "string", maxLength: 280 },
             status: { type: "string", enum: ["active", "inactive", "suspended"] },
+            threat_levels: {
+              type: "array",
+              items: { type: "string", enum: ["green", "orange", "red"] },
+            },
           },
         },
         CreateRumbleBody: {
           type: "object",
-          required: ["rumble_request_id", "requester_id", "receiver_id"],
+          required: ["rumble_request_id", "requester_id", "receiver_id", "threat_level"],
           properties: {
             rumble_request_id: { type: "string", format: "uuid" },
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
-            status: { type: "string", enum: ["active", "inactive", "terminated"] },
+            status: { type: "string", enum: ["active", "inactive", "terminated"], default: "inactive" },
+            threat_level: { type: "string", enum: ["green", "orange", "red"] },
+          },
+        },
+        CreateRumbleRequestBody: {
+          type: "object",
+          required: ["threat_level"],
+          properties: {
+            threat_level: { type: "string", enum: ["green", "orange", "red"] },
           },
         },
         CreateMessageBody: {
           type: "object",
           required: ["content"],
           properties: {
-            content: { type: "string", minLength: 1 },
+            content: { type: "string", minLength: 1, example: "Climate science has been wrong before. We should be more skeptical of these predictions." },
           },
+          example: { content: "Climate science has been wrong before. We should be more skeptical of these predictions." },
         },
         CreateStatementBody: {
           type: "object",

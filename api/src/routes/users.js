@@ -61,6 +61,7 @@ router.get("/blocks", getBlockedUsers_controller);
  *           type: string
  *           format: uuid
  *         description: ID of the user to block
+ *         example: "fb9123f7-1666-4850-97b3-237647a07b15"
  *     responses:
  *       201:
  *         description: User blocked
@@ -98,6 +99,7 @@ router.get("/blocks", getBlockedUsers_controller);
  *           type: string
  *           format: uuid
  *         description: ID of the user to unblock
+ *         example: "fb9123f7-1666-4850-97b3-237647a07b15"
  *     responses:
  *       204:
  *         description: User unblocked
