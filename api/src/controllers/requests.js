@@ -13,10 +13,11 @@ const RUMBLE_REQUEST_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getRemainingCooldownMessage(cooldownEndsAt) {
   const remainingMs = cooldownEndsAt - Date.now();
-  const remainingDays = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
+  const remainingDays = Math.max(1, Math.ceil(remainingMs / (24 * 60 * 60 * 1000)));
   const dayLabel = remainingDays === 1 ? "day" : "days";
+  const endsAtIso = new Date(cooldownEndsAt).toISOString();
 
-  return `You must wait ${remainingDays} more ${dayLabel} before sending another rumble request to this user`;
+  return `You must wait about ${remainingDays} more ${dayLabel} (until ${endsAtIso}) before sending another rumble request to this user`;
 }
 
 export async function sendRumbleRequest_controller(req, res, next) {
