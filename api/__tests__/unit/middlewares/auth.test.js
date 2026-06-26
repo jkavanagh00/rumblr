@@ -32,7 +32,19 @@ describe("auth middleware", () => {
 		expect(res.json).toHaveBeenCalledWith({ error: "Access denied. No token provided." });
 		expect(next).not.toHaveBeenCalled();
 	});
-    test.todo("returns 401 when Authorization header has no bearer token");
+    test("returns 401 when Authorization header has no bearer token", async () => {
+		const req = { headers: {
+			Authorization: {}
+		}};
+		const res = createMockRes();
+		const next = jest.fn();
+		
+		const result = await authenticateToken(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(401);
+		expect(res.json).toHaveBeenCalledWith({ error: "Access denied. No token provided." });
+		expect(next).not.toHaveBeenCalled();
+	});
     test.todo("calls jwt.verify with HS256 algorithm and ACCESS_TOKEN_SECRET");
     test.todo("sets req.user to decoded token payload on valid token");
     test.todo("sets req.userId from decoded payload id when present");
