@@ -175,9 +175,10 @@ const options = {
           type: "object",
           required: ["identifier", "password"],
           properties: {
-            identifier: { type: "string", description: "Email or username" },
-            password: { type: "string" },
+            identifier: { type: "string", description: "Email or username", example: "alice_agrees" },
+            password: { type: "string", example: "password123" },
           },
+          example: { identifier: "alice_agrees", password: "password123" },
         },
         UpdateUserBody: {
           type: "object",
@@ -202,8 +203,9 @@ const options = {
           type: "object",
           required: ["content"],
           properties: {
-            content: { type: "string", minLength: 1 },
+            content: { type: "string", minLength: 1, example: "Climate science has been wrong before. We should be more skeptical of these predictions." },
           },
+          example: { content: "Climate science has been wrong before. We should be more skeptical of these predictions." },
         },
         CreateStatementBody: {
           type: "object",
