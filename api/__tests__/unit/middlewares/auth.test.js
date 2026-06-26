@@ -76,8 +76,20 @@ describe("auth middleware", () => {
 			role: "user",
 		});
 	});
-    test.todo("sets req.userId from decoded payload id when present");
-    test.todo("falls back to decoded payload userId when id is missing");
+    test("falls back to decoded payload userId when id is missing", async () => {
+		const req = {
+			headers: {
+				authorization: "Bearer thisIsAToken"
+			},
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		mockVerify.mockReturnValue({ userId: "123", role: "user"});
+		await authenticateToken(req, res, next);
+
+		expect(req.userId).toBe("123");
+	});
     test.todo("calls next on successful token verification");
     test.todo("returns 403 when token verification fails");
   });
