@@ -25,10 +25,13 @@ export async function acceptRumbleRequest_model(id, trx = db) {
 }
 
 export async function declineRumbleRequest_model(id, trx = db) {
-  return await trx("rumble_requests").where("id", id).update({
-    status: "declined",
-    declined_at: trx.fn.now(),
-  });
+  return await trx("rumble_requests")
+    .where("id", id)
+    .andWhere("status", "pending")
+    .update({
+      status: "declined",
+      declined_at: trx.fn.now(),
+    });
 }
 
 export async function getLatestDeclinedRumbleRequest_model(
