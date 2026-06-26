@@ -107,8 +107,8 @@ router.get("/blocks", getBlockedUsers_controller);
  *         schema:
  *           type: string
  *           format: uuid
- *         description: ID of the user to unblock (seed users have IDs 00000000-0000-0000-0000-000000000001 through ...0012)
- *         example: "00000000-0000-0000-0000-000000000002"
+ *         description: ID of the user to unblock
+ *         example: "fb9123f7-1666-4850-97b3-237647a07b15"
  *     responses:
  *       204:
  *         description: User unblocked
