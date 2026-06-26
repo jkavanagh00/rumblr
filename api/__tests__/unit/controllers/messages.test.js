@@ -183,7 +183,7 @@ describe("messages controller", () => {
     test("returns 404 when rumble cannot be found", async () => {
       const req = {
         params: { id: "11111111-1111-4111-8111-111111111111" },
-        pagination: { page: 1, limit: 20 },
+        validatedQuery: { page: 1, limit: 20 },
         userId: "22222222-2222-4222-8222-222222222222",
       };
       const res = createMockRes();
@@ -204,7 +204,7 @@ describe("messages controller", () => {
       const userId = "22222222-2222-4222-8222-222222222222";
       const req = {
         params: { id: rumbleId },
-        pagination: { page: 1, limit: 20 },
+        validatedQuery: { page: 1, limit: 20 },
         userId,
       };
       const res = createMockRes();
@@ -230,7 +230,7 @@ describe("messages controller", () => {
       const userId = "22222222-2222-4222-8222-222222222222";
       const req = {
         params: { id: rumbleId },
-        pagination: { page: 2, limit: 5 },
+        validatedQuery: { page: 2, limit: 5 },
         userId,
       };
       const res = createMockRes();
@@ -258,7 +258,7 @@ describe("messages controller", () => {
     test("passes errors to next", async () => {
       const req = {
         params: { id: "11111111-1111-4111-8111-111111111111" },
-        pagination: { page: 1, limit: 20 },
+        validatedQuery: { page: 1, limit: 20 },
         userId: "22222222-2222-4222-8222-222222222222",
       };
       const res = createMockRes();
