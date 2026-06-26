@@ -1,19 +1,23 @@
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import dotenv from "dotenv";
 
-const client = process.env.DB_CLIENT || "sqlite3";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+
+const client = process.env.DB_CLIENT || "sqlite3";
 
 const knexConfig = {
   client,
   connection:
     client === "sqlite3"
       ? {
-          filename:
-            process.env.DB_SQLITE_FILENAME ||
-            path.resolve(__dirname, "../database.sqlite3"),
+          filename: process.env.DB_SQLITE_FILENAME
+            ? path.resolve(__dirname, "../..", process.env.DB_SQLITE_FILENAME)
+            : path.resolve(__dirname, "../database.sqlite3"),
         }
       : {
           host: process.env.DB_HOST,
