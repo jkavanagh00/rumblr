@@ -36,7 +36,7 @@ export async function seed(knex) {
         rumble_request_id: request.id,
         requester_id: request.requester_id,
         receiver_id: request.receiver_id,
-        status: "pending",
+        status: "inactive",
       });
     }
 
