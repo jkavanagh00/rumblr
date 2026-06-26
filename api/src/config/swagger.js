@@ -105,6 +105,7 @@ const options = {
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
             status: { type: "string", enum: ["active", "inactive", "terminated"] },
+            threat_level: { type: "string", enum: ["green", "orange", "red"] },
             created_at: { type: "string", format: "date-time" },
           },
         },
