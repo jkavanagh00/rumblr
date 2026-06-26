@@ -4,6 +4,7 @@ import {
   getRumbleRequestById_model,
   declineRumbleRequest_model,
   getLatestDeclinedRumbleRequest_model,
+  listRumbleRequestsForUser_model,
 } from "../models/requests.js";
 import { getUserById_model } from "../models/users.js";
 import { acceptRumbleRequest_service } from "../services/requests.js";
@@ -76,6 +77,17 @@ export async function sendRumbleRequest_controller(req, res, next) {
     );
 
     return res.status(201).json(request);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listRumbleRequests_controller(req, res, next) {
+  try {
+    const userId = req.userId;
+
+    const requests = await listRumbleRequestsForUser_model(userId);
+    return res.status(200).json({ data: requests });
   } catch (error) {
     next(error);
   }

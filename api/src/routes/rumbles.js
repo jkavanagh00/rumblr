@@ -11,7 +11,11 @@ examples:
 
 import express from "express";
 import { createRumbleSchema } from "../Schemas/rumbles.js";
-import { createMessageSchema, paginationSchema } from "../Schemas/messages.js";
+import {
+  createMessageParamsSchema,
+  createMessageSchema,
+  paginationSchema,
+} from "../Schemas/messages.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   addRumble_controller,
@@ -22,54 +26,16 @@ import {
   addMessage_controller,
   getMessages_controller,
 } from "../controllers/messages.js";
-import { validateBody } from "../middlewares/errors.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+  validateRequest,
+} from "../middlewares/errors.js";
 
 const router = express.Router();
 
 router.use(authenticateToken);
-
-const validateAddMessage = (req, res, next) => {
-  // Reminder: req.userId must be set by auth middleware before rumble routes.
-  const userId = req.userId;
-  if (!userId) {
-    const error = new Error("Unauthorized");
-    error.status = 401;
-    return next(error);
-  }
-
-  const result = createMessageSchema.safeParse({
-    rumble_id: req.params.id,
-    sender_id: userId,
-    content: req.body.content,
-  });
-  if (!result.success) {
-    return next(result.error);
-  }
-  req.validatedBody = result.data;
-  req.userId = userId;
-  next();
-};
-
-// Validation middleware for getting messages (pagination + auth)
-const validateGetMessages = (req, res, next) => {
-  const userId = req.userId;
-  if (!userId) {
-    const error = new Error("Unauthorized");
-    error.status = 401;
-    return next(error);
-  }
-
-  const result = paginationSchema.safeParse({
-    page: req.query.page,
-    limit: req.query.limit,
-  });
-  if (!result.success) {
-    return next(result.error);
-  }
-  req.pagination = result.data;
-  req.userId = userId;
-  next();
-};
 
 /**
  * @openapi
@@ -240,7 +206,27 @@ router.put("/:id/terminate", terminateRumble_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get("/:id/messages", validateGetMessages, getMessages_controller);
-router.post("/:id/messages", validateAddMessage, addMessage_controller);
+router.get(
+  "/:id/messages",
+  validateParams(createMessageParamsSchema),
+  validateQuery(paginationSchema),
+  getMessages_controller,
+);
 
+router.post(
+  "/:id/messages",
+  validateParams(createMessageParamsSchema),
+  validateRequest(
+    createMessageSchema,
+    (req) => ({
+      rumble_id: req.params.id,
+      sender_id: req.userId,
+      content: req.body.content,
+    }),
+    (req, data) => {
+      req.validatedBody = data;
+    },
+  ),
+  addMessage_controller,
+);
 export default router;

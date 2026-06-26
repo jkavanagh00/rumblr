@@ -1,4 +1,11 @@
 describe("requests integration routes", () => {
+	describe("GET /api/mismatches/requests", () => {
+		test.todo("returns 401 when no bearer token is provided");
+		test.todo("returns 403 when bearer token is invalid or expired");
+		test.todo("returns 200 with incoming and outgoing rumble requests for the authenticated user");
+		test.todo("returns 200 with an empty data array when the authenticated user has no rumble requests");
+	});
+
 	describe("POST /api/mismatches/:id", () => {
 		test.todo("returns 401 when no bearer token is provided");
 		test.todo("returns 403 when bearer token is invalid or expired");
