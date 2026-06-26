@@ -55,6 +55,12 @@ mismatchesRouter.post("/:id",validateBody(createRumbleRequestSchema),sendRumbleR
  *           type: string
  *           format: uuid
  *         description: ID of the mismatch to challenge
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateRumbleRequestBody'
  *     responses:
  *       201:
  *         description: Rumble request sent
