@@ -39,14 +39,43 @@ describe("auth middleware", () => {
 		const res = createMockRes();
 		const next = jest.fn();
 		
-		const result = await authenticateToken(req, res, next);
+		await authenticateToken(req, res, next);
 
 		expect(res.status).toHaveBeenCalledWith(401);
 		expect(res.json).toHaveBeenCalledWith({ error: "Access denied. No token provided." });
 		expect(next).not.toHaveBeenCalled();
 	});
-    test.todo("calls jwt.verify with HS256 algorithm and ACCESS_TOKEN_SECRET");
-    test.todo("sets req.user to decoded token payload on valid token");
+    test("calls jwt.verify with HS256 algorithm and ACCESS_TOKEN_SECRET", async () => {
+		const req = {
+			headers: {
+				authorization: "Bearer thisIsAToken"
+			}
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		mockVerify.mockReturnValue({ id: "123" });
+		await authenticateToken(req, res, next);
+
+		expect(mockVerify).toHaveBeenCalledWith("thisIsAToken", "test-secret", { algorithms: ["HS256"]});
+	});
+    test("sets req.user to decoded token payload on valid token", async () => {
+		const req = {
+			headers: {
+				authorization: "Bearer thisIsAToken"
+			}
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+
+		mockVerify.mockReturnValue({ id: "123", role: "user"});
+		await authenticateToken(req, res, next);
+
+		expect(req.user).toEqual({
+			id: "123",
+			role: "user",
+		});
+	});
     test.todo("sets req.userId from decoded payload id when present");
     test.todo("falls back to decoded payload userId when id is missing");
     test.todo("calls next on successful token verification");
