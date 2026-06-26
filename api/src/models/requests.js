@@ -27,7 +27,21 @@ export async function acceptRumbleRequest_model(id, trx = db) {
 export async function declineRumbleRequest_model(id, trx = db) {
   return await trx("rumble_requests").where("id", id).update({
     status: "declined",
+    declined_at: trx.fn.now(),
   });
+}
+
+export async function getLatestDeclinedRumbleRequest_model(
+  requester_id,
+  receiver_id,
+  trx = db,
+) {
+  return await trx("rumble_requests")
+    .select("declined_at")
+    .where({ requester_id, receiver_id, status: "declined" })
+    .whereNotNull("declined_at")
+    .orderBy("declined_at", "desc")
+    .first();
 }
 
 export async function checkForPendingRumbleRequest_model(

@@ -3,9 +3,20 @@ import {
   checkForPendingRumbleRequest_model,
   getRumbleRequestById_model,
   declineRumbleRequest_model,
+  getLatestDeclinedRumbleRequest_model,
 } from "../models/requests.js";
 import { getUserById_model } from "../models/users.js";
 import { acceptRumbleRequest_service } from "../services/requests.js";
+
+const RUMBLE_REQUEST_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+
+function getRemainingCooldownMessage(cooldownEndsAt) {
+  const remainingMs = cooldownEndsAt - Date.now();
+  const remainingDays = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
+  const dayLabel = remainingDays === 1 ? "day" : "days";
+
+  return `You must wait ${remainingDays} more ${dayLabel} before sending another rumble request to this user`;
+}
 
 export async function sendRumbleRequest_controller(req, res, next) {
   try {
@@ -29,6 +40,23 @@ export async function sendRumbleRequest_controller(req, res, next) {
       });
     }
 
+    const latestDeclinedRequest = await getLatestDeclinedRumbleRequest_model(
+      req.user.id,
+      req.params.id,
+    );
+
+    if (latestDeclinedRequest?.declined_at) {
+      const cooldownEndsAt =
+        new Date(latestDeclinedRequest.declined_at).getTime() +
+        RUMBLE_REQUEST_COOLDOWN_MS;
+
+      if (Date.now() < cooldownEndsAt) {
+        return res.status(400).json({
+          error: getRemainingCooldownMessage(cooldownEndsAt),
+        });
+      }
+    }
+
     const activeRumble = await checkForPendingRumbleRequest_model(
       req.user.id,
       req.params.id,
@@ -44,7 +72,7 @@ export async function sendRumbleRequest_controller(req, res, next) {
     const request = await sendRumbleRequest_model(
       req.user.id,
       req.params.id,
-      threat_level, //need to be checked 
+      threat_level, //need to be checked
     );
 
     return res.status(201).json(request);
