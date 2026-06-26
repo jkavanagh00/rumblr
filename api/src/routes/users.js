@@ -60,12 +60,6 @@ router.get("/blocks", getBlockedUsers_controller);
  *     tags:
  *       - Users
  *     summary: Block a user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/SignupBody'
  *     security:
  *       - bearerAuth: []
  *     parameters:
