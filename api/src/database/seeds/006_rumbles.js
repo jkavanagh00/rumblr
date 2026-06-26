@@ -6,7 +6,7 @@
  * Each rumble corresponds to an accepted rumble_request.
  *
  * Rumble scenarios:
- * - alice_agrees vs carol_moderate: inactive (not started)
+ * - alice_agrees vs carol_moderate: pending (not started)
  * - david_active vs bob_disagrees: active (in progress)
  */
 export async function seed(knex) {
@@ -36,7 +36,7 @@ export async function seed(knex) {
         rumble_request_id: request.id,
         requester_id: request.requester_id,
         receiver_id: request.receiver_id,
-        status: "inactive",
+        status: "pending",
       });
     }
 
