@@ -279,10 +279,28 @@ describe("auth controller", () => {
         },
       });
     });
-    test.todo("removes password_hash from the returned user object");
-    test.todo(
-      "forwards an error to next when ACCESS_TOKEN_SECRET is missing during token generation",
-    );
+    test("forwards an error to next when ACCESS_TOKEN_SECRET is missing during token generation", async () => {
+      delete process.env.ACCESS_TOKEN_SECRET;
+      const req = {
+        validatedBody: {
+          identifier: "username",
+          password: "password_123",
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByUsername_model.mockResolvedValue({
+        id: 1,
+        username: "username",
+        password_hash: "hashed_password_123",
+      });
+      verifyPassword.mockReturnValue(true);
+
+      await login_controller(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
+	  process.env.ACCESS_TOKEN_SECRET = "test-secret";
+    });
     test.todo("forwards model or helper errors to next");
   });
 
