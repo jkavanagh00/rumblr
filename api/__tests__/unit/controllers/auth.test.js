@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-jest.unstable_mockModule("../../../src/controllers/auth.js", () => ({
+jest.unstable_mockModule("../../../src/models/auth.js", () => ({
   findUserByEmail_model: jest.fn(),
   findUserByUsername_model: jest.fn(),
   createUser_model: jest.fn(),
