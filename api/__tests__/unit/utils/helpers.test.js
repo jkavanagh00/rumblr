@@ -4,7 +4,10 @@ import bcrypt from "bcrypt";
 
 describe("helpers utils", () => {
 	describe("hashPassword", () => {
-		test.todo("returns a bcrypt hash string when given a valid password");
+		test("returns a bcrypt hash string when given a valid password", async () => {
+			const result = await hashPassword("validpassword");
+			expect(result).toMatch(/^\$2[ab]\$\d{2}\$.{53}$/);			
+		});
 		test("produces a hash that does not equal the original password", async () => {
 			const result = await hashPassword("validpassword");
 			expect(result).not.toBe("validpassword")
@@ -13,11 +16,13 @@ describe("helpers utils", () => {
 		test("throws 'Password must be a string of at least 8 characters' when password is not a string", async () => {
 			await expect(hashPassword(["validpassword"])).rejects.toThrow(
 				"Password must be a string of at least 8 characters"
-			)
+			);
 		});
-		test.todo(
-			"throws 'Password must be a string of at least 8 characters' when password is shorter than 8 characters",
-		);
+		test("throws 'Password must be a string of at least 8 characters' when password is shorter than 8 characters", async () => {
+			await expect(hashPassword("pass")).rejects.toThrow(
+				"Password must be a string of at least 8 characters"
+			);
+		});
 		test.todo("accepts a password of exactly 8 characters");
 	});
 
