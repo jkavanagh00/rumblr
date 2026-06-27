@@ -190,24 +190,41 @@ describe("auth controller", () => {
 
   describe("login_controller", () => {
     test("uses email lookup when identifier contains @ and returns 401 for unknown account", async () => {
-		const req = {
-			validatedBody: {
-				identifier: "email@address.com",
-				password: "password_123",
-			}
-		};
-		const res = createMockRes();
-		const next = jest.fn();
-		findUserByEmail_model.mockResolvedValue(null);
+      const req = {
+        validatedBody: {
+          identifier: "email@address.com",
+          password: "password_123",
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByEmail_model.mockResolvedValue(null);
 
-		await login_controller(req, res, next);
+      await login_controller(req, res, next);
 
-		expect(findUserByUsername_model).not.toHaveBeenCalled();
-		expect(res.status).toHaveBeenCalledWith(401);
-	});
-    test.todo(
-      "uses username lookup when identifier does not contain @ and returns 401 for unknown account",
-    );
+      expect(findUserByEmail_model).toHaveBeenCalledWith("email@address.com");
+      expect(findUserByUsername_model).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ error: "Invalid credentials" });
+    });
+    test("uses username lookup when identifier does not contain @ and returns 401 for unknown account", async () => {
+      const req = {
+        validatedBody: {
+          identifier: "username",
+          password: "password_123",
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByUsername_model.mockResolvedValue(null);
+
+      await login_controller(req, res, next);
+
+      expect(findUserByUsername_model).toHaveBeenCalledWith("username");
+      expect(findUserByEmail_model).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ error: "Invalid credentials" });
+    });
     test.todo(
       "returns 401 when password verification fails for an existing account",
     );
