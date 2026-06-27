@@ -1,3 +1,20 @@
+import { jest } from "@jest/globals";
+
+jest.unstable_mockModule("../../../src/controllers/auth.js", () => ({
+  findUserByEmail_model: jest.fn(),
+  findUserByUsername_model: jest.fn(),
+  createUser_model: jest.fn(),
+  getPublicUserById_model: jest.fn(),
+}));
+
+jest.unstable_mockModule("../../../src/utils/helpers", () => ({
+	hashPassword: jest.fn(),
+	verifyPassword: jest.fn(),
+}));
+
+const { createUser_model, findUserByEmail_model, findUserByUsername_model, getPublicUserById_model } = await import("../../../src/models/users");
+const { hashPassword, verifyPassword } = await import("../../../src/utils/helpers.js");
+
 describe("auth controller", () => {
 	describe("signup_controller", () => {
 		test.todo("returns 409 when an account already exists for the provided email");
