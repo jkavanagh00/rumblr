@@ -165,7 +165,7 @@ describe("auth controller", () => {
       findUserByUsername_model.mockResolvedValue(null);
 
       await signup_controller(req, res, next);
-
+	  process.env.ACCESS_TOKEN_SECRET = "test-secret";
       expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
     test("forwards model or helper errors to next", async () => {
