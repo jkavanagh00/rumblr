@@ -19,11 +19,10 @@ describe("helpers utils", () => {
 			);
 		});
 		test("throws 'Password must be a string of at least 8 characters' when password is shorter than 8 characters", async () => {
-			await expect(hashPassword("pass")).rejects.toThrow(
+			await expect(hashPassword("passwor")).rejects.toThrow(
 				"Password must be a string of at least 8 characters"
 			);
 		});
-		test.todo("accepts a password of exactly 8 characters");
 	});
 
 	describe("verifyPassword", () => {
