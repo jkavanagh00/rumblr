@@ -131,7 +131,7 @@ describe("auth controller", () => {
       });
       mockSign.mockReturnValue("fake-jwt-token");
 
-	  await signup_controller(req, res, next);
+      await signup_controller(req, res, next);
 
       expect(createUser_model).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -149,9 +149,25 @@ describe("auth controller", () => {
         },
       });
     });
-    test.todo(
-      "forwards an error to next when ACCESS_TOKEN_SECRET is missing during token generation",
-    );
+    test("forwards an error to next when ACCESS_TOKEN_SECRET is missing during token generation", async () => {
+      delete process.env.ACCESS_TOKEN_SECRET;
+      const req = {
+        validatedBody: {
+          email: "email@address.com",
+          username: "testuser",
+          password: "password123",
+          threat_levels: ["red", "orange"],
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByEmail_model.mockResolvedValue(null);
+      findUserByUsername_model.mockResolvedValue(null);
+
+      await signup_controller(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
+    });
     test.todo("forwards model or helper errors to next");
   });
 
