@@ -301,7 +301,22 @@ describe("auth controller", () => {
       expect(next).toHaveBeenCalledWith(expect.any(Error));
 	  process.env.ACCESS_TOKEN_SECRET = "test-secret";
     });
-    test.todo("forwards model or helper errors to next");
+    test("forwards model or helper errors to next", async () => {
+      const req = {
+        validatedBody: {
+          identifier: "username",
+          password: "password_123",
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+	  const error = new Error("db error");
+	  findUserByUsername_model.mockRejectedValue(error);
+	  
+	  await login_controller(req, res, next);
+
+	  expect(next).toHaveBeenCalledWith(error);
+	});
   });
 
   describe("me_controller", () => {
