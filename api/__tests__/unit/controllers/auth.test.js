@@ -168,7 +168,24 @@ describe("auth controller", () => {
 
       expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
-    test.todo("forwards model or helper errors to next");
+    test("forwards model or helper errors to next", async () => {
+      const req = {
+        validatedBody: {
+          email: "email@address.com",
+          username: "testuser",
+          password: "password123",
+          threat_levels: ["red", "orange"],
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByEmail_model.mockResolvedValue(null);
+      findUserByUsername_model.mockResolvedValue(null);
+      const error = new Error("db error");
+      findUserByEmail_model.mockRejectedValue(error);
+      await signup_controller(req, res, next);
+      expect(next).toHaveBeenCalledWith(error);
+    });
   });
 
   describe("login_controller", () => {
