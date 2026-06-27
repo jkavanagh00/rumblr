@@ -15,8 +15,14 @@ describe("helpers utils", () => {
 	describe("verifyPassword", () => {
 		test.todo("returns true when password matches the provided hash");
 		test.todo("returns false when password does not match the provided hash");
-		test.todo("returns false when password is not a string");
-		test.todo("returns false when password is shorter than 8 characters");
+		test("returns false when password is not a string", async () => {
+			const result = await verifyPassword(["password"]);
+			expect(result).toBe(false);
+		});
+		test("returns false when password is shorter than 8 characters", async () => {
+			const result = await verifyPassword("pass");
+			expect(result).toBe(false);
+		});
 		test.todo(
 			"uses bcrypt.compareSync for valid password inputs and the provided hash",
 		);
