@@ -54,7 +54,6 @@ describe("auth controller", () => {
           password: "password123",
         },
       };
-
       const res = createMockRes();
       const next = jest.fn();
       findUserByEmail_model.mockResolvedValue({
@@ -72,7 +71,6 @@ describe("auth controller", () => {
           password: "password123",
         },
       };
-
       const res = createMockRes();
       const next = jest.fn();
       findUserByUsername_model.mockResolvedValue({
@@ -82,9 +80,32 @@ describe("auth controller", () => {
       await signup_controller(req, res, next);
       expect(res.status).toHaveBeenCalledWith(409);
     });
-    test.todo(
-      "uses provided threat_levels or falls back to default [green] when creating a user",
-    );
+    test("uses provided threat_levels when creating a user", async () => {
+      const req = {
+        validatedBody: {
+          email: "email@address.com",
+          username: "testuser",
+          password: "password123",
+          threat_levels: ["red", "orange"],
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByEmail_model.mockResolvedValue(null);
+      findUserByUsername_model.mockResolvedValue(null);
+      createUser_model.mockResolvedValue({
+        id: "123",
+        username: "testuser",
+        email: "email@address.com",
+        password_hash: "hashed",
+        role: "user",
+        threat_levels: ["red", "orange"],
+      });
+      await signup_controller(req, res, next);
+      expect(createUser_model).toHaveBeenCalledWith(
+        expect.objectContaining({ threat_levels: ["red", "orange"] }),
+      );
+    });
     test.todo(
       "creates a user with hashed password and nullable bio, then returns 201 with accessToken and user payload",
     );
