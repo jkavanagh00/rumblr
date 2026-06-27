@@ -1,20 +1,20 @@
-import { jest } from "@jest/globals";
+import { expect, jest } from "@jest/globals";
 import { hashPassword, verifyPassword } from "../../../src/utils/helpers";
 import bcrypt from "bcrypt";
-
-let testHash;
-beforeAll(async () => {
-	testHash = await bcrypt.hash("validpassword", 1)
-});
 
 describe("helpers utils", () => {
 	describe("hashPassword", () => {
 		test.todo("returns a bcrypt hash string when given a valid password");
-		test.todo("produces a hash that does not equal the original password");
+		test("produces a hash that does not equal the original password", async () => {
+			const result = await hashPassword("validpassword");
+			expect(result).not.toBe("validpassword")
+		});
 		test.todo("uses bcrypt with 10 salt rounds");
-		test.todo(
-			"throws 'Password must be a string of at least 8 characters' when password is not a string",
-		);
+		test("throws 'Password must be a string of at least 8 characters' when password is not a string", async () => {
+			await expect(hashPassword(["validpassword"])).rejects.toThrow(
+				"Password must be a string of at least 8 characters"
+			)
+		});
 		test.todo(
 			"throws 'Password must be a string of at least 8 characters' when password is shorter than 8 characters",
 		);
@@ -22,6 +22,11 @@ describe("helpers utils", () => {
 	});
 
 	describe("verifyPassword", () => {
+		let testHash;
+		beforeAll(async () => {
+			testHash = await bcrypt.hash("validpassword", 1)
+		});
+
 		test("returns true when password matches the provided hash", async () => {
 			const result = await verifyPassword("validpassword", testHash);
 			expect(result).toBe(true);
