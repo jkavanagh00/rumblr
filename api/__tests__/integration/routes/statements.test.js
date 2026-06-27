@@ -5,104 +5,113 @@ import { jest } from "@jest/globals";
 const testUserId = "11111111-1111-4111-8111-111111111111";
 
 jest.unstable_mockModule("../../../src/middlewares/auth.js", () => ({
-	authenticateToken: jest.fn((req, _res, next) => {
-		req.userId = testUserId;
-		req.user = { id: testUserId, role: "admin" };
-		next();
-	}),
-	requireAdmin: jest.fn((_req, _res, next) => next()),
+  authenticateToken: jest.fn((req, _res, next) => {
+    req.userId = testUserId;
+    req.user = { id: testUserId, role: "admin" };
+    next();
+  }),
+  requireAdmin: jest.fn((_req, _res, next) => next()),
 }));
-
 
 jest.unstable_mockModule("../../../src/controllers/statements.js", () => ({
-	addStatement_controller: jest.fn(),
-	getStatementById_controller: jest.fn(),
-	listStatements_controller: jest.fn(),
-	updateStatement_controller: jest.fn(),
-	deleteStatement_controller: jest.fn(),
-	getStatementWithNoResponse_controller: jest.fn(),
+  addStatement_controller: jest.fn(),
+  getStatementById_controller: jest.fn(),
+  listStatements_controller: jest.fn(),
+  updateStatement_controller: jest.fn(),
+  deleteStatement_controller: jest.fn(),
+  getStatementWithNoResponse_controller: jest.fn(),
+  getOnboardingStatement_controller: jest.fn(), // add this
 }));
 
-const { listStatements_controller, getStatementById_controller, addStatement_controller, updateStatement_controller, deleteStatement_controller } = await import(
-	"../../../src/controllers/statements.js"
+const {
+listStatements_controller,
+getStatementById_controller,
+addStatement_controller,
+updateStatement_controller,
+deleteStatement_controller,
+} = await import("../../../src/controllers/statements.js");
+
+const { default: statementsRouter } = await import(
+"../../../src/routes/statements.js"
 );
-const { default: statementsRouter } = await import("../../../src/routes/statements.js");
 
 const app = express();
 app.use(express.json());
 app.use("/statements", statementsRouter);
 app.use((err, _req, res, _next) => {
-	res.status(err.status || 500).json({ error: err.message });
+  res.status(err.status || 500).json({ error: err.message });
 });
 
 beforeEach(() => {
-	jest.clearAllMocks();
+  jest.clearAllMocks();
 });
 
 const testId = "11111111-1111-4111-8111-111111111111";
 
 describe("statements integration routes", () => {
-    describe("GET /statements/:id", () => {
-        test("returns a statement by ID", async () => {
-            const mockStatement = { id: testId, content: "Statement 1" };
-			getStatementById_controller.mockImplementation(async (_req, res) => {
-				return res.status(200).json(mockStatement);
-			});
+  describe("GET /statements/:id", () => {
+    test("returns a statement by ID", async () => {
+      const mockStatement = { id: testId, content: "Statement 1" };
+      getStatementById_controller.mockImplementation(async (_req, res) => {
+        return res.status(200).json(mockStatement);
+      });
 
-            const response = await request(app).get(`/statements/${testId}`);
+      const response = await request(app).get(`/statements/${testId}`);
 
-            expect(response.status).toBe(200);
-            expect(response.body).toEqual(mockStatement);
-            expect(getStatementById_controller).toHaveBeenCalledTimes(1);
-        });
-        test("returns 500 when the controller throws", async () => {
-			getStatementById_controller.mockImplementation(async (_req, _res, next) => {
-				next(new Error("Database error"));
-			});
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockStatement);
+      expect(getStatementById_controller).toHaveBeenCalledTimes(1);
+    });
+    test("returns 500 when the controller throws", async () => {
+      getStatementById_controller.mockImplementation(
+        async (_req, _res, next) => {
+          next(new Error("Database error"));
+        },
+      );
 
-            const response = await request(app).get(`/statements/${testId}`);
+      const response = await request(app).get(`/statements/${testId}`);
 
-            expect(response.status).toBe(500);
-            expect(getStatementById_controller).toHaveBeenCalledTimes(1);
-        });
+      expect(response.status).toBe(500);
+      expect(getStatementById_controller).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("GET /statements/list", () => {
+    test("returns a list of statements", async () => {
+      // Stub the controller so this test isolates router behavior: status code, JSON body, and route wiring.
+      const mockStatements = [
+        { id: testId, content: "Statement 1" },
+        { id: "22222222-2222-4222-8222-222222222222", content: "Statement 2" },
+      ];
+
+      listStatements_controller.mockImplementation(async (_req, res) => {
+        return res.status(200).json(mockStatements);
+      });
+
+      // Send a real HTTP request through Express to verify GET /statements/list reaches the correct handler.
+      const response = await request(app).get("/statements/list");
+
+      // A successful controller response should be returned as a 200 with the same JSON payload.
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockStatements);
+      // This confirms the route actually called the controller rather than bypassing that layer.
+      expect(listStatements_controller).toHaveBeenCalledTimes(1);
     });
 
-	describe("GET /statements/list", () => {
-		test("returns a list of statements", async () => {
-			// Stub the controller so this test isolates router behavior: status code, JSON body, and route wiring.
-			const mockStatements = [
-				{ id: testId, content: "Statement 1" },
-				{ id: "22222222-2222-4222-8222-222222222222", content: "Statement 2" },
-			];
+    test("returns 500 when the controller throws", async () => {
+      // Simulate an unexpected controller failure to verify the route's catch block behavior.
+      listStatements_controller.mockImplementation(async (_req, _res, next) => {
+        next(new Error("Database error"));
+      });
 
-			listStatements_controller.mockImplementation(async (_req, res) => {
-				return res.status(200).json(mockStatements);
-			});
+      // The request should still complete cleanly even though the controller rejected.
+      const response = await request(app).get("/statements/list");
 
-			// Send a real HTTP request through Express to verify GET /statements/list reaches the correct handler.
-			const response = await request(app).get("/statements/list");
-
-			// A successful controller response should be returned as a 200 with the same JSON payload.
-			expect(response.status).toBe(200);
-			expect(response.body).toEqual(mockStatements);
-			// This confirms the route actually called the controller rather than bypassing that layer.
-			expect(listStatements_controller).toHaveBeenCalledTimes(1);
-		});
-
-		test("returns 500 when the controller throws", async () => {
-			// Simulate an unexpected controller failure to verify the route's catch block behavior.
-			listStatements_controller.mockImplementation(async (_req, _res, next) => {
-				next(new Error("Database error"));
-			});
-
-			// The request should still complete cleanly even though the controller rejected.
-			const response = await request(app).get("/statements/list");
-
-			// The route is expected to translate thrown errors into a 500 response with an error message body.
-			expect(response.status).toBe(500);
-			expect(response.body).toEqual({ error: "Database error" });
-			// This guards against false positives where the test passes without the controller being invoked.
-			expect(listStatements_controller).toHaveBeenCalledTimes(1);
-		});
-	});
+      // The route is expected to translate thrown errors into a 500 response with an error message body.
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: "Database error" });
+      // This guards against false positives where the test passes without the controller being invoked.
+      expect(listStatements_controller).toHaveBeenCalledTimes(1);
+    });
+  });
 });

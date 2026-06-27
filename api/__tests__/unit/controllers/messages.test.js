@@ -8,17 +8,14 @@ jest.unstable_mockModule("../../../src/models/messages.js", () => ({
 jest.unstable_mockModule("../../../src/models/rumbles.js", () => ({
   getRumbleById_model: jest.fn(),
   isUserParticipantInRumble_model: jest.fn(),
-  updateRumbleStatus_model: jest.fn(),
 }));
 
 const { addMessage_model, getMessagesByRumbleId_model } = await import(
   "../../../src/models/messages.js"
 );
-const {
-  getRumbleById_model,
-  isUserParticipantInRumble_model,
-  updateRumbleStatus_model,
-} = await import("../../../src/models/rumbles.js");
+const { getRumbleById_model, isUserParticipantInRumble_model } = await import(
+  "../../../src/models/rumbles.js"
+);
 const { addMessage_controller, getMessages_controller } = await import(
   "../../../src/controllers/messages.js"
 );
@@ -70,7 +67,7 @@ describe("messages controller", () => {
 
       getRumbleById_model.mockResolvedValue({
         id: rumbleId,
-        status: "pending",
+        status: "active",
       });
       isUserParticipantInRumble_model.mockResolvedValue(false);
 
@@ -84,7 +81,10 @@ describe("messages controller", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    test("updates pending rumble to active, creates message, and emits socket event", async () => {
+// todoTest("Add tests for addMessage_controller when rumble is terminated.");
+
+
+    test("creates message and emits socket event for an active rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
       const userId = "22222222-2222-4222-8222-222222222222";
       const io = { to: jest.fn().mockReturnValue({ emit: jest.fn() }) };
@@ -109,14 +109,13 @@ describe("messages controller", () => {
 
       getRumbleById_model.mockResolvedValue({
         id: rumbleId,
-        status: "pending",
+        status: "active",
       });
       isUserParticipantInRumble_model.mockResolvedValue(true);
       addMessage_model.mockResolvedValue(message);
 
       await addMessage_controller(req, res, next);
 
-      expect(updateRumbleStatus_model).toHaveBeenCalledWith(rumbleId, "active");
       expect(addMessage_model).toHaveBeenCalledWith(req.validatedBody);
       expect(io.to).toHaveBeenCalledWith(`rumble:${rumbleId}`);
       expect(io.to().emit).toHaveBeenCalledWith("rumble:message", {
@@ -156,7 +155,6 @@ describe("messages controller", () => {
 
       await addMessage_controller(req, res, next);
 
-      expect(updateRumbleStatus_model).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(message);
       expect(next).not.toHaveBeenCalled();
@@ -224,6 +222,8 @@ describe("messages controller", () => {
       expect(getMessagesByRumbleId_model).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
     });
+
+    todoTest("Add tests for getMessages_controller when rumble is terminated.");
 
     test("returns paginated messages for rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";

@@ -1,30 +1,195 @@
-/*
-all routes related to users should be here
-
-examples:
-
-- POST /user/signup
-- POST /user/login
-- POST /user/logout
-- GET /user/ (get current user info)
-- PUT /user (update user info)
-- DELETE /user/ (delete current user)
-*/
-
 import express from "express";
 import { updateUserSchema } from "../Schemas/users.js";
+import { blockParamsSchema } from "../Schemas/block.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   getUser_controller,
   updateUser_controller,
   deleteUser_controller,
+  blockUser_controller,
+  unblockUser_controller,
+  getBlockedUsers_controller,
+  getOnboardingProgress_controller,
 } from "../controllers/users.js";
-import { validateBody } from "../middlewares/errors.js";
+import { validateBody, validateParams } from "../middlewares/errors.js";
 
 const router = express.Router();
 
 router.use(authenticateToken);
 
+
+/**
+ * @openapi
+ * /user/blocks:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get all users blocked by the current user
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of blocked users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get("/blocks", getBlockedUsers_controller);
+
+/**
+ * @openapi
+ * /user/blocks/{id}:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Block a user
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the user to block
+ *         example: "fb9123f7-1666-4850-97b3-237647a07b15"
+ *     responses:
+ *       201:
+ *         description: User blocked
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Block'
+ *       400:
+ *         description: Cannot block yourself
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       409:
+ *         description: User is already blocked
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *   delete:
+ *     tags:
+ *       - Users
+ *     summary: Unblock a user
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the user to unblock
+ *         example: "fb9123f7-1666-4850-97b3-237647a07b15"
+ *     responses:
+ *       204:
+ *         description: User unblocked
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.post("/blocks/:id", validateParams(blockParamsSchema), blockUser_controller);
+router.delete("/blocks/:id", validateParams(blockParamsSchema), unblockUser_controller);
+/**
+ * @openapi
+ * /user/onboarding:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get onboarding progress for the current user
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Onboarding progress
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OnboardingProgress'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get("/onboarding", getOnboardingProgress_controller);
+
+/**
+ * @openapi
+ * /user:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get the current user's profile
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: Update the current user's profile
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateUserBody'
+ *     responses:
+ *       200:
+ *         description: Updated user profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *   delete:
+ *     tags:
+ *       - Users
+ *     summary: Delete the current user's account
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       204:
+ *         description: Account deleted
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 router.get("/", getUser_controller);
 router.put("/", validateBody(updateUserSchema), updateUser_controller);
 router.delete("/", deleteUser_controller);

@@ -3,14 +3,66 @@ import {
   checkForPendingRumbleRequest_model,
   getRumbleRequestById_model,
   declineRumbleRequest_model,
+  getLatestDeclinedRumbleRequest_model,
+  listRumbleRequestsForUser_model,
 } from "../models/requests.js";
+import { getUserById_model } from "../models/users.js";
 import { acceptRumbleRequest_service } from "../services/requests.js";
+
+const RUMBLE_REQUEST_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+
+function getRemainingCooldownMessage(cooldownEndsAt) {
+  const remainingMs = cooldownEndsAt - Date.now();
+  const remainingDays = Math.max(1, Math.ceil(remainingMs / (24 * 60 * 60 * 1000)));
+  const dayLabel = remainingDays === 1 ? "day" : "days";
+  const endsAtIso = new Date(cooldownEndsAt).toISOString();
+
+  return `You must wait about ${remainingDays} more ${dayLabel} (until ${endsAtIso}) before sending another rumble request to this user`;
+}
 
 export async function sendRumbleRequest_controller(req, res, next) {
   try {
+    const { threat_level } = req.validatedBody;
+    const requester = await getUserById_model(req.user.id);
+    const receiver = await getUserById_model(req.params.id);
+
+    if (!requester || !receiver) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!requester.threat_levels.includes(threat_level)) {
+      return res.status(400).json({
+        error: "Requester is not available for this threat level",
+      });
+    }
+
+    if (!receiver.threat_levels.includes(threat_level)) {
+      return res.status(400).json({
+        error: "Receiver does not accept this threat level",
+      });
+    }
+
+    const latestDeclinedRequest = await getLatestDeclinedRumbleRequest_model(
+      req.user.id,
+      req.params.id,
+    );
+
+    if (latestDeclinedRequest?.declined_at) {
+      const cooldownEndsAt =
+        new Date(latestDeclinedRequest.declined_at).getTime() +
+        RUMBLE_REQUEST_COOLDOWN_MS;
+
+      if (Date.now() < cooldownEndsAt) {
+        return res.status(400).json({
+          error: getRemainingCooldownMessage(cooldownEndsAt),
+        });
+      }
+    }
+
     const activeRumble = await checkForPendingRumbleRequest_model(
       req.user.id,
       req.params.id,
+      threat_level,
     );
 
     if (activeRumble) {
@@ -19,9 +71,24 @@ export async function sendRumbleRequest_controller(req, res, next) {
         .json({ error: "Another rumble request is already pending" });
     }
 
-    const request = await sendRumbleRequest_model(req.user.id, req.params.id);
+    const request = await sendRumbleRequest_model(
+      req.user.id,
+      req.params.id,
+      threat_level, //need to be checked
+    );
 
     return res.status(201).json(request);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listRumbleRequests_controller(req, res, next) {
+  try {
+    const userId = req.userId;
+
+    const requests = await listRumbleRequestsForUser_model(userId);
+    return res.status(200).json({ data: requests });
   } catch (error) {
     next(error);
   }
@@ -44,6 +111,7 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       rumble_request_id: rumbleRequest.id,
       requester_id: rumbleRequest.requester_id,
       receiver_id: req.user.id,
+      threat_level: rumbleRequest.threat_level,
     };
     const rumble = await acceptRumbleRequest_service(payload);
     return res.status(201).json(rumble);

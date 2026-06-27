@@ -5,7 +5,6 @@ import {
 import {
   getRumbleById_model,
   isUserParticipantInRumble_model,
-  updateRumbleStatus_model,
 } from "../models/rumbles.js";
 
 export async function addMessage_controller(req, res, next) {
@@ -30,9 +29,10 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    // First message moves rumble from pending to active.
-    if (rumble.status === "pending") {
-      await updateRumbleStatus_model(rumbleId, "active");
+    if (rumble.status === "terminated") {
+      return res.status(403).json({
+        error: "This rumble is terminated",
+      });
     }
 
     const message = await addMessage_model(req.validatedBody);
@@ -54,8 +54,8 @@ export async function addMessage_controller(req, res, next) {
 export async function getMessages_controller(req, res, next) {
   try {
     const rumbleId = req.params.id;
-    const page = req.pagination.page; // Set by validation middleware
-    const limit = req.pagination.limit; // Set by validation middleware
+    const page = req.validatedQuery.page;
+    const limit = req.validatedQuery.limit;
     const userId = req.userId; // Set by validation middleware
 
     const rumble = await getRumbleById_model(rumbleId);

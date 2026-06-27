@@ -15,6 +15,8 @@ import {
   updateStatement_model,
   deleteStatement_model,
   getStatementWithNoResponse_model,
+  getOnboardingStatement_model,
+  getOnboardingProgress_model,
 } from "../models/statements.js";
 
 export async function getStatementWithNoResponse_controller(req, res, next) {
@@ -93,6 +95,51 @@ export async function deleteStatement_controller(req, res, next) {
     }
     const deletedStatement = await deleteStatement_model(req.params.id);
     return res.status(200).json(deletedStatement);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getOnboardingStatement_controller(req, res, next) {
+  try {
+    const statementNumber = Number(req.params.number);
+
+    if (Number.isNaN(statementNumber)) {
+      return res
+        .status(400)
+        .json({ error: "Onboarding statement number must be a number" });
+    }
+
+    if (statementNumber < 1 || statementNumber > 10) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Onboarding statement number must be a whole number between one and ten",
+        });
+    }
+
+    const onboardingProgress = await getOnboardingProgress_model(req.user.id);
+
+    if (
+      !onboardingProgress.completed &&
+      statementNumber !== onboardingProgress.nextNumber
+    ) {
+      return res.status(409).json({
+        error: `You must answer onboarding statement ${onboardingProgress.nextNumber} next`,
+        nextNumber: onboardingProgress.nextNumber,
+      });
+    }
+
+    const statement = await getOnboardingStatement_model(statementNumber);
+
+    if (!statement) {
+      return res
+        .status(404)
+        .json({ error: "No onboarding statement with that number exists." });
+    }
+    
+    return res.status(200).json(statement);
   } catch (error) {
     next(error);
   }

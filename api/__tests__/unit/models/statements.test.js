@@ -123,4 +123,14 @@ describe("statements model", () => {
       expect(result).toBe(undefined);
     });
   });
+
+  describe("getOnboardingProgress_model", () => {
+    test.todo(
+      "returns incomplete progress when the user has fewer than 10 onboarding responses",
+    );
+    test.todo(
+      "returns complete progress when the user has answered all 10 onboarding statements",
+    );
+    test.todo("ignores responses to non-onboarding statements");
+  });
 });

@@ -31,11 +31,11 @@ export function up(knex) {
       .inTable("users")
       .onDelete("CASCADE");
 
-    // ENUM status (e.g., scheduled, active, completed, cancelled)
+    // Status lifecycle: inactive at creation, active during conversation, terminated when the rumble is ended.
     table
-      .enum("status", ["pending", "active", "completed", "cancelled"])
+      .enum("status", ["active", "inactive", "terminated"])
       .notNullable()
-      .defaultTo("pending");
+      .defaultTo("inactive");
 
     // TIMESTAMP created_at
     table.timestamp("created_at").defaultTo(knex.fn.now());

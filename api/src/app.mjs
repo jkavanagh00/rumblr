@@ -2,12 +2,14 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 import db from "./database/db.js";
 import authRouter from "./routes/auth.js";
 import rumblesRouter from "./routes/rumbles.js";
-import nestedRouter from "./routes/nested.js";
 import usersRouter from "./routes/users.js";
 import mismatchesRouter from "./routes/mismatches.js";
+import statementsRouter from "./routes/statements.js";
 // Import global error handler
 import { errorHandler } from "./middlewares/errors.js";
 
@@ -25,14 +27,14 @@ apiRouter.get("/", async (req, res) => {
   res.json(result);
 });
 
-// Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/auth", authRouter);
-apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);
 apiRouter.use("/mismatches", mismatchesRouter);
+apiRouter.use("/statements", statementsRouter);
 
 app.use("/api", apiRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Register error handler middleware (must be last)
 app.use(errorHandler);
