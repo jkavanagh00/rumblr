@@ -12,6 +12,13 @@ jest.unstable_mockModule("../../../src/utils/helpers", () => ({
 	verifyPassword: jest.fn(),
 }));
 
+function createMockRes() {
+  return {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis(),
+  };
+}
+
 const { createUser_model, findUserByEmail_model, findUserByUsername_model, getPublicUserById_model } = await import("../../../src/models/users");
 const { hashPassword, verifyPassword } = await import("../../../src/utils/helpers.js");
 
