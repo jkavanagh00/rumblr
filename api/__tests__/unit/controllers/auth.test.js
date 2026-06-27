@@ -189,9 +189,22 @@ describe("auth controller", () => {
   });
 
   describe("login_controller", () => {
-    test.todo(
-      "uses email lookup when identifier contains @ and returns 401 for unknown account",
-    );
+    test("uses email lookup when identifier contains @ and returns 401 for unknown account", async () => {
+		const req = {
+			validatedBody: {
+				identifier: "email@address.com",
+				password: "password_123",
+			}
+		};
+		const res = createMockRes();
+		const next = jest.fn();
+		findUserByEmail_model.mockResolvedValue(null);
+
+		await login_controller(req, res, next);
+
+		expect(findUserByUsername_model).not.toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(401);
+	});
     test.todo(
       "uses username lookup when identifier does not contain @ and returns 401 for unknown account",
     );
