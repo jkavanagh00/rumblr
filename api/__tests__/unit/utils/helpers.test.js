@@ -1,3 +1,11 @@
+import { hashPassword, verifyPassword } from "../../../src/utils/helpers";
+import bcrypt from "bcrypt";
+
+let testHash;
+beforeAll(async () => {
+	testHash = await bcrypt.hash("validpassword", 1)
+});
+
 describe("helpers utils", () => {
 	describe("hashPassword", () => {
 		test.todo("returns a bcrypt hash string when given a valid password");
@@ -13,10 +21,13 @@ describe("helpers utils", () => {
 	});
 
 	describe("verifyPassword", () => {
-		test.todo("returns true when password matches the provided hash");
+		test("returns true when password matches the provided hash", async () => {
+			const result = await verifyPassword("validpassword", testHash);
+			expect(result).toBe(true);
+		});
 		test.todo("returns false when password does not match the provided hash");
 		test("returns false when password is not a string", async () => {
-			const result = await verifyPassword(["password"]);
+			const result = await verifyPassword("password", testHash);
 			expect(result).toBe(false);
 		});
 		test("returns false when password is shorter than 8 characters", async () => {
