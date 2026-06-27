@@ -225,9 +225,25 @@ describe("auth controller", () => {
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({ error: "Invalid credentials" });
     });
-    test.todo(
-      "returns 401 when password verification fails for an existing account",
-    );
+    test("returns 401 when password verification fails for an existing account", async () => {
+      const req = {
+        validatedBody: {
+          identifier: "username",
+          password: "password_123",
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+	  findUserByUsername_model.mockResolvedValue({ id: 1, username: "username", password_hash: "hashed_password_123"});
+	  verifyPassword.mockResolvedValue(false);
+	  
+	  await login_controller(req, res, next);
+
+	  expect(findUserByUsername_model).toHaveBeenCalledWith("username");
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ error: "Invalid credentials" });
+	  expect(verifyPassword).toHaveBeenCalledWith("password_123", "hashed_password_123");
+    });
     test.todo(
       "returns 200 with accessToken and public user fields when credentials are valid",
     );
