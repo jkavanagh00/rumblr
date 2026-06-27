@@ -1,4 +1,5 @@
-import { jest } from "@jest/globals";
+import { expect, jest } from "@jest/globals";
+import { sign } from "jsonwebtoken";
 
 jest.unstable_mockModule("../../../src/models/users.js", () => ({
   findUserByEmail_model: jest.fn(),
@@ -106,9 +107,48 @@ describe("auth controller", () => {
         expect.objectContaining({ threat_levels: ["red", "orange"] }),
       );
     });
-    test.todo(
-      "creates a user with hashed password and nullable bio, then returns 201 with accessToken and user payload",
-    );
+    test("creates a user with hashed password and nullable bio, then returns 201 with accessToken and user payload", async () => {
+      const req = {
+        validatedBody: {
+          email: "email@address.com",
+          username: "testuser",
+          password: "password123",
+          threat_levels: ["red", "orange"],
+        },
+      };
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByEmail_model.mockResolvedValue(null);
+      findUserByUsername_model.mockResolvedValue(null);
+      hashPassword.mockResolvedValue("hashed_password_123");
+      createUser_model.mockResolvedValue({
+        id: "123",
+        username: "testuser",
+        email: "email@address.com",
+        password_hash: "hashed_password_123",
+        role: "user",
+        threat_levels: ["red", "orange"],
+      });
+      mockSign.mockReturnValue("fake-jwt-token");
+
+	  await signup_controller(req, res, next);
+
+      expect(createUser_model).toHaveBeenCalledWith(
+        expect.objectContaining({
+          password_hash: "hashed_password_123",
+        }),
+      );
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        accessToken: "fake-jwt-token",
+        user: {
+          id: "123",
+          username: "testuser",
+          role: "user",
+          threat_levels: ["red", "orange"],
+        },
+      });
+    });
     test.todo(
       "forwards an error to next when ACCESS_TOKEN_SECRET is missing during token generation",
     );
