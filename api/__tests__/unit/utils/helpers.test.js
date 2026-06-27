@@ -12,7 +12,12 @@ describe("helpers utils", () => {
 			const result = await hashPassword("validpassword");
 			expect(result).not.toBe("validpassword")
 		});
-		test.todo("uses bcrypt with 10 salt rounds");
+		test("uses bcrypt with 10 salt rounds", async () => {
+			const spy = jest.spyOn(bcrypt, "hash");
+			await hashPassword("validpassword");
+			expect(spy).toHaveBeenCalledWith("validpassword", 10);
+			spy.mockRestore();
+		});
 		test("throws 'Password must be a string of at least 8 characters' when password is not a string", async () => {
 			await expect(hashPassword(["validpassword"])).rejects.toThrow(
 				"Password must be a string of at least 8 characters"
