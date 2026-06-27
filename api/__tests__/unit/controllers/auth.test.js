@@ -42,7 +42,7 @@ const { hashPassword, verifyPassword } = await import(
 );
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
 });
 
 describe("auth controller", () => {
