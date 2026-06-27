@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { hashPassword, verifyPassword } from "../../../src/utils/helpers";
 import bcrypt from "bcrypt";
 
@@ -26,19 +27,16 @@ describe("helpers utils", () => {
 			expect(result).toBe(true);
 		});
 		test("returns false when password does not match the provided hash", async () => {
-			const result = await verifyPassword("password", testHash);
+			const result = await verifyPassword("wrongpassword", testHash);
 			expect(result).toBe(false);
 		});
 		test("returns false when password is not a string", async () => {
-			const result = await verifyPassword(["validpassword"]);
+			const result = await verifyPassword(["validpassword"], testHash);
 			expect(result).toBe(false);
 		});
 		test("returns false when password is shorter than 8 characters", async () => {
-			const result = await verifyPassword("pass");
+			const result = await verifyPassword("pass", testHash);
 			expect(result).toBe(false);
 		});
-		test.todo(
-			"uses bcrypt.compareSync for valid password inputs and the provided hash",
-		);
 	});
 });
