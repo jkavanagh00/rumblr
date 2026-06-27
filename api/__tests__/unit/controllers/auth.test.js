@@ -64,9 +64,24 @@ describe("auth controller", () => {
       await signup_controller(req, res, next);
       expect(res.status).toHaveBeenCalledWith(409);
     });
-    test.todo(
-      "returns 409 when the username is already taken after email uniqueness passes",
-    );
+    test("returns 409 when the username is already taken after email uniqueness passes", async () => {
+      const req = {
+        validatedBody: {
+          email: "email@address.com",
+          username: "testuser",
+          password: "password123",
+        },
+      };
+
+      const res = createMockRes();
+      const next = jest.fn();
+      findUserByUsername_model.mockResolvedValue({
+        id: 1,
+        username: "testuser",
+      });
+      await signup_controller(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(409);
+    });
     test.todo(
       "uses provided threat_levels or falls back to default [green] when creating a user",
     );
