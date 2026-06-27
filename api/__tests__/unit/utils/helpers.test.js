@@ -25,9 +25,12 @@ describe("helpers utils", () => {
 			const result = await verifyPassword("validpassword", testHash);
 			expect(result).toBe(true);
 		});
-		test.todo("returns false when password does not match the provided hash");
-		test("returns false when password is not a string", async () => {
+		test("returns false when password does not match the provided hash", async () => {
 			const result = await verifyPassword("password", testHash);
+			expect(result).toBe(false);
+		});
+		test("returns false when password is not a string", async () => {
+			const result = await verifyPassword(["validpassword"]);
 			expect(result).toBe(false);
 		});
 		test("returns false when password is shorter than 8 characters", async () => {
