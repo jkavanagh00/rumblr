@@ -266,7 +266,7 @@ describe("auth controller", () => {
         password_hash: "hashed_password_123",
       });
       verifyPassword.mockResolvedValue(true);
-	  
+      mockSign.mockReturnValue("fake-jwt-token");
 
       await login_controller(req, res, next);
 
