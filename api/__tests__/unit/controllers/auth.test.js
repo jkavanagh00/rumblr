@@ -165,7 +165,7 @@ describe("auth controller", () => {
       findUserByUsername_model.mockResolvedValue(null);
 
       await signup_controller(req, res, next);
-	  process.env.ACCESS_TOKEN_SECRET = "test-secret";
+      process.env.ACCESS_TOKEN_SECRET = "test-secret";
       expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
     test("forwards model or helper errors to next", async () => {
@@ -266,10 +266,18 @@ describe("auth controller", () => {
         password_hash: "hashed_password_123",
       });
       verifyPassword.mockResolvedValue(true);
+	  
 
       await login_controller(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        accessToken: "fake-jwt-token",
+        user: {
+          id: 1,
+          username: "username",
+        },
+      });
     });
     test.todo("removes password_hash from the returned user object");
     test.todo(
