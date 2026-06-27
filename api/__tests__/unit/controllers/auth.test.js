@@ -12,6 +12,17 @@ jest.unstable_mockModule("../../../src/utils/helpers", () => ({
 	verifyPassword: jest.fn(),
 }));
 
+const mockSign = jest.fn();
+jest.unstable_mockModule("jsonwebtoken", () => ({
+  default: { sign: mockSign },
+}));
+
+const { signup_controller, login_controller, me_controller } = await import(
+  "../../../src/controllers/auth.js"
+);
+
+process.env.ACCESS_TOKEN_SECRET = "test-secret";
+
 function createMockRes() {
   return {
     status: jest.fn().mockReturnThis(),
