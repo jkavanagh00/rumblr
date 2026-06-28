@@ -43,6 +43,11 @@ describe("addResponse_service", () => {
       await seedResponse(db, { user_id: user2.id, statement_id: statement.id });
       await seedResponse(db, { user_id: user3.id, statement_id: statement.id });
 
+      // Seed 9 prior responses for user1 so the mismatch threshold (10) is met
+      for (let i = 0; i < 9; i++) {
+        await seedResponse(db, { user_id: user1.id });
+      }
+
       const responseData = { agreement_score: 3, importance_score: 3 };
       const result = await addResponse_service(user1.id, statement.id, responseData);
 
@@ -116,6 +121,11 @@ describe("addResponse_service", () => {
 
       // Only user2 responded
       await seedResponse(db, { user_id: user2.id, statement_id: statement.id });
+
+      // Seed 9 prior responses for user1 so the mismatch threshold (10) is met
+      for (let i = 0; i < 9; i++) {
+        await seedResponse(db, { user_id: user1.id });
+      }
 
       // User1 adds response
       const responseData = { agreement_score: 3, importance_score: 3 };
