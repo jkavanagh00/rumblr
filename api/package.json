@@ -38,6 +38,7 @@
     "test:requests:model": "npm run test -- __tests__/unit/models/requests.test.js",
     "test:requests:controller": "npm run test -- __tests__/unit/controllers/requests.test.js",
     "test:requests:integration": "npm run test -- __tests__/integration/routes/requests.test.js",
+    "test:requests:service": "npm run test -- __tests__/integration/services/requests.test.js",
     "test:responses": "npm run test -- __tests__/unit/models/responses.test.js __tests__/unit/controllers/responses.test.js __tests__/integration/routes/responses.test.js",
     "test:responses:model": "npm run test -- __tests__/unit/models/responses.test.js",
     "test:responses:controller": "npm run test -- __tests__/unit/controllers/responses.test.js",
