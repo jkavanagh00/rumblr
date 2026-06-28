@@ -14,7 +14,7 @@ import db from "./../database/db.js";
 
 const TABLE = "statements";
 
-const ONBOARDING_STATEMENT_CONTENT = {
+export const ONBOARDING_STATEMENT_CONTENT = {
   1: "Donald Trump is a force for good in the world.",
   2: "LGBT people face discrimination in society.",
   3: "There are only two genders.",
@@ -32,17 +32,41 @@ function baseQuery(trx = db) {
 }
 
 export async function getStatementWithNoResponse_model(userId, trx = db) {
+  const onboardingProgress = await getOnboardingProgress_model(userId, trx);
+
+  if (!onboardingProgress.completed && onboardingProgress.nextNumber) {
+    const onboardingStatement = await getOnboardingStatement_model(
+      onboardingProgress.nextNumber,
+      trx,
+    );
+
+    if (onboardingStatement) {
+      return {
+        ...onboardingStatement,
+        onboardingNumber: onboardingProgress.nextNumber,
+        isOnboarding: true,
+      };
+    }
+  }
+
   const existingResponses = await trx("responses")
     .pluck("statement_id")
     .where("user_id", userId);
+
   const unansweredStatement = await trx("statements")
     .select("*")
     .whereNotIn("id", existingResponses)
+    .whereNotIn("content", Object.values(ONBOARDING_STATEMENT_CONTENT))
     .first();
+
   if (!unansweredStatement) {
     return null;
   }
-  return unansweredStatement;
+
+  return {
+    ...unansweredStatement,
+    isOnboarding: false,
+  };
 }
 
 export async function listStatements_model(trx = db) {
@@ -117,6 +141,7 @@ export async function getOnboardingProgress_model(userId, trx = db) {
       answeredCount: 0,
       requiredCount: onboardingContents.length,
       remainingCount: onboardingContents.length,
+      nextNumber: 1,
     };
   }
 
@@ -127,11 +152,13 @@ export async function getOnboardingProgress_model(userId, trx = db) {
 
   const answeredCount = Number(answeredRows[0]?.answeredCount ?? 0);
   const requiredCount = onboardingContents.length;
+  const nextNumber = answeredCount >= requiredCount ? null : answeredCount + 1;
 
   return {
     completed: answeredCount >= requiredCount,
     answeredCount,
     requiredCount,
     remainingCount: Math.max(requiredCount - answeredCount, 0),
+    nextNumber,
   };
 }

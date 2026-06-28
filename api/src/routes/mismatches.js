@@ -1,9 +1,14 @@
 import express from "express";
 import { validateBody } from "../middlewares/errors.js";
 import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
-import { authenticateToken, requireAdmin } from "../middlewares/auth.js"
-import { acceptRumbleRequest_controller, declineRumbleRequest_controller, sendRumbleRequest_controller } from "../controllers/requests.js";
-import { listMismatchesForUser_controller } from "../controllers/mismatches.js"
+import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
+import {
+  acceptRumbleRequest_controller,
+  declineRumbleRequest_controller,
+  listRumbleRequests_controller,
+  sendRumbleRequest_controller,
+} from "../controllers/requests.js";
+import { listMismatchesForUser_controller } from "../controllers/mismatches.js";
 
 const mismatchesRouter = express.Router();
 mismatchesRouter.use(authenticateToken);
@@ -37,7 +42,38 @@ mismatchesRouter.use(authenticateToken);
  */
 mismatchesRouter.get("/", listMismatchesForUser_controller);
 
-mismatchesRouter.post("/:id",validateBody(createRumbleRequestSchema),sendRumbleRequest_controller);
+/**
+ * @openapi
+ * /mismatches/requests:
+ *   get:
+ *     tags:
+ *       - Mismatches
+ *     summary: Get rumble requests for the current user
+ *     description: Returns both incoming and outgoing rumble requests with their current status and basic user details.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of rumble requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/RumbleRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+mismatchesRouter.get("/requests", listRumbleRequests_controller);
+
+mismatchesRouter.post(
+  "/:id",
+  validateBody(createRumbleRequestSchema),
+  sendRumbleRequest_controller,
+);
 /**
  * @openapi
  * /mismatches/{id}:
@@ -55,6 +91,12 @@ mismatchesRouter.post("/:id",validateBody(createRumbleRequestSchema),sendRumbleR
  *           type: string
  *           format: uuid
  *         description: ID of the mismatch to challenge
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateRumbleRequestBody'
  *     responses:
  *       201:
  *         description: Rumble request sent
@@ -71,8 +113,6 @@ mismatchesRouter.post("/:id",validateBody(createRumbleRequestSchema),sendRumbleR
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-mismatchesRouter.post("/:id", sendRumbleRequest_controller);
-
 /**
  * @openapi
  * /mismatches/{id}/accept:
