@@ -2,13 +2,13 @@ import { jest } from "@jest/globals";
 
 jest.unstable_mockModule("../../../src/models/rumbles.js", () => ({
   addRumble_model: jest.fn(),
-  getActiveRumblesByUserId_model: jest.fn(),
+  getRumblesByUserId_model: jest.fn(),
   getRumbleById_model: jest.fn(),
   isUserParticipantInRumble_model: jest.fn(),
   terminateRumble_model: jest.fn(),
 }));
 
-const { addRumble_model, getActiveRumblesByUserId_model } = await import(
+const { addRumble_model, getRumblesByUserId_model } = await import(
   "../../../src/models/rumbles.js"
 );
 const { addRumble_controller, getRumbles_controller } = await import(
@@ -78,7 +78,7 @@ describe("rumbles controller", () => {
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
-      expect(getActiveRumblesByUserId_model).not.toHaveBeenCalled();
+      expect(getRumblesByUserId_model).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -89,11 +89,11 @@ describe("rumbles controller", () => {
       const next = jest.fn();
       const rumbles = [{ id: "55555555-5555-4555-8555-555555555555" }];
 
-      getActiveRumblesByUserId_model.mockResolvedValue(rumbles);
+      getRumblesByUserId_model.mockResolvedValue(rumbles);
 
       await getRumbles_controller(req, res, next);
 
-      expect(getActiveRumblesByUserId_model).toHaveBeenCalledWith(userId);
+      expect(getRumblesByUserId_model).toHaveBeenCalledWith(userId);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ data: rumbles });
       expect(next).not.toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe("rumbles controller", () => {
       const next = jest.fn();
       const error = new Error("Database error");
 
-      getActiveRumblesByUserId_model.mockRejectedValue(error);
+      getRumblesByUserId_model.mockRejectedValue(error);
 
       await getRumbles_controller(req, res, next);
 

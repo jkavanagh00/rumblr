@@ -102,8 +102,8 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       return res.status(404).json({ error: "Rumble request cannot be found" });
     }
 
-    if (rumbleRequest.receiver_id != req.user.id) {
-      return res.status(401).json({
+    if (rumbleRequest.receiver_id !== req.user.id) {
+      return res.status(403).json({
         error: "You are not authorized to accept this rumble request",
       });
     }
@@ -128,8 +128,8 @@ export async function declineRumbleRequest_controller(req, res, next) {
       return res.status(404).json({ error: "Rumble request cannot be found" });
     }
 
-    if (rumbleRequest.receiver_id != req.user.id) {
-      return res.status(401).json({
+    if (rumbleRequest.receiver_id !== req.user.id) {
+      return res.status(403).json({
         error: "You are not authorized to decline this rumble request",
       });
     }

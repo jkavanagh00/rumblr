@@ -85,7 +85,6 @@ router.use(authenticateToken);
  *         $ref: '#/components/responses/Unauthorized'
  */
 router.get("/", getRumbles_controller);
-router.post("/", validateBody(createRumbleSchema), addRumble_controller);
 
 /**
  * @openapi
