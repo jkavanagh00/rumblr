@@ -1,5 +1,5 @@
 import express from "express";
-import { validateBody } from "../middlewares/errors.js";
+import { validateBody, validateParams } from "../middlewares/errors.js";
 import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import {
@@ -9,6 +9,7 @@ import {
   sendRumbleRequest_controller,
 } from "../controllers/requests.js";
 import { listMismatchesForUser_controller } from "../controllers/mismatches.js";
+import { idParamsSchema } from "../Schemas/common.js";
 
 const mismatchesRouter = express.Router();
 mismatchesRouter.use(authenticateToken);
@@ -69,11 +70,6 @@ mismatchesRouter.get("/", listMismatchesForUser_controller);
  */
 mismatchesRouter.get("/requests", listRumbleRequests_controller);
 
-mismatchesRouter.post(
-  "/:id",
-  validateBody(createRumbleRequestSchema),
-  sendRumbleRequest_controller,
-);
 /**
  * @openapi
  * /mismatches/{id}:
@@ -113,6 +109,12 @@ mismatchesRouter.post(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+mismatchesRouter.post(
+  "/:id", validateParams(idParamsSchema),
+  validateBody(createRumbleRequestSchema),
+  sendRumbleRequest_controller,
+);
+
 /**
  * @openapi
  * /mismatches/{id}/accept:
@@ -146,7 +148,7 @@ mismatchesRouter.post(
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-mismatchesRouter.post("/:id/accept", acceptRumbleRequest_controller);
+mismatchesRouter.post("/:id/accept", validateParams(idParamsSchema), acceptRumbleRequest_controller);
 
 /**
  * @openapi
@@ -185,6 +187,6 @@ mismatchesRouter.post("/:id/accept", acceptRumbleRequest_controller);
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-mismatchesRouter.post("/:id/decline", declineRumbleRequest_controller);
+mismatchesRouter.post("/:id/decline", validateParams(idParamsSchema), declineRumbleRequest_controller);
 
 export default mismatchesRouter;
