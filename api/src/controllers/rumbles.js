@@ -1,17 +1,7 @@
 import {
-  addRumble_model,
   getActiveRumblesByUserId_model,
 } from "../models/rumbles.js";
 import { terminateRumble_service } from "../services/rumbles.js";
-
-export async function addRumble_controller(req, res, next) {
-  try {
-    const rumble = await addRumble_model(req.validatedBody);
-    return res.status(201).json(rumble);
-  } catch (error) {
-    next(error);
-  }
-}
 
 export async function getRumbles_controller(req, res, next) {
   try {
