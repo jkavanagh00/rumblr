@@ -1,14 +1,3 @@
-/*
-all routes related to rumbles should be here
-
-examples:
-
-- POST/rumbles
-- GET /rumbles (get all rumbles for current user)
-- GET /rumbles/:id/messages (get all messages for a specific rumble)
-- POST /rumbles/:id/messages (create a new rumble message)
-*/
-
 import express from "express";
 import { createRumbleSchema } from "../Schemas/rumbles.js";
 import {
@@ -32,6 +21,7 @@ import {
   validateQuery,
   validateRequest,
 } from "../middlewares/errors.js";
+import { idParamsSchema } from "../Schemas/common.js";
 
 const router = express.Router();
 
@@ -121,7 +111,7 @@ router.get("/", getRumbles_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.put("/:id/terminate", terminateRumble_controller);
+router.put("/:id/terminate", validateParams(idParamsSchema), terminateRumble_controller);
 
 /**
  * @openapi
@@ -207,6 +197,7 @@ router.put("/:id/terminate", terminateRumble_controller);
  */
 router.get(
   "/:id/messages",
+  validateParams(idParamsSchema),
   validateParams(createMessageParamsSchema),
   validateQuery(paginationSchema),
   getMessages_controller,
@@ -214,6 +205,7 @@ router.get(
 
 router.post(
   "/:id/messages",
+  validateParams(idParamsSchema),
   validateParams(createMessageParamsSchema),
   validateRequest(
     createMessageSchema,
