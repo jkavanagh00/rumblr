@@ -1,3 +1,22 @@
+import testDb from "../../setup/testDb.js";
+import { seedUser } from "../../setup/factories.js";
+import { jest } from "@jest/globals";
+
+jest.unstable_mockModule("../../../src/database/db.js", () => ({
+  default: testDb,
+}));
+
+const { acceptRumbleRequest_service } = await import("../../../src/services/requests.js");
+
+const requesterId = "11111111-1111-4111-8111-111111111111";
+const receiverId  = "22222222-2222-4222-8222-222222222222";
+
+beforeEach(async () => {
+  await testDb("rumbles").del();
+  await testDb("rumble_requests").del();
+  await testDb("users").del();
+});
+
 describe("requests integration services", () => {
 	describe("acceptRumbleRequest_service", () => {
 		test.todo(
