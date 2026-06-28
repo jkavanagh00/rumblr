@@ -1,6 +1,6 @@
 import express from "express";
 import { validateBody } from "../middlewares/errors.js";
-import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
+import { createRumbleRequestSchema } from "../schemas/rumble_request.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import {
   acceptRumbleRequest_controller,

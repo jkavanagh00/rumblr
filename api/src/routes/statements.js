@@ -11,7 +11,7 @@ import express from "express";
 import {
   createStatementSchema,
   updateStatementSchema,
-} from "../Schemas/statements.js";
+} from "../schemas/statements.js";
 import {
   addStatement_controller,
   getStatementById_controller,
@@ -27,7 +27,7 @@ import {
 } from "../controllers/responses.js";
 import { validateBody } from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
-import { createResponseSchema } from "../Schemas/response.js";
+import { createResponseSchema } from "../schemas/response.js";
 const statementsRouter = express.Router();
 statementsRouter.use(authenticateToken);
 

@@ -10,12 +10,12 @@ examples:
 */
 
 import express from "express";
-import { createRumbleSchema } from "../Schemas/rumbles.js";
+import { createRumbleSchema } from "../schemas/rumbles.js";
 import {
   createMessageParamsSchema,
   createMessageSchema,
   paginationSchema,
-} from "../Schemas/messages.js";
+} from "../schemas/messages.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   addRumble_controller,
