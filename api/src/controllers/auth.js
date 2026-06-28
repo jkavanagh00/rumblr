@@ -64,6 +64,12 @@ export async function signup_controller(req, res, next) {
       user: toPublicUser(createdUser),
     });
   } catch (error) {
+    // Postgres unique_violation = 23505; SQLite message contains "UNIQUE"
+    if (error.code === "23505" || /unique/i.test(error.message)) {
+      return res
+        .status(409)
+        .json({ error: "Email or username already in use" });
+    }
     next(error);
   }
 }
