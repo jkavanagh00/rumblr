@@ -3,10 +3,10 @@ const BLOCKS_TABLE = "blocks";
 const USERS_TABLE = "users";
 
 function blocksQuery(trx = db) {
-    return trx(BLOCKS_TABLE);
-    }
+  return trx(BLOCKS_TABLE);
+}
 
-    export async function createBlock_model(blockerId, blockedId, trx = db) {
+export async function createBlock_model(blockerId, blockedId, trx = db) {
   const [block] = await blocksQuery(trx)
     .insert({
       blocker_id: blockerId,

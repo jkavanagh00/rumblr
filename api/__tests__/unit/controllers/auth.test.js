@@ -378,7 +378,7 @@ describe("auth controller", () => {
       const res = createMockRes();
       const next = jest.fn();
       const error = new Error("db error");
-	  getPublicUserById_model.mockRejectedValue(error);
+      getPublicUserById_model.mockRejectedValue(error);
 
       await me_controller(req, res, next);
 

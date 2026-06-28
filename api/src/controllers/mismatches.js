@@ -9,9 +9,7 @@ examples:
 - rejectRumbleRequest
 */
 
-import {
-  listMismatchesForUser_model,
-} from "../models/mismatches.js";
+import { listMismatchesForUser_model } from "../models/mismatches.js";
 import db from "../database/db.js";
 
 export async function listMismatchesForUser_controller(req, res, next) {

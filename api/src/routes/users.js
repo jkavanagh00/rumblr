@@ -17,7 +17,6 @@ const router = express.Router();
 
 router.use(authenticateToken);
 
-
 /**
  * @openapi
  * /user/blocks:
@@ -108,8 +107,16 @@ router.get("/blocks", getBlockedUsers_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.post("/blocks/:id", validateParams(blockParamsSchema), blockUser_controller);
-router.delete("/blocks/:id", validateParams(blockParamsSchema), unblockUser_controller);
+router.post(
+  "/blocks/:id",
+  validateParams(blockParamsSchema),
+  blockUser_controller,
+);
+router.delete(
+  "/blocks/:id",
+  validateParams(blockParamsSchema),
+  unblockUser_controller,
+);
 /**
  * @openapi
  * /user/onboarding:

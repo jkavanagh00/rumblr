@@ -1,6 +1,4 @@
-import {
-  getRumblesByUserId_model,
-} from "../models/rumbles.js";
+import { getRumblesByUserId_model } from "../models/rumbles.js";
 import { terminateRumble_service } from "../services/rumbles.js";
 
 export async function getRumbles_controller(req, res, next) {

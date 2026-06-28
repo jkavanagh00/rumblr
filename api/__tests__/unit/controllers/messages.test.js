@@ -81,8 +81,7 @@ describe("messages controller", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-// todoTest("Add tests for addMessage_controller when rumble is terminated.");
-
+    // todoTest("Add tests for addMessage_controller when rumble is terminated.");
 
     test("creates message and emits socket event for an active rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
@@ -223,7 +222,9 @@ describe("messages controller", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    test.todo("Add tests for getMessages_controller when rumble is terminated.");
+    test.todo(
+      "Add tests for getMessages_controller when rumble is terminated.",
+    );
 
     test("returns paginated messages for rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
