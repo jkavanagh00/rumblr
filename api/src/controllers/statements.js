@@ -24,7 +24,7 @@ export async function getStatementWithNoResponse_controller(req, res, next) {
     const statement = await getStatementWithNoResponse_model(req.user.id);
 
     if (!statement) {
-      return res.status(204).json({
+      return res.status(200).json({
         error:
           "You have responded to all of our statements! Maybe go and touch grass?",
       });
