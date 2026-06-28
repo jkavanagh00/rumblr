@@ -16,13 +16,13 @@ export async function addRumble_model(rumbleData, trx = db) {
   return rumble;
 }
 
-export async function getActiveRumblesByUserId_model(userId, trx = db) {
+export async function getRumblesByUserId_model(userId, trx = db) {
   return await rumblesQuery(trx)
     .select("*")
     .where((builder) => {
       builder.where({ requester_id: userId }).orWhere({ receiver_id: userId });
     })
-    .andWhere({ status: "active" })
+    .whereIn("status", ["active", "inactive"])
     .orderBy("created_at", "desc");
 }
 

@@ -2,7 +2,7 @@ import testDb from "../../setup/testDb.js";
 import { seedUser } from "../../setup/factories.js";
 import {
   addRumble_model,
-  getActiveRumblesByUserId_model,
+  getRumblesByUserId_model,
   getRumbleById_model,
   updateRumbleStatus_model,
   isUserParticipantInRumble_model,
@@ -59,7 +59,7 @@ describe("rumbles model", () => {
     });
   });
 
-  describe("getActiveRumblesByUserId_model", () => {
+  describe("getRumblesByUserId_model", () => {
     test("returns only active rumbles where user participates", async () => {
       await seedUser(testDb, { id: userId });
       await seedUser(testDb, { id: otherUserId });
@@ -107,7 +107,7 @@ describe("rumbles model", () => {
         },
       ]);
 
-      const result = await getActiveRumblesByUserId_model(userId, testDb);
+      const result = await getRumblesByUserId_model(userId, testDb);
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(rumbleId);

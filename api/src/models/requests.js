@@ -6,11 +6,14 @@ export async function sendRumbleRequest_model(
   threat_level,
   trx = db,
 ) {
-  return await trx("rumble_requests").insert({
-    requester_id,
-    receiver_id,
-    threat_level,
-  });
+  const [created] = await trx("rumble_requests")
+    .insert({
+      requester_id,
+      receiver_id,
+      threat_level,
+    })
+    .returning("*");
+  return created;
 }
 
 export async function getRumbleRequestById_model(id, trx = db) {
