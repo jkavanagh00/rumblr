@@ -1,24 +1,56 @@
+import { expect, jest } from "@jest/globals";
+import { hashPassword, verifyPassword } from "../../../src/utils/helpers";
+import bcrypt from "bcrypt";
+
 describe("helpers utils", () => {
 	describe("hashPassword", () => {
-		test.todo("returns a bcrypt hash string when given a valid password");
-		test.todo("produces a hash that does not equal the original password");
-		test.todo("uses bcrypt with 10 salt rounds");
-		test.todo(
-			"throws 'Password must be a string of at least 8 characters' when password is not a string",
-		);
-		test.todo(
-			"throws 'Password must be a string of at least 8 characters' when password is shorter than 8 characters",
-		);
-		test.todo("accepts a password of exactly 8 characters");
+		test("returns a bcrypt hash string when given a valid password", async () => {
+			const result = await hashPassword("validpassword");
+			expect(result).toMatch(/^\$2[ab]\$\d{2}\$.{53}$/);			
+		});
+		test("produces a hash that does not equal the original password", async () => {
+			const result = await hashPassword("validpassword");
+			expect(result).not.toBe("validpassword")
+		});
+		test("uses bcrypt with 10 salt rounds", async () => {
+			const spy = jest.spyOn(bcrypt, "hash");
+			await hashPassword("validpassword");
+			expect(spy).toHaveBeenCalledWith("validpassword", 10);
+			spy.mockRestore();
+		});
+		test("throws 'Password must be a string of at least 8 characters' when password is not a string", async () => {
+			await expect(hashPassword(["validpassword"])).rejects.toThrow(
+				"Password must be a string of at least 8 characters"
+			);
+		});
+		test("throws 'Password must be a string of at least 8 characters' when password is shorter than 8 characters", async () => {
+			await expect(hashPassword("passwor")).rejects.toThrow(
+				"Password must be a string of at least 8 characters"
+			);
+		});
 	});
 
 	describe("verifyPassword", () => {
-		test.todo("returns true when password matches the provided hash");
-		test.todo("returns false when password does not match the provided hash");
-		test.todo("returns false when password is not a string");
-		test.todo("returns false when password is shorter than 8 characters");
-		test.todo(
-			"uses bcrypt.compareSync for valid password inputs and the provided hash",
-		);
+		let testHash;
+		beforeAll(async () => {
+			testHash = await bcrypt.hash("validpassword", 1)
+		});
+
+		test("returns true when password matches the provided hash", async () => {
+			const result = await verifyPassword("validpassword", testHash);
+			expect(result).toBe(true);
+		});
+		test("returns false when password does not match the provided hash", async () => {
+			const result = await verifyPassword("wrongpassword", testHash);
+			expect(result).toBe(false);
+		});
+		test("returns false when password is not a string", async () => {
+			const result = await verifyPassword(["validpassword"], testHash);
+			expect(result).toBe(false);
+		});
+		test("returns false when password is shorter than 8 characters", async () => {
+			const result = await verifyPassword("pass", testHash);
+			expect(result).toBe(false);
+		});
 	});
 });

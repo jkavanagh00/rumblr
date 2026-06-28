@@ -7,7 +7,9 @@ import { randomUUID } from "node:crypto";
 
 export async function seedUser(testDb, overrides = {}) {
   const unique = randomUUID();
+  const id = overrides.id || randomUUID();
   const defaultData = {
+    id,
     username: `test_user_${unique}`,
     email: `test_${unique}@example.com`,
     password_hash: "hashed_password",
@@ -16,25 +18,23 @@ export async function seedUser(testDb, overrides = {}) {
 
   const data = { ...defaultData, ...overrides };
 
-  const [insertedId] = await testDb("users")
-    .insert(data)
-    .returning("id");
+  await testDb("users").insert(data);
 
-  return { id: insertedId, ...data };
+  return data;
 }
 
 export async function seedStatement(testDb, overrides = {}) {
+  const id = overrides.id || randomUUID();
   const defaultData = {
+    id,
     content: "Test statement content",
   };
 
   const data = { ...defaultData, ...overrides };
 
-  const [insertedId] = await testDb("statements")
-    .insert(data)
-    .returning("id");
+  await testDb("statements").insert(data);
 
-  return { id: insertedId, ...data };
+  return data;
 }
 
 export async function seedResponse(testDb, overrides = {}) {
@@ -55,7 +55,9 @@ export async function seedResponse(testDb, overrides = {}) {
     statement_id = statement.id;
   }
 
+  const id = overrides.id || randomUUID();
   const defaultData = {
+    id,
     user_id,
     statement_id,
     agreement_score: 3,
@@ -64,11 +66,9 @@ export async function seedResponse(testDb, overrides = {}) {
 
   const data = { ...defaultData, ...overrides, user_id, statement_id };
 
-  const [insertedId] = await testDb("responses")
-    .insert(data)
-    .returning("id");
+  await testDb("responses").insert(data);
 
-  return { id: insertedId, ...data };
+  return data;
 }
 
 export async function seedMismatch(testDb, overrides = {}) {
@@ -95,8 +95,10 @@ export async function seedMismatch(testDb, overrides = {}) {
   }
 
   const [sortedUser1, sortedUser2] = [user1_id, user2_id].sort();
+  const id = overrides.id || randomUUID();
 
   const defaultData = {
+    id,
     user1_id: sortedUser1,
     user2_id: sortedUser2,
     mismatch_score: 80,
@@ -111,9 +113,7 @@ export async function seedMismatch(testDb, overrides = {}) {
     user2_id: sortedUser2,
   };
 
-  const [insertedId] = await testDb("mismatches")
-    .insert(data)
-    .returning("id");
+  await testDb("mismatches").insert(data);
 
-  return { id: insertedId, ...data };
+  return data;
 }
