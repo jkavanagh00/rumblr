@@ -8,6 +8,10 @@ describe("addResponse_service", () => {
     await db.migrate.latest({ directory: "./src/database/migrations" });
   });
 
+  afterAll(async () => {
+    await db.destroy();
+  });
+
   beforeEach(async () => {
     await db("mismatches").del();
     await db("responses").del();
