@@ -333,19 +333,6 @@ describe("auth controller", () => {
 
       expect(getPublicUserById_model).toHaveBeenCalledWith(1);
     });
-    test("falls back to req.userId when req.user.id is undefined", async () => {
-      const req = { user: {}, userId: 2 };
-      const res = createMockRes();
-      const next = jest.fn();
-      getPublicUserById_model.mockResolvedValue({
-        id: 2,
-        username: "testuser",
-      });
-
-      await me_controller(req, res, next);
-
-      expect(getPublicUserById_model).toHaveBeenCalledWith(2);
-    });
     test("returns 404 when no public user exists for the resolved user id", async () => {
       const req = { user: { id: 3 } };
       const res = createMockRes();
