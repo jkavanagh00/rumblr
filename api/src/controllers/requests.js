@@ -74,7 +74,7 @@ export async function sendRumbleRequest_controller(req, res, next) {
     const request = await sendRumbleRequest_model(
       req.user.id,
       req.params.id,
-      threat_level, //need to be checked
+      threat_level,
     );
 
     return res.status(201).json(request);
