@@ -88,7 +88,7 @@ export async function sendRumbleRequest_controller(req, res, next) {
 
 export async function listRumbleRequests_controller(req, res, next) {
   try {
-    const userId = req.userId;
+    const userId = req.user.id;
 
     const requests = await listRumbleRequestsForUser_model(userId);
     return res.status(200).json({ data: requests });

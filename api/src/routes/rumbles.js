@@ -219,7 +219,7 @@ router.post(
     createMessageSchema,
     (req) => ({
       rumble_id: req.params.id,
-      sender_id: req.userId,
+      sender_id: req.user.id,
       content: req.body.content,
     }),
     (req, data) => {

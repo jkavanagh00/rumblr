@@ -93,7 +93,7 @@ export async function login_controller(req, res, next) {
 
 export async function me_controller(req, res, next) {
   try {
-    const userId = req.user.id ?? req.userId;
+    const userId = req.user.id;
     const user = await getPublicUserById_model(userId);
 
     if (!user) {
