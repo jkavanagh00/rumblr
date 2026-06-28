@@ -8,6 +8,7 @@ examples:
 */
 
 import express from "express";
+import { paginationSchema } from "../Schemas/pagination.js";
 import {
   createStatementSchema,
   updateStatementSchema,
@@ -25,7 +26,7 @@ import {
   addResponse_controller,
   listResponses_controller,
 } from "../controllers/responses.js";
-import { validateBody } from "../middlewares/errors.js";
+import { validateBody, validateQuery } from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import { createResponseSchema } from "../Schemas/response.js";
 const statementsRouter = express.Router();
@@ -160,7 +161,11 @@ statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/responses", listResponses_controller);
+statementsRouter.get(
+  "/responses",
+  validateQuery(paginationSchema, "pagination"),
+  listResponses_controller,
+);
 
 /**
  * @openapi
@@ -185,7 +190,12 @@ statementsRouter.get("/responses", listResponses_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/list", requireAdmin, listStatements_controller);
+statementsRouter.get(
+  "/list",
+  validateQuery(paginationSchema, "pagination"),
+  requireAdmin,
+  listStatements_controller,
+);
 
 /**
  * @openapi

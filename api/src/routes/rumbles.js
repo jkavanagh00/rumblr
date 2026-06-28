@@ -14,8 +14,8 @@ import { createRumbleSchema } from "../Schemas/rumbles.js";
 import {
   createMessageParamsSchema,
   createMessageSchema,
-  paginationSchema,
 } from "../Schemas/messages.js";
+import { paginationSchema } from "../Schemas/pagination.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   addRumble_controller,
@@ -36,7 +36,6 @@ import {
 const router = express.Router();
 
 router.use(authenticateToken);
-
 /**
  * @openapi
  * /rumbles:
@@ -84,7 +83,8 @@ router.use(authenticateToken);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get("/", getRumbles_controller);
+router.get("/", validateQuery(paginationSchema, "pagination"), getRumbles_controller);
+router.post("/", validateBody(createRumbleSchema), addRumble_controller);
 
 /**
  * @openapi

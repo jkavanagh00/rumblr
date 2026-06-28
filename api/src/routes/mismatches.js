@@ -1,5 +1,6 @@
 import express from "express";
-import { validateBody } from "../middlewares/errors.js";
+import { paginationSchema } from "../Schemas/pagination.js";
+import { validateBody, validateQuery } from "../middlewares/errors.js";
 import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import {
@@ -40,7 +41,11 @@ mismatchesRouter.use(authenticateToken);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-mismatchesRouter.get("/", listMismatchesForUser_controller);
+mismatchesRouter.get(
+  "/",
+  validateQuery(paginationSchema, "pagination"),
+  listMismatchesForUser_controller,
+);
 
 /**
  * @openapi

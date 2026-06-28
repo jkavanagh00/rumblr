@@ -69,10 +69,25 @@ export async function getStatementWithNoResponse_model(userId, trx = db) {
   };
 }
 
-export async function listStatements_model(trx = db) {
+export async function listStatements_model(
+  { page = 1, limit = 20 } = {},
+  trx = db,
+) {
+  const offset = (page - 1) * limit;
   const qb = baseQuery(trx);
-  const statements = await qb.select("*");
-  return statements.length > 0 ? statements : null;
+  const data = await qb.select("*").limit(limit).offset(offset);
+
+  if (data.length === 0) {
+    return null;
+  }
+
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+    },
+  };
 }
 
 export async function addStatement_model(statement, trx = db) {

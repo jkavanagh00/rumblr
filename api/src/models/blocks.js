@@ -35,8 +35,14 @@ export async function deleteBlock_model(blockerId, blockedId, trx = db) {
     .delete();
 }
 
-export async function getBlockedUsersByBlockerId_model(blockerId, trx = db) {
-  return blocksQuery(trx)
+export async function getBlockedUsersByBlockerId_model(
+  blockerId,
+  { page = 1, limit = 20 } = {},
+  trx = db,
+) {
+  const offset = (page - 1) * limit;
+
+  const data = await blocksQuery(trx)
     .join(USERS_TABLE, `${BLOCKS_TABLE}.blocked_id`, `${USERS_TABLE}.id`)
     .select(
       `${BLOCKS_TABLE}.id as block_id`,
@@ -50,5 +56,15 @@ export async function getBlockedUsersByBlockerId_model(blockerId, trx = db) {
       `${USERS_TABLE}.created_at`,
     )
     .where(`${BLOCKS_TABLE}.blocker_id`, blockerId)
-    .orderBy(`${BLOCKS_TABLE}.created_at`, "desc");
+    .orderBy(`${BLOCKS_TABLE}.created_at`, "desc")
+    .limit(limit)
+    .offset(offset);
+
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+    },
+  };
 }
