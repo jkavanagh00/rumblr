@@ -1,8 +1,25 @@
+import jwt from "jsonwebtoken";
+import { isUserParticipantInRumble_model } from "./models/rumbles.js";
+
 export default function registerRumbleSocket(io) {
+  io.use((socket, next) => {
+    try {
+      const token = socket.handshake.auth?.token;
+      socket.user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      next();
+    } catch {
+      next(new Error("Unauthorized"));
+    }
+  });
+
   io.on("connection", (socket) => {
-    socket.on("rumble:join", ({ rumbleId }) => {
+    socket.on("rumble:join", async ({ rumbleId }) => {
       if (!rumbleId) return;
-      socket.join(`rumble:${rumbleId}`);
+      const isParticipant = await isUserParticipantInRumble_model(
+        rumbleId,
+        socket.user.id,
+      );
+      if (isParticipant) socket.join(`rumble:${rumbleId}`);
     });
 
     socket.on("rumble:leave", ({ rumbleId }) => {
@@ -14,4 +31,4 @@ export default function registerRumbleSocket(io) {
       // optional logging
     });
   });
-}
+    }
