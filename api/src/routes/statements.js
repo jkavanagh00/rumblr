@@ -1,5 +1,5 @@
 import express from "express";
-import { paginationSchema } from "../Schemas/pagination.js";
+import { paginationSchema } from "../schemas/pagination.js";
 import {
   createStatementSchema,
   updateStatementSchema,

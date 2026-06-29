@@ -1,10 +1,10 @@
 import express from "express";
-import { createRumbleSchema } from "../Schemas/rumbles.js";
+import { createRumbleSchema } from "../schemas/rumbles.js";
 import {
   createMessageParamsSchema,
   createMessageSchema,
-} from "../Schemas/messages.js";
-import { paginationSchema } from "../Schemas/pagination.js";
+} from "../schemas/messages.js";
+import { paginationSchema } from "../schemas/pagination.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   getRumbles_controller,
