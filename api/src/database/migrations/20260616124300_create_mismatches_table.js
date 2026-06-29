@@ -6,8 +6,18 @@
 export function up(knex) {
   return knex.schema.createTable("mismatches", (table) => {
     table.uuid("id").primary().defaultTo(knex.fn.uuid());
-    table.uuid("user1_id").notNullable().references("id").inTable("users").onDelete("CASCADE");
-    table.uuid("user2_id").notNullable().references("id").inTable("users").onDelete("CASCADE");
+    table
+      .uuid("user1_id")
+      .notNullable()
+      .references("id")
+      .inTable("users")
+      .onDelete("CASCADE");
+    table
+      .uuid("user2_id")
+      .notNullable()
+      .references("id")
+      .inTable("users")
+      .onDelete("CASCADE");
     table.integer("mismatch_score").notNullable();
     table.integer("shared_responses").notNullable();
     table.string("confidence").notNullable();
@@ -23,16 +33,16 @@ export function up(knex) {
     table.index(["mismatch_score"], "mismatch_score_index");
 
     // add a check constraint to ensure user1_id and user2_id are not the same
-    table.check("user1_id <> user2_id"); 
+    table.check("user1_id <> user2_id");
     // add a check constraint to enforce a consistent ordering of user IDs to prevent duplicate pairs in reverse order
-    table.check("user1_id < user2_id");     
+    table.check("user1_id < user2_id");
     // add a check constraint to ensure mismatch_score is between 0 and 100
     table.check("mismatch_score >= 0 AND mismatch_score <= 100");
     // add a check constraint to ensure confidence is one of the allowed values
     table.check("confidence IN ('low', 'medium', 'high')");
     // add a check constraint to ensure shared_responses is above the minimum threshold for a valid mismatch
     table.check("shared_responses >= 10");
-});
+  });
 }
 
 /**

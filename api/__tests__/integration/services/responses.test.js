@@ -1,5 +1,9 @@
 import db from "../../../src/database/db.js";
-import { seedUser, seedStatement, seedResponse } from "../../setup/factories.js";
+import {
+  seedUser,
+  seedStatement,
+  seedResponse,
+} from "../../setup/factories.js";
 import { addResponse_service } from "../../../src/services/responses.js";
 import { randomUUID } from "node:crypto";
 
@@ -29,7 +33,11 @@ describe("addResponse_service", () => {
         importance_score: 4,
       };
 
-      const result = await addResponse_service(user.id, statement.id, responseData);
+      const result = await addResponse_service(
+        user.id,
+        statement.id,
+        responseData,
+      );
 
       expect(result).toHaveProperty("upsertedResponse");
       expect(result).toHaveProperty("totalUpsertedMismatches");
@@ -53,7 +61,11 @@ describe("addResponse_service", () => {
       }
 
       const responseData = { agreement_score: 3, importance_score: 3 };
-      const result = await addResponse_service(user1.id, statement.id, responseData);
+      const result = await addResponse_service(
+        user1.id,
+        statement.id,
+        responseData,
+      );
 
       // Should create 2 mismatches (one with user2, one with user3)
       expect(result.totalUpsertedMismatches).toBe(2);
@@ -73,7 +85,11 @@ describe("addResponse_service", () => {
 
       // Update the response
       const updatedData = { agreement_score: 5, importance_score: 5 };
-      const result = await addResponse_service(user.id, statement.id, updatedData);
+      const result = await addResponse_service(
+        user.id,
+        statement.id,
+        updatedData,
+      );
 
       expect(result.upsertedResponse.agreement_score).toBe(5);
       expect(result.upsertedResponse.importance_score).toBe(5);
@@ -88,7 +104,7 @@ describe("addResponse_service", () => {
       const responseData = { agreement_score: 3, importance_score: 3 };
 
       await expect(
-        addResponse_service(user.id, nonexistentStatementId, responseData)
+        addResponse_service(user.id, nonexistentStatementId, responseData),
       ).rejects.toThrow("No statement with provided id found");
     });
 
@@ -98,9 +114,9 @@ describe("addResponse_service", () => {
 
       // This would require mocking or creating a scenario where the transaction fails
       // For now, this documents what should be tested
-      
+
       const responseData = { agreement_score: 3, importance_score: 3 };
-      
+
       // The transaction should rollback and not create partial data
     });
   });
@@ -111,7 +127,11 @@ describe("addResponse_service", () => {
       const statement = await seedStatement(db, { content: "Test statement" });
 
       const responseData = { agreement_score: 3, importance_score: 3 };
-      const result = await addResponse_service(user.id, statement.id, responseData);
+      const result = await addResponse_service(
+        user.id,
+        statement.id,
+        responseData,
+      );
 
       expect(result.totalUpsertedMismatches).toBe(0);
       const responses = await db("responses").select("*");
@@ -133,7 +153,11 @@ describe("addResponse_service", () => {
 
       // User1 adds response
       const responseData = { agreement_score: 3, importance_score: 3 };
-      const result = await addResponse_service(user1.id, statement.id, responseData);
+      const result = await addResponse_service(
+        user1.id,
+        statement.id,
+        responseData,
+      );
 
       // Should only create mismatch with user2, not with self
       expect(result.totalUpsertedMismatches).toBe(1);

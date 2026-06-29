@@ -1,6 +1,6 @@
 import express from "express";
-import { updateUserSchema } from "../Schemas/users.js";
-import { blockParamsSchema } from "../Schemas/block.js";
+import { updateUserSchema } from "../schemas/users.js";
+import { blockParamsSchema } from "../schemas/block.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   getUser_controller,
@@ -16,7 +16,6 @@ import { validateBody, validateParams } from "../middlewares/errors.js";
 const router = express.Router();
 
 router.use(authenticateToken);
-
 
 /**
  * @openapi
@@ -108,8 +107,16 @@ router.get("/blocks", getBlockedUsers_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.post("/blocks/:id", validateParams(blockParamsSchema), blockUser_controller);
-router.delete("/blocks/:id", validateParams(blockParamsSchema), unblockUser_controller);
+router.post(
+  "/blocks/:id",
+  validateParams(blockParamsSchema),
+  blockUser_controller,
+);
+router.delete(
+  "/blocks/:id",
+  validateParams(blockParamsSchema),
+  unblockUser_controller,
+);
 /**
  * @openapi
  * /user/onboarding:

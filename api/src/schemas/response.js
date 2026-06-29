@@ -12,8 +12,6 @@ export const createResponseSchema = z.object({
     .int({ message: "Importance score must be an integer" })
     .min(1, { message: "Importance score must be at least 1" })
     .max(5, { message: "Importance score may be 5 at most" }),
-  
 });
 
 export const updateResponseSchema = createResponseSchema.partial();
-

@@ -11,7 +11,7 @@ import express from "express";
 import {
   createStatementSchema,
   updateStatementSchema,
-} from "../Schemas/statements.js";
+} from "../schemas/statements.js";
 import {
   addStatement_controller,
   getStatementById_controller,

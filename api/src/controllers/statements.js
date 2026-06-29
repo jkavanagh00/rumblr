@@ -111,12 +111,10 @@ export async function getOnboardingStatement_controller(req, res, next) {
     }
 
     if (statementNumber < 1 || statementNumber > 10) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Onboarding statement number must be a whole number between one and ten",
-        });
+      return res.status(400).json({
+        error:
+          "Onboarding statement number must be a whole number between one and ten",
+      });
     }
 
     const onboardingProgress = await getOnboardingProgress_model(req.user.id);
@@ -138,7 +136,7 @@ export async function getOnboardingStatement_controller(req, res, next) {
         .status(404)
         .json({ error: "No onboarding statement with that number exists." });
     }
-    
+
     return res.status(200).json(statement);
   } catch (error) {
     next(error);
