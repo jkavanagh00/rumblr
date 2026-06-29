@@ -25,14 +25,6 @@ app.use(bodyParser.json());
 
 const apiRouter = express.Router();
 
-// This is an example of how to set up a route. Replace it with your own.
-apiRouter.get("/", async (req, res) => {
-  // Here is an example of making a query to the database you set up:
-  const query = "SELECT 'Hello, world!' AS message;";
-  const result = await db.raw(query);
-  res.json(result);
-});
-
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);

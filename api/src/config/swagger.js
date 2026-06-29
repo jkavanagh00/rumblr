@@ -19,7 +19,10 @@ const options = {
       { name: "Auth", description: "Signup and login" },
       { name: "Users", description: "User profile and blocking" },
       { name: "Statements", description: "Statements and user responses" },
-      { name: "Mismatches", description: "Mismatch discovery and rumble requests" },
+      {
+        name: "Mismatches",
+        description: "Mismatch discovery and rumble requests",
+      },
       { name: "Rumbles", description: "Active rumbles and messages" },
     ],
     components: {
@@ -39,19 +42,26 @@ const options = {
             username: { type: "string" },
             email: { type: "string", format: "email" },
             bio: { type: "string", nullable: true },
-            status: { type: "string", enum: ["active", "inactive", "suspended"] },
+            status: {
+              type: "string",
+              enum: ["active", "inactive", "suspended"],
+            },
             role: { type: "string", enum: ["user", "admin"] },
             created_at: { type: "string", format: "date-time" },
           },
         },
         PublicUser: {
           type: "object",
-          description: "User object returned by auth endpoints — email and password_hash are stripped",
+          description:
+            "User object returned by auth endpoints — email and password_hash are stripped",
           properties: {
             id: { type: "string", format: "uuid" },
             username: { type: "string" },
             bio: { type: "string", nullable: true },
-            status: { type: "string", enum: ["active", "inactive", "suspended"] },
+            status: {
+              type: "string",
+              enum: ["active", "inactive", "suspended"],
+            },
             role: { type: "string", enum: ["user", "admin"] },
             created_at: { type: "string", format: "date-time" },
           },
@@ -93,7 +103,10 @@ const options = {
             id: { type: "string", format: "uuid" },
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
-            status: { type: "string", enum: ["pending", "accepted", "declined"] },
+            status: {
+              type: "string",
+              enum: ["pending", "accepted", "declined"],
+            },
             created_at: { type: "string", format: "date-time" },
           },
         },
@@ -104,7 +117,10 @@ const options = {
             rumble_request_id: { type: "string", format: "uuid" },
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
-            status: { type: "string", enum: ["active", "inactive", "terminated"] },
+            status: {
+              type: "string",
+              enum: ["active", "inactive", "terminated"],
+            },
             threat_level: { type: "string", enum: ["green", "orange", "red"] },
             created_at: { type: "string", format: "date-time" },
           },
@@ -181,7 +197,11 @@ const options = {
           type: "object",
           required: ["identifier", "password"],
           properties: {
-            identifier: { type: "string", description: "Email or username", example: "alice_agrees" },
+            identifier: {
+              type: "string",
+              description: "Email or username",
+              example: "alice_agrees",
+            },
             password: { type: "string", example: "password123" },
           },
           example: { identifier: "alice_agrees", password: "password123" },
@@ -192,7 +212,10 @@ const options = {
             username: { type: "string", minLength: 3 },
             email: { type: "string", format: "email" },
             bio: { type: "string", maxLength: 280 },
-            status: { type: "string", enum: ["active", "inactive", "suspended"] },
+            status: {
+              type: "string",
+              enum: ["active", "inactive", "suspended"],
+            },
             threat_levels: {
               type: "array",
               items: { type: "string", enum: ["green", "orange", "red"] },
@@ -201,12 +224,21 @@ const options = {
         },
         CreateRumbleBody: {
           type: "object",
-          required: ["rumble_request_id", "requester_id", "receiver_id", "threat_level"],
+          required: [
+            "rumble_request_id",
+            "requester_id",
+            "receiver_id",
+            "threat_level",
+          ],
           properties: {
             rumble_request_id: { type: "string", format: "uuid" },
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
-            status: { type: "string", enum: ["active", "inactive", "terminated"], default: "inactive" },
+            status: {
+              type: "string",
+              enum: ["active", "inactive", "terminated"],
+              default: "inactive",
+            },
             threat_level: { type: "string", enum: ["green", "orange", "red"] },
           },
         },
@@ -221,9 +253,17 @@ const options = {
           type: "object",
           required: ["content"],
           properties: {
-            content: { type: "string", minLength: 1, example: "Climate science has been wrong before. We should be more skeptical of these predictions." },
+            content: {
+              type: "string",
+              minLength: 1,
+              example:
+                "Climate science has been wrong before. We should be more skeptical of these predictions.",
+            },
           },
-          example: { content: "Climate science has been wrong before. We should be more skeptical of these predictions." },
+          example: {
+            content:
+              "Climate science has been wrong before. We should be more skeptical of these predictions.",
+          },
         },
         CreateStatementBody: {
           type: "object",

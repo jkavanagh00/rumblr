@@ -1,9 +1,13 @@
-import { listResponses_model } from "../models/responses.js"; 
+import { listResponses_model } from "../models/responses.js";
 import { addResponse_service } from "../services/responses.js";
 
 export async function addResponse_controller(req, res, next) {
   try {
-    const result = await addResponse_service(req.user.id, req.params.id, req.validatedBody);
+    const result = await addResponse_service(
+      req.user.id,
+      req.params.id,
+      req.validatedBody,
+    );
     return res.status(201).json(result);
   } catch (error) {
     next(error);

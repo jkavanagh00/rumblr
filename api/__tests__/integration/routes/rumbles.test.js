@@ -27,7 +27,9 @@ jest.unstable_mockModule("../../../src/controllers/messages.js", () => ({
 const { addRumble_controller, getRumbles_controller } = await import(
   "../../../src/controllers/rumbles.js"
 );
-const { default: rumblesRouter } = await import("../../../src/routes/rumbles.js");
+const { default: rumblesRouter } = await import(
+  "../../../src/routes/rumbles.js"
+);
 
 const app = express();
 app.use(express.json());
@@ -69,7 +71,9 @@ describe("rumbles integration routes", () => {
   });
 
   describe("POST /rumbles", () => {
-    test.todo("returns 400 when threat_level is missing or invalid in rumble creation payload");
+    test.todo(
+      "returns 400 when threat_level is missing or invalid in rumble creation payload",
+    );
 
     test("creates and returns a rumble", async () => {
       const body = {

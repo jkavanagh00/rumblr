@@ -41,15 +41,9 @@
         "url": {
           "raw": "http://localhost:3001/api/auth/login",
           "protocol": "http",
-          "host": [
-            "localhost"
-          ],
+          "host": ["localhost"],
           "port": "3001",
-          "path": [
-            "api",
-            "auth",
-            "login"
-          ]
+          "path": ["api", "auth", "login"]
         }
       },
       "response": []
@@ -79,14 +73,9 @@
         "url": {
           "raw": "http://localhost:3001/api/account",
           "protocol": "http",
-          "host": [
-            "localhost"
-          ],
+          "host": ["localhost"],
           "port": "3001",
-          "path": [
-            "api",
-            "account"
-          ]
+          "path": ["api", "account"]
         }
       },
       "response": []
@@ -118,14 +107,9 @@
         "url": {
           "raw": "http://localhost:3001/api/account",
           "protocol": "http",
-          "host": [
-            "localhost"
-          ],
+          "host": ["localhost"],
           "port": "3001",
-          "path": [
-            "api",
-            "account"
-          ]
+          "path": ["api", "account"]
         }
       },
       "response": []

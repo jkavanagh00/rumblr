@@ -28,13 +28,17 @@ describe("statements controller", () => {
   describe("updateStatement_controller", () => {
     test.todo("calls getStatementById_model with req.params.id before update");
     test.todo("returns 404 when statement is not found for update");
-    test.todo("calls updateStatement_model with req.params.id and req.validatedBody");
+    test.todo(
+      "calls updateStatement_model with req.params.id and req.validatedBody",
+    );
     test.todo("returns 200 with the updated statement");
     test.todo("forwards model errors to next");
   });
 
   describe("deleteStatement_controller", () => {
-    test.todo("calls getStatementById_model with req.params.id before deletion");
+    test.todo(
+      "calls getStatementById_model with req.params.id before deletion",
+    );
     test.todo("returns 404 when statement is not found for deletion");
     test.todo("calls deleteStatement_model with req.params.id");
     test.todo("returns 200 with the deleted statement");
