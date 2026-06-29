@@ -136,11 +136,12 @@ export async function getBlockedUsers_controller(req, res, next) {
   try {
     const blockerId = req.user.id;
 
-    const blockedUsers = await getBlockedUsersByBlockerId_model(blockerId);
+    const blockedUsers = await getBlockedUsersByBlockerId_model(
+      blockerId,
+      req.pagination,
+    );
 
-    return res.status(200).json({
-      data: blockedUsers,
-    });
+    return res.status(200).json(blockedUsers);
   } catch (error) {
     next(error);
   }

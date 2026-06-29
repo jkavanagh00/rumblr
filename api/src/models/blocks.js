@@ -1,4 +1,5 @@
 import db from "../database/db.js";
+
 const BLOCKS_TABLE = "blocks";
 const USERS_TABLE = "users";
 
@@ -35,8 +36,21 @@ export async function deleteBlock_model(blockerId, blockedId, trx = db) {
     .delete();
 }
 
-export async function getBlockedUsersByBlockerId_model(blockerId, trx = db) {
-  return blocksQuery(trx)
+export async function getBlockedUsersByBlockerId_model(
+  blockerId,
+  pagination = {},
+  trx = db,
+) {
+  const { page = 1, limit = 20 } = pagination;
+  const offset = (page - 1) * limit;
+
+  const [countResult] = await blocksQuery(trx)
+    .where(`${BLOCKS_TABLE}.blocker_id`, blockerId)
+    .count({ total: "*" });
+  const total = Number(countResult.total);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
+
+  const data = await blocksQuery(trx)
     .join(USERS_TABLE, `${BLOCKS_TABLE}.blocked_id`, `${USERS_TABLE}.id`)
     .select(
       `${BLOCKS_TABLE}.id as block_id`,
@@ -50,5 +64,19 @@ export async function getBlockedUsersByBlockerId_model(blockerId, trx = db) {
       `${USERS_TABLE}.created_at`,
     )
     .where(`${BLOCKS_TABLE}.blocker_id`, blockerId)
-    .orderBy(`${BLOCKS_TABLE}.created_at`, "desc");
+    .orderBy(`${BLOCKS_TABLE}.created_at`, "desc")
+    .limit(limit)
+    .offset(offset);
+
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    },
+  };
 }

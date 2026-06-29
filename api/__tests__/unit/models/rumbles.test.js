@@ -107,11 +107,26 @@ describe("rumbles model", () => {
         },
       ]);
 
-      const result = await getRumblesByUserId_model(userId, testDb);
+      const result = await getRumblesByUserId_model(userId, {}, testDb);
 
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(rumbleId);
-      expect(result[0].status).toBe("active");
+      expect(result.data).toHaveLength(2);
+      expect(result.data.map((row) => row.id)).toEqual(
+        expect.arrayContaining([
+          rumbleId,
+          "88888888-8888-4888-8888-888888888888",
+        ]),
+      );
+      expect(result.data.every((row) => row.status !== "terminated")).toBe(
+        true,
+      );
+      expect(result.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
     });
   });
 

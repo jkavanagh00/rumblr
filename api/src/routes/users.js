@@ -1,4 +1,5 @@
 import express from "express";
+import { paginationSchema } from "../Schemas/pagination.js";
 import { updateUserSchema } from "../schemas/users.js";
 import { blockParamsSchema } from "../schemas/block.js";
 import { authenticateToken } from "../middlewares/auth.js";
@@ -11,7 +12,11 @@ import {
   getBlockedUsers_controller,
   getOnboardingProgress_controller,
 } from "../controllers/users.js";
-import { validateBody, validateParams } from "../middlewares/errors.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../middlewares/errors.js";
 
 const router = express.Router();
 
@@ -26,9 +31,27 @@ router.use(authenticateToken);
  *     summary: Get all users blocked by the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of blocked users
+ *         description: Paginated list of blocked users
  *         content:
  *           application/json:
  *             schema:
@@ -38,10 +61,40 @@ router.use(authenticateToken);
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/User'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
+ *             example:
+ *               data:
+ *                 - id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
+ *                   username: "blocked_user"
+ *               pagination:
+ *                 page: 1
+ *                 limit: 20
+ *                 total: 1
+ *                 totalPages: 1
+ *                 hasNext: false
+ *                 hasPrev: false
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get("/blocks", getBlockedUsers_controller);
+router.get(
+  "/blocks",
+  validateQuery(paginationSchema, "pagination"),
+  getBlockedUsers_controller,
+);
 
 /**
  * @openapi
