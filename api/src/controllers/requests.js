@@ -112,6 +112,7 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       requester_id: rumbleRequest.requester_id,
       receiver_id: req.user.id,
       threat_level: rumbleRequest.threat_level,
+      status: "active",
     };
     const rumble = await acceptRumbleRequest_service(payload);
     return res.status(201).json(rumble);
