@@ -3,6 +3,7 @@ import {
   fetchSharedResponses_model,
   listUsersWhoResponded_model,
   listResponses_model,
+  countResponses_model,
 } from "../models/responses.js";
 import { upsertMismatch_model } from "../models/mismatches.js";
 import {
@@ -51,7 +52,7 @@ export async function addResponse_service(userId, statementId, responseData) {
       trx,
     );
 
-    const totalResponses = await listResponses_model(userId, trx);
+    const totalResponses = await countResponses_model(userId, trx);
 
     if (totalResponses.length < 10) {
       return {
