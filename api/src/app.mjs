@@ -14,7 +14,13 @@ import statementsRouter from "./routes/statements.js";
 import { errorHandler } from "./middlewares/errors.js";
 
 const app = express();
-app.use(cors());
+const allowedOrigin = process.env.CLIENT_ORIGIN;
+
+// If CLIENT_ORIGIN is set, restrict CORS to that origin only.
+// Without a frontend this can be left unset.
+if (allowedOrigin) {
+  app.use(cors({ origin: allowedOrigin, credentials: true }));
+}
 app.use(bodyParser.json());
 
 const apiRouter = express.Router();
