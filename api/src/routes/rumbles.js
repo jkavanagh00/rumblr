@@ -18,7 +18,7 @@ import {
   validateQuery,
   validateRequest,
 } from "../middlewares/errors.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { idParamsSchema } from "../schemas/common.js";
 
 const router = express.Router();
 
@@ -108,7 +108,11 @@ router.get("/", getRumbles_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.put("/:id/terminate", validateParams(idParamsSchema), terminateRumble_controller);
+router.put(
+  "/:id/terminate",
+  validateParams(idParamsSchema),
+  terminateRumble_controller,
+);
 
 /**
  * @openapi
