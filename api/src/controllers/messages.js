@@ -19,11 +19,7 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    const isParticipant = await isUserParticipantInRumble_model(
-      rumbleId,
-      userId,
-    );
-    if (!isParticipant) {
+    if (rumble.requester_id !== userId && rumble.receiver_id !== userId) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });
@@ -65,11 +61,7 @@ export async function getMessages_controller(req, res, next) {
       });
     }
 
-    const isParticipant = await isUserParticipantInRumble_model(
-      rumbleId,
-      userId,
-    );
-    if (!isParticipant) {
+    if (rumble.requester_id !== userId && rumble.receiver_id !== userId) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });
