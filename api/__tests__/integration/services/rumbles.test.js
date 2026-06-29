@@ -25,5 +25,16 @@ beforeEach(async () => {
 });
 
 describe("rumble termination service", () => {
-  test.todo("Write tests");
+  test("returns the rumble with status set to terminated", async () => {
+    await seedRumble(testDb, { id: rumbleId, status: "active", requester_id: requesterId });
+    const result = await terminateRumble_service(rumbleId, requesterId);
+    expect(result).toMatchObject({
+      id: rumbleId,
+      status: "terminated",
+      requester_id: requesterId,
+    });
+  });
+  test.todo("throws when the rumble does not exist");
+  test.todo("throws when the user is not a participant in the rumble");
+  test.todo("returns the rumble unchanged when it is already terminated");
 });
