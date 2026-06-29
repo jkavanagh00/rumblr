@@ -19,6 +19,13 @@ export async function getMessagesByRumbleId_model(
   );
 }
 
+export async function getMessageLogByRumbleId_model(rumbleId, trx = db) {
+  return await messagesQuery(trx)
+    .select("*")
+    .where({ rumble_id: rumbleId })
+    .orderBy("sent_at", "asc");
+}
+
 export async function addMessage_model(
   { rumble_id, sender_id, content },
   trx = db,

@@ -1,5 +1,6 @@
 import express from "express";
-import { paginationSchema } from "../Schemas/pagination.js";
+import { paginationSchema } from "../schemas/pagination.js";
+import { paginationSchema } from "../schemas/pagination.js";
 import {
   createStatementSchema,
   updateStatementSchema,
@@ -198,6 +199,11 @@ statementsRouter.get(
   validateQuery(paginationSchema, "pagination"),
   listResponses_controller,
 );
+statementsRouter.get(
+  "/responses",
+  validateQuery(paginationSchema, "pagination"),
+  listResponses_controller,
+);
 
 /**
  * @openapi
@@ -256,6 +262,12 @@ statementsRouter.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+statementsRouter.get(
+  "/list",
+  validateQuery(paginationSchema, "pagination"),
+  requireAdmin,
+  listStatements_controller,
+);
 statementsRouter.get(
   "/list",
   validateQuery(paginationSchema, "pagination"),
