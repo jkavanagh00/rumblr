@@ -1,5 +1,5 @@
 import express from "express";
-import { paginationSchema } from "../Schemas/pagination.js";
+import { paginationSchema } from "../schemas/pagination.js";
 import { updateUserSchema } from "../schemas/users.js";
 import { blockParamsSchema } from "../schemas/block.js";
 import { authenticateToken } from "../middlewares/auth.js";
