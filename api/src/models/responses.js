@@ -95,6 +95,12 @@ export async function listResponses_model(userId, trx = db) {
   return responses;
 }
 
+export async function countResponses_model(userId, trx = db) {
+  const qb = trx("responses");
+  const [{ count }] = await qb.count("id").where("user_id", userId);
+  return Number(count);
+}
+
 export async function listUsersWhoResponded_model(
   statementId,
   excludedUserId,
