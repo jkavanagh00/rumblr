@@ -1,11 +1,11 @@
 import express from "express";
-import { paginationSchema } from "../Schemas/pagination.js";
+import { paginationSchema } from "../schemas/pagination.js";
 import {
   validateBody,
   validateParams,
   validateQuery,
 } from "../middlewares/errors.js";
-import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
+import { createRumbleRequestSchema } from "../schemas/rumble_request.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   acceptRumbleRequest_controller,
@@ -14,7 +14,7 @@ import {
   sendRumbleRequest_controller,
 } from "../controllers/requests.js";
 import { listMismatchesForUser_controller } from "../controllers/mismatches.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { idParamsSchema } from "../schemas/common.js";
 
 const mismatchesRouter = express.Router();
 mismatchesRouter.use(authenticateToken);

@@ -24,7 +24,7 @@ import {
 } from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import { createResponseSchema } from "../schemas/response.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { idParamsSchema } from "../schemas/common.js";
 
 const statementsRouter = express.Router();
 statementsRouter.use(authenticateToken);

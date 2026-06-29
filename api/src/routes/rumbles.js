@@ -19,7 +19,7 @@ import {
   validateQuery,
   validateRequest,
 } from "../middlewares/errors.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { idParamsSchema } from "../schemas/common.js";
 
 const router = express.Router();
 
