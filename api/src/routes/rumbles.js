@@ -7,7 +7,6 @@ import {
 import { paginationSchema } from "../Schemas/pagination.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
-  addRumble_controller,
   getRumbles_controller,
   terminateRumble_controller,
 } from "../controllers/rumbles.js";
@@ -16,7 +15,6 @@ import {
   getMessages_controller,
 } from "../controllers/messages.js";
 import {
-  validateBody,
   validateParams,
   validateQuery,
   validateRequest,
