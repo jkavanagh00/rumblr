@@ -10,7 +10,7 @@ import {
 export async function addMessage_controller(req, res, next) {
   try {
     const rumbleId = req.params.id;
-    const userId = req.userId; // Set by validation middleware
+    const userId = req.user.id;
 
     const rumble = await getRumbleById_model(rumbleId);
     if (!rumble) {
@@ -56,7 +56,7 @@ export async function getMessages_controller(req, res, next) {
     const rumbleId = req.params.id;
     const page = req.validatedQuery.page;
     const limit = req.validatedQuery.limit;
-    const userId = req.userId; // Set by validation middleware
+    const userId = req.user.id;
 
     const rumble = await getRumbleById_model(rumbleId);
     if (!rumble) {

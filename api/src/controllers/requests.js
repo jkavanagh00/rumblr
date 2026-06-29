@@ -13,7 +13,10 @@ const RUMBLE_REQUEST_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getRemainingCooldownMessage(cooldownEndsAt) {
   const remainingMs = cooldownEndsAt - Date.now();
-  const remainingDays = Math.max(1, Math.ceil(remainingMs / (24 * 60 * 60 * 1000)));
+  const remainingDays = Math.max(
+    1,
+    Math.ceil(remainingMs / (24 * 60 * 60 * 1000)),
+  );
   const dayLabel = remainingDays === 1 ? "day" : "days";
   const endsAtIso = new Date(cooldownEndsAt).toISOString();
 
@@ -74,7 +77,7 @@ export async function sendRumbleRequest_controller(req, res, next) {
     const request = await sendRumbleRequest_model(
       req.user.id,
       req.params.id,
-      threat_level, //need to be checked
+      threat_level,
     );
 
     return res.status(201).json(request);
@@ -85,7 +88,7 @@ export async function sendRumbleRequest_controller(req, res, next) {
 
 export async function listRumbleRequests_controller(req, res, next) {
   try {
-    const userId = req.userId;
+    const userId = req.user.id;
 
     const requests = await listRumbleRequestsForUser_model(userId);
     return res.status(200).json({ data: requests });

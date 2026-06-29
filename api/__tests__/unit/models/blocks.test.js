@@ -18,7 +18,9 @@ describe("blocks model", () => {
   });
 
   describe("getBlockByUsers_model", () => {
-    test.todo("returns the block relationship for a blocker and blocked user pair");
+    test.todo(
+      "returns the block relationship for a blocker and blocked user pair",
+    );
     test.todo("returns undefined when the block relationship does not exist");
   });
 

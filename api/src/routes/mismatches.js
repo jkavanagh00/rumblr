@@ -1,8 +1,12 @@
 import express from "express";
 import { paginationSchema } from "../Schemas/pagination.js";
-import { validateBody, validateQuery } from "../middlewares/errors.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../middlewares/errors.js";
 import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
-import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
+import { authenticateToken } from "../middlewares/auth.js";
 import {
   acceptRumbleRequest_controller,
   declineRumbleRequest_controller,
@@ -10,6 +14,7 @@ import {
   sendRumbleRequest_controller,
 } from "../controllers/requests.js";
 import { listMismatchesForUser_controller } from "../controllers/mismatches.js";
+import { idParamsSchema } from "../Schemas/common.js";
 
 const mismatchesRouter = express.Router();
 mismatchesRouter.use(authenticateToken);
@@ -23,15 +28,49 @@ mismatchesRouter.use(authenticateToken);
  *     summary: Get all mismatches for the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
  *     responses:
  *       200:
- *         description: List of mismatches
+ *         description: Paginated list of mismatches
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Mismatch'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Mismatch'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
  *       404:
  *         description: No mismatches found
  *         content:
@@ -74,11 +113,6 @@ mismatchesRouter.get(
  */
 mismatchesRouter.get("/requests", listRumbleRequests_controller);
 
-mismatchesRouter.post(
-  "/:id",
-  validateBody(createRumbleRequestSchema),
-  sendRumbleRequest_controller,
-);
 /**
  * @openapi
  * /mismatches/{id}:
@@ -118,6 +152,13 @@ mismatchesRouter.post(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+mismatchesRouter.post(
+  "/:id",
+  validateParams(idParamsSchema),
+  validateBody(createRumbleRequestSchema),
+  sendRumbleRequest_controller,
+);
+
 /**
  * @openapi
  * /mismatches/{id}/accept:
@@ -137,7 +178,7 @@ mismatchesRouter.post(
  *         description: ID of the rumble request to accept
  *     responses:
  *       201:
- *         description: Rumble request accepted — rumble created
+ *         description: Rumble request accepted - rumble created
  *         content:
  *           application/json:
  *             schema:
@@ -151,7 +192,11 @@ mismatchesRouter.post(
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-mismatchesRouter.post("/:id/accept", acceptRumbleRequest_controller);
+mismatchesRouter.post(
+  "/:id/accept",
+  validateParams(idParamsSchema),
+  acceptRumbleRequest_controller,
+);
 
 /**
  * @openapi
@@ -190,6 +235,10 @@ mismatchesRouter.post("/:id/accept", acceptRumbleRequest_controller);
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-mismatchesRouter.post("/:id/decline", declineRumbleRequest_controller);
+mismatchesRouter.post(
+  "/:id/decline",
+  validateParams(idParamsSchema),
+  declineRumbleRequest_controller,
+);
 
 export default mismatchesRouter;

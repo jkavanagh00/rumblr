@@ -1,12 +1,13 @@
 import db from "../database/db.js";
+
 const BLOCKS_TABLE = "blocks";
 const USERS_TABLE = "users";
 
 function blocksQuery(trx = db) {
-    return trx(BLOCKS_TABLE);
-    }
+  return trx(BLOCKS_TABLE);
+}
 
-    export async function createBlock_model(blockerId, blockedId, trx = db) {
+export async function createBlock_model(blockerId, blockedId, trx = db) {
   const [block] = await blocksQuery(trx)
     .insert({
       blocker_id: blockerId,
@@ -42,6 +43,12 @@ export async function getBlockedUsersByBlockerId_model(
 ) {
   const offset = (page - 1) * limit;
 
+  const [countResult] = await blocksQuery(trx)
+    .where(`${BLOCKS_TABLE}.blocker_id`, blockerId)
+    .count({ total: "*" });
+  const total = Number(countResult.total);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
+
   const data = await blocksQuery(trx)
     .join(USERS_TABLE, `${BLOCKS_TABLE}.blocked_id`, `${USERS_TABLE}.id`)
     .select(
@@ -65,6 +72,10 @@ export async function getBlockedUsersByBlockerId_model(
     pagination: {
       page,
       limit,
+      total,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
     },
   };
 }

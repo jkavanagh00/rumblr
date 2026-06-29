@@ -1,7 +1,7 @@
 import express from "express";
 import { paginationSchema } from "../Schemas/pagination.js";
-import { updateUserSchema } from "../Schemas/users.js";
-import { blockParamsSchema } from "../Schemas/block.js";
+import { updateUserSchema } from "../schemas/users.js";
+import { blockParamsSchema } from "../schemas/block.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
   getUser_controller,

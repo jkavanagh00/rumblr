@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export function up (knex) {
+export function up(knex) {
   return knex.schema.createTable("responses", (table) => {
     // UUID primary key
     table.uuid("id").primary().defaultTo(knex.fn.uuid());
@@ -48,4 +48,6 @@ export function up (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export function down (knex) {return knex.schema.dropTableIfExists('responses');}
+export function down(knex) {
+  return knex.schema.dropTableIfExists("responses");
+}

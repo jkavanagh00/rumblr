@@ -4,13 +4,14 @@ import { Server } from "socket.io";
 import registerRumbleSocket from "./socket.js";
 
 const PORT = process.env.PORT || 3001;
+const allowedOrigin = process.env.CLIENT_ORIGIN;
 
 const server = createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: true,
-    credentials: true,
-  },
+  // Restrict Socket.IO to the frontend origin when one is configured.
+  cors: allowedOrigin
+    ? { origin: allowedOrigin, credentials: true }
+    : { origin: false },
 });
 
 registerRumbleSocket(io);

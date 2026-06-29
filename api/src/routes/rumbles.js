@@ -1,14 +1,3 @@
-/*
-all routes related to rumbles should be here
-
-examples:
-
-- POST/rumbles
-- GET /rumbles (get all rumbles for current user)
-- GET /rumbles/:id/messages (get all messages for a specific rumble)
-- POST /rumbles/:id/messages (create a new rumble message)
-*/
-
 import express from "express";
 import { createRumbleSchema } from "../Schemas/rumbles.js";
 import {
@@ -32,6 +21,7 @@ import {
   validateQuery,
   validateRequest,
 } from "../middlewares/errors.js";
+import { idParamsSchema } from "../Schemas/common.js";
 
 const router = express.Router();
 
@@ -45,9 +35,25 @@ router.use(authenticateToken);
  *     summary: Get all rumbles for the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
  *     responses:
  *       200:
- *         description: List of rumbles
+ *         description: Paginated list of rumbles
  *         content:
  *           application/json:
  *             schema:
@@ -57,6 +63,21 @@ router.use(authenticateToken);
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Rumble'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *   post:
@@ -83,7 +104,11 @@ router.use(authenticateToken);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get("/", validateQuery(paginationSchema, "pagination"), getRumbles_controller);
+router.get(
+  "/",
+  validateQuery(paginationSchema, "pagination"),
+  getRumbles_controller,
+);
 router.post("/", validateBody(createRumbleSchema), addRumble_controller);
 
 /**
@@ -121,7 +146,11 @@ router.post("/", validateBody(createRumbleSchema), addRumble_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.put("/:id/terminate", terminateRumble_controller);
+router.put(
+  "/:id/terminate",
+  validateParams(idParamsSchema),
+  terminateRumble_controller,
+);
 
 /**
  * @openapi
@@ -207,19 +236,21 @@ router.put("/:id/terminate", terminateRumble_controller);
  */
 router.get(
   "/:id/messages",
+  validateParams(idParamsSchema),
   validateParams(createMessageParamsSchema),
-  validateQuery(paginationSchema),
+  validateQuery(paginationSchema, "pagination"),
   getMessages_controller,
 );
 
 router.post(
   "/:id/messages",
+  validateParams(idParamsSchema),
   validateParams(createMessageParamsSchema),
   validateRequest(
     createMessageSchema,
     (req) => ({
       rumble_id: req.params.id,
-      sender_id: req.userId,
+      sender_id: req.user.id,
       content: req.body.content,
     }),
     (req, data) => {
