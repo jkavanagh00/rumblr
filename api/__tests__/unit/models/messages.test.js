@@ -107,7 +107,14 @@ describe("messages model", () => {
         testDb,
       );
 
-      expect(result.pagination).toEqual({ page: 1, limit: 20 });
+      expect(result.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
       expect(result.data).toHaveLength(2);
       expect(result.data.every((row) => row.rumble_id === rumbleId)).toBe(true);
     });
@@ -144,8 +151,22 @@ describe("messages model", () => {
 
       expect(page1.data).toHaveLength(2);
       expect(page2.data).toHaveLength(1);
-      expect(page1.pagination).toEqual({ page: 1, limit: 2 });
-      expect(page2.pagination).toEqual({ page: 2, limit: 2 });
+      expect(page1.pagination).toEqual({
+        page: 1,
+        limit: 2,
+        total: 3,
+        totalPages: 2,
+        hasNext: true,
+        hasPrev: false,
+      });
+      expect(page2.pagination).toEqual({
+        page: 2,
+        limit: 2,
+        total: 3,
+        totalPages: 2,
+        hasNext: false,
+        hasPrev: true,
+      });
     });
 
     test("returns empty list when rumble has no messages", async () => {
@@ -161,7 +182,14 @@ describe("messages model", () => {
       );
 
       expect(result.data).toEqual([]);
-      expect(result.pagination).toEqual({ page: 1, limit: 20 });
+      expect(result.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0,
+        hasNext: false,
+        hasPrev: false,
+      });
     });
   });
 });
