@@ -60,7 +60,7 @@ describe("rumbles model", () => {
   });
 
   describe("getRumblesByUserId_model", () => {
-    test("returns only active rumbles where user participates", async () => {
+    test("returns active and inactive rumbles in which user participates", async () => {
       await seedUser(testDb, { id: userId });
       await seedUser(testDb, { id: otherUserId });
       await seedUser(testDb, { id: outsiderId });
@@ -109,9 +109,11 @@ describe("rumbles model", () => {
 
       const result = await getRumblesByUserId_model(userId, testDb);
 
-      expect(result).toHaveLength(1);
+      expect(result).toHaveLength(2);
       expect(result[0].id).toBe(rumbleId);
       expect(result[0].status).toBe("active");
+      expect(result[1].id).toBe("88888888-8888-4888-8888-888888888888");
+      expect(result[1].status).toBe("inactive");
     });
   });
 
