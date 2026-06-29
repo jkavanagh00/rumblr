@@ -164,6 +164,10 @@ const options = {
               properties: {
                 page: { type: "integer" },
                 limit: { type: "integer" },
+                total: { type: "integer" },
+                totalPages: { type: "integer" },
+                hasNext: { type: "boolean" },
+                hasPrev: { type: "boolean" },
               },
             },
           },

@@ -36,6 +36,7 @@ mismatchesRouter.use(authenticateToken);
  *           type: integer
  *           minimum: 1
  *           default: 1
+ *         description: Page number
  *       - in: query
  *         name: limit
  *         required: false
@@ -44,6 +45,7 @@ mismatchesRouter.use(authenticateToken);
  *           minimum: 1
  *           maximum: 100
  *           default: 20
+ *         description: Number of items per page
  *     responses:
  *       200:
  *         description: Paginated list of mismatches
@@ -71,6 +73,21 @@ mismatchesRouter.use(authenticateToken);
  *                       type: boolean
  *                     hasPrev:
  *                       type: boolean
+ *             example:
+ *               data:
+ *                 - id: "d8db8ca3-6d7f-4785-a67b-8bf3f31f87fd"
+ *                   user1_id: "22cc44f9-8707-4600-9017-acfce7ece11e"
+ *                   user2_id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
+ *                   mismatch_score: 0.81
+ *                   confidence: 0.72
+ *                   shared_responses: 16
+ *               pagination:
+ *                 page: 1
+ *                 limit: 20
+ *                 total: 1
+ *                 totalPages: 1
+ *                 hasNext: false
+ *                 hasPrev: false
  *       404:
  *         description: No mismatches found
  *         content:

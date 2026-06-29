@@ -1,4 +1,5 @@
 import db from "../database/db.js";
+import { paginate } from "../utils/pagination.js";
 
 const RUMBLES_TABLE = "rumbles";
 const MESSAGES_TABLE = "messages";
@@ -18,28 +19,20 @@ export async function addRumble_model(rumbleData, trx = db) {
 
 export async function getRumblesByUserId_model(
   userId,
-  { page = 1, limit = 20 } = {},
+  pagination = {},
   trx = db,
 ) {
-  const offset = (page - 1) * limit;
-
-  const data = await rumblesQuery(trx)
-    .select("*")
-    .where((builder) => {
-      builder.where({ requester_id: userId }).orWhere({ receiver_id: userId });
-    })
-    .whereIn("status", ["active", "inactive"])
-    .orderBy("created_at", "desc")
-    .limit(limit)
-    .offset(offset);
-
-  return {
-    data,
-    pagination: {
-      page,
-      limit,
-    },
-  };
+  return paginate(
+    rumblesQuery(trx)
+      .where((builder) => {
+        builder
+          .where({ requester_id: userId })
+          .orWhere({ receiver_id: userId });
+      })
+      .whereIn("status", ["active", "inactive"]),
+    pagination,
+    (qb) => qb.orderBy("created_at", "desc"),
+  );
 }
 
 export async function getRumbleById_model(id, trx = db) {

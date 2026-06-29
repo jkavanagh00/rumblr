@@ -1,12 +1,3 @@
-/*
-all routes related to statements should be here
-
-examples:
-- GET /statements (get an unanswered statement for the current user)
-- POST /statements/:id/answer (submit an answer to a statement)
-- POST /statements (add a new statement to the system)?
-*/
-
 import express from "express";
 import { paginationSchema } from "../Schemas/pagination.js";
 import {
@@ -26,7 +17,11 @@ import {
   addResponse_controller,
   listResponses_controller,
 } from "../controllers/responses.js";
-import { validateBody, validateParams, validateQuery } from "../middlewares/errors.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import { createResponseSchema } from "../schemas/response.js";
 import { idParamsSchema } from "../Schemas/common.js";
@@ -357,7 +352,11 @@ statementsRouter.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/:id", validateParams(idParamsSchema), getStatementById_controller);
+statementsRouter.get(
+  "/:id",
+  validateParams(idParamsSchema),
+  getStatementById_controller,
+);
 
 /**
  * @openapi
@@ -388,294 +387,6 @@ statementsRouter.get("/:id", validateParams(idParamsSchema), getStatementById_co
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.post(
-  "/",
-  requireAdmin,
-  validateBody(createStatementSchema),
-  addStatement_controller,
-);
-
-statementsRouter.patch(
-  "/:id",
-  validateParams(idParamsSchema),
-  requireAdmin,
-  validateBody(updateStatementSchema),
-  updateStatement_controller,
-);
-
-statementsRouter.delete("/:id", validateParams(idParamsSchema), requireAdmin, deleteStatement_controller);
-
-export default statementsRouter;
-/*
-all routes related to statements should be here
-
-examples:
-- GET /statements (get an unanswered statement for the current user)
-- POST /statements/:id/respond (submit an answer to a statement)
-- POST /statements (add a new statement to the system)
-*/
-
-import express from "express";
-import { paginationSchema } from "../Schemas/pagination.js";
-import {
-  createStatementSchema,
-  updateStatementSchema,
-} from "../schemas/statements.js";
-import {
-  addStatement_controller,
-  getStatementById_controller,
-  listStatements_controller,
-  updateStatement_controller,
-  deleteStatement_controller,
-  getStatementWithNoResponse_controller,
-  getOnboardingStatement_controller,
-} from "../controllers/statements.js";
-import {
-  addResponse_controller,
-  listResponses_controller,
-} from "../controllers/responses.js";
-import {
-  validateBody,
-  validateParams,
-  validateQuery,
-} from "../middlewares/errors.js";
-import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
-import { createResponseSchema } from "../schemas/response.js";
-import { idParamsSchema } from "../Schemas/common.js";
-
-const statementsRouter = express.Router();
-statementsRouter.use(authenticateToken);
-
-/**
- * @openapi
- * /statements:
- *   get:
- *     tags:
- *       - Statements
- *     summary: Get an unanswered statement for the current user
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: An unanswered statement
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Statement'
- *       204:
- *         description: All statements have been answered
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-statementsRouter.get("/", getStatementWithNoResponse_controller);
-
-/**
- * @openapi
- * /statements/{id}/respond:
- *   post:
- *     tags:
- *       - Statements
- *     summary: Submit a response to a statement
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateResponseBody'
- *     responses:
- *       201:
- *         description: Response submitted
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Response'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-statementsRouter.post(
-  "/:id/respond",
-  validateParams(idParamsSchema),
-  validateBody(createResponseSchema),
-  addResponse_controller,
-);
-
-/**
- * @openapi
- * /statements/onboarding/{number}:
- *   get:
- *     tags:
- *       - Statements
- *     summary: Get an onboarding statement by its number (1-10)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: number
- *         required: true
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 10
- *     responses:
- *       200:
- *         description: The onboarding statement
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Statement'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       404:
- *         $ref: '#/components/responses/NotFound'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
-
-/**
- * @openapi
- * /statements/responses:
- *   get:
- *     tags:
- *       - Statements
- *     summary: Get all responses submitted by the current user
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *       - in: query
- *         name: limit
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 100
- *           default: 20
- *     responses:
- *       200:
- *         description: Paginated list of responses
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Response'
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     total:
- *                       type: integer
- *                     totalPages:
- *                       type: integer
- *                     hasNext:
- *                       type: boolean
- *                     hasPrev:
- *                       type: boolean
- *       404:
- *         description: No responses found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-statementsRouter.get(
-  "/responses",
-  validateQuery(paginationSchema, "pagination"),
-  listResponses_controller,
-);
-
-/**
- * @openapi
- * /statements/list:
- *   get:
- *     tags:
- *       - Statements
- *     summary: List all statements (admin only)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *       - in: query
- *         name: limit
- *         required: false
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 100
- *           default: 20
- *     responses:
- *       200:
- *         description: Paginated list of all statements
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Statement'
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     total:
- *                       type: integer
- *                     totalPages:
- *                       type: integer
- *                     hasNext:
- *                       type: boolean
- *                     hasPrev:
- *                       type: boolean
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-statementsRouter.get(
-  "/list",
-  validateQuery(paginationSchema, "pagination"),
-  requireAdmin,
-  listStatements_controller,
-);
-
-statementsRouter.get("/:id", validateParams(idParamsSchema), getStatementById_controller);
-
 statementsRouter.post(
   "/",
   requireAdmin,

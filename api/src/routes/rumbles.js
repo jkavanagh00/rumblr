@@ -26,6 +26,7 @@ import { idParamsSchema } from "../Schemas/common.js";
 const router = express.Router();
 
 router.use(authenticateToken);
+
 /**
  * @openapi
  * /rumbles:
@@ -43,6 +44,7 @@ router.use(authenticateToken);
  *           type: integer
  *           minimum: 1
  *           default: 1
+ *         description: Page number
  *       - in: query
  *         name: limit
  *         required: false
@@ -51,6 +53,7 @@ router.use(authenticateToken);
  *           minimum: 1
  *           maximum: 100
  *           default: 20
+ *         description: Number of items per page
  *     responses:
  *       200:
  *         description: Paginated list of rumbles
@@ -78,6 +81,19 @@ router.use(authenticateToken);
  *                       type: boolean
  *                     hasPrev:
  *                       type: boolean
+ *             example:
+ *               data:
+ *                 - id: "6c260923-bf5e-45fd-a26c-9ec32f174851"
+ *                   requester_id: "22cc44f9-8707-4600-9017-acfce7ece11e"
+ *                   receiver_id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
+ *                   status: "active"
+ *               pagination:
+ *                 page: 1
+ *                 limit: 20
+ *                 total: 1
+ *                 totalPages: 1
+ *                 hasNext: false
+ *                 hasPrev: false
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *   post:
@@ -104,6 +120,7 @@ router.use(authenticateToken);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+
 router.get(
   "/",
   validateQuery(paginationSchema, "pagination"),
@@ -146,6 +163,7 @@ router.post("/", validateBody(createRumbleSchema), addRumble_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+
 router.put(
   "/:id/terminate",
   validateParams(idParamsSchema),
@@ -234,6 +252,7 @@ router.put(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+
 router.get(
   "/:id/messages",
   validateParams(idParamsSchema),
@@ -259,4 +278,5 @@ router.post(
   ),
   addMessage_controller,
 );
+
 export default router;

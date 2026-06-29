@@ -38,9 +38,10 @@ export async function deleteBlock_model(blockerId, blockedId, trx = db) {
 
 export async function getBlockedUsersByBlockerId_model(
   blockerId,
-  { page = 1, limit = 20 } = {},
+  pagination = {},
   trx = db,
 ) {
+  const { page = 1, limit = 20 } = pagination;
   const offset = (page - 1) * limit;
 
   const [countResult] = await blocksQuery(trx)

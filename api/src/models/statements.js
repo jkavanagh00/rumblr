@@ -11,6 +11,7 @@ examples:
 - removeStatement?
 */
 import db from "./../database/db.js";
+import { paginate } from "../utils/pagination.js";
 
 const TABLE = "statements";
 
@@ -69,25 +70,8 @@ export async function getStatementWithNoResponse_model(userId, trx = db) {
   };
 }
 
-export async function listStatements_model(
-  { page = 1, limit = 20 } = {},
-  trx = db,
-) {
-  const offset = (page - 1) * limit;
-  const qb = baseQuery(trx);
-  const data = await qb.select("*").limit(limit).offset(offset);
-
-  if (data.length === 0) {
-    return null;
-  }
-
-  return {
-    data,
-    pagination: {
-      page,
-      limit,
-    },
-  };
+export async function listStatements_model(pagination = {}, trx = db) {
+  return paginate(baseQuery(trx), pagination);
 }
 
 export async function addStatement_model(statement, trx = db) {
