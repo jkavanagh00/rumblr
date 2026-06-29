@@ -27,8 +27,8 @@ import {
 } from "../controllers/responses.js";
 import { validateBody, validateParams } from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
-import { createResponseSchema } from "../Schemas/response.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { createResponseSchema } from "../schemas/response.js";
+import { idParamsSchema } from "../schemas/common.js";
 const statementsRouter = express.Router();
 statementsRouter.use(authenticateToken);
 
@@ -278,7 +278,11 @@ statementsRouter.get("/list", requireAdmin, listStatements_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/:id", validateParams(idParamsSchema), getStatementById_controller);
+statementsRouter.get(
+  "/:id",
+  validateParams(idParamsSchema),
+  getStatementById_controller,
+);
 
 /**
  * @openapi
@@ -324,6 +328,11 @@ statementsRouter.patch(
   updateStatement_controller,
 );
 
-statementsRouter.delete("/:id", validateParams(idParamsSchema), requireAdmin, deleteStatement_controller);
+statementsRouter.delete(
+  "/:id",
+  validateParams(idParamsSchema),
+  requireAdmin,
+  deleteStatement_controller,
+);
 
 export default statementsRouter;
