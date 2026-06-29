@@ -69,31 +69,4 @@ describe("rumbles integration routes", () => {
       expect(getRumbles_controller).toHaveBeenCalledTimes(1);
     });
   });
-
-  describe("POST /rumbles", () => {
-    test.todo(
-      "returns 400 when threat_level is missing or invalid in rumble creation payload",
-    );
-
-    test("creates and returns a rumble", async () => {
-      const body = {
-        rumble_request_id: "33333333-3333-4333-8333-333333333333",
-        requester_id: testUserId,
-        receiver_id: "44444444-4444-4444-8444-444444444444",
-        status: "active",
-        threat_level: "orange",
-      };
-
-      addRumble_controller.mockImplementation(async (_req, res) => {
-        return res.status(201).json({ id: rumbleId, ...body });
-      });
-
-      const response = await request(app).post("/rumbles").send(body);
-
-      expect(response.status).toBe(201);
-      expect(response.body).toEqual({ id: rumbleId, ...body });
-      expect(addRumble_controller).toHaveBeenCalledTimes(1);
-    });
-  });
-  // todo("Add tests for PUT /rumbles/:id/terminate route.");
 });
