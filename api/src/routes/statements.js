@@ -25,9 +25,10 @@ import {
   addResponse_controller,
   listResponses_controller,
 } from "../controllers/responses.js";
-import { validateBody } from "../middlewares/errors.js";
+import { validateBody, validateParams } from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
-import { createResponseSchema } from "../schemas/response.js";
+import { createResponseSchema } from "../Schemas/response.js";
+import { idParamsSchema } from "../Schemas/common.js";
 const statementsRouter = express.Router();
 statementsRouter.use(authenticateToken);
 
@@ -91,6 +92,7 @@ statementsRouter.get("/", getStatementWithNoResponse_controller);
  */
 statementsRouter.post(
   "/:id/respond",
+  validateParams(idParamsSchema),
   validateBody(createResponseSchema),
   addResponse_controller,
 );
@@ -276,7 +278,7 @@ statementsRouter.get("/list", requireAdmin, listStatements_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/:id", getStatementById_controller);
+statementsRouter.get("/:id", validateParams(idParamsSchema), getStatementById_controller);
 
 /**
  * @openapi
@@ -316,11 +318,12 @@ statementsRouter.post(
 
 statementsRouter.patch(
   "/:id",
+  validateParams(idParamsSchema),
   requireAdmin,
   validateBody(updateStatementSchema),
   updateStatement_controller,
 );
 
-statementsRouter.delete("/:id", requireAdmin, deleteStatement_controller);
+statementsRouter.delete("/:id", validateParams(idParamsSchema), requireAdmin, deleteStatement_controller);
 
 export default statementsRouter;
