@@ -26,6 +26,16 @@ export async function getBlockByUsers_model(blockerId, blockedId, trx = db) {
     .first();
 }
 
+export async function getBlockBetweenUsers_model(userAId, userBId, trx = db) {
+  return blocksQuery(trx)
+    .where((builder) => {
+      builder
+        .where({ blocker_id: userAId, blocked_id: userBId })
+        .orWhere({ blocker_id: userBId, blocked_id: userAId });
+    })
+    .first();
+}
+
 export async function deleteBlock_model(blockerId, blockedId, trx = db) {
   return blocksQuery(trx)
     .where({
@@ -43,7 +53,6 @@ export async function getBlockedUsersByBlockerId_model(blockerId, trx = db) {
       `${BLOCKS_TABLE}.created_at as blocked_at`,
       `${USERS_TABLE}.id`,
       `${USERS_TABLE}.username`,
-      `${USERS_TABLE}.email`,
       `${USERS_TABLE}.bio`,
       `${USERS_TABLE}.status`,
       `${USERS_TABLE}.role`,
