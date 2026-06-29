@@ -26,7 +26,10 @@ beforeEach(async () => {
 
 describe("rumble termination service", () => {
   test("returns the rumble with status set to terminated", async () => {
-    await seedRumble(testDb, { id: rumbleId, status: "active", requester_id: requesterId });
+    await seedRumble(testDb, {
+      id: rumbleId,
+      requester_id: requesterId,
+    });
     const result = await terminateRumble_service(rumbleId, requesterId);
     expect(result).toMatchObject({
       id: rumbleId,
@@ -34,7 +37,32 @@ describe("rumble termination service", () => {
       requester_id: requesterId,
     });
   });
-  test.todo("throws when the rumble does not exist");
-  test.todo("throws when the user is not a participant in the rumble");
-  test.todo("returns the rumble unchanged when it is already terminated");
+  test("throws when the rumble does not exist", async () => {
+    await expect(
+      terminateRumble_service(rumbleId, requesterId),
+    ).rejects.toThrow("Rumble not found");
+  });
+  test("throws when the user is not a participant in the rumble", async () => {
+    await seedRumble(testDb, {
+      id: rumbleId,
+      requester_id: requesterId,
+      receiver_id: receiverId,
+    });
+    await expect(
+      terminateRumble_service(rumbleId, "22222222-2222-4222-8222-222222222244"),
+    ).rejects.toThrow("You are not a participant in this rumble");
+  });
+  test("returns the rumble unchanged when it is already terminated", async () => {
+    await seedRumble(testDb, {
+      id: rumbleId,
+      status: "terminated",
+      requester_id: requesterId,
+    });
+    const result = await terminateRumble_service(rumbleId, requesterId);
+    expect(result).toMatchObject({
+      id: rumbleId,
+      status: "terminated",
+      requester_id: requesterId,
+    });
+  });
 });
