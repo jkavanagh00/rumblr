@@ -68,10 +68,12 @@ export async function addResponse_service(userId, statementId, responseData) {
     );
 
     let totalUpsertedMismatches = 0;
-    for (const otherUserId of otherUsersWithResponses) {
-      await upsertMismatch_model(userId, otherUserId, trx);
-      totalUpsertedMismatches++;
-    }
+
+    await Promise.all(
+      otherUsersWithResponses.map((otherUserId) =>
+      upsertMismatch_model(userId, otherUserId, trx))
+    );
+    const totalUpsertedMismatches = otherUsersWithResponses.length;
 
     return {
       upsertedResponse,
