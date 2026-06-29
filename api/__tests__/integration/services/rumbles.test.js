@@ -1,6 +1,7 @@
 import { seedRumble } from "../../setup/factories.js";
 import testDb from "../../setup/testDb.js";
 import { jest } from "@jest/globals";
+import { randomUUID } from "node:crypto";
 
 jest.unstable_mockModule("../../../src/database/db.js", () => ({
   default: testDb,
@@ -10,9 +11,10 @@ const { terminateRumble_service } = await import(
   "../../../src/services/rumbles.js"
 );
 
-const rumbleId = "11111111-1111-4111-8111-333333333333";
-const requesterId = "11111111-1111-4111-8111-111111111111";
-const receiverId = "22222222-2222-4222-8222-222222222222";
+const rumbleId = randomUUID();
+const requesterId = randomUUID();
+const receiverId = randomUUID();
+const outsiderId = randomUUID();
 
 beforeAll(async () => {
   await testDb.migrate.latest({ directory: "./src/database/migrations" });
@@ -49,7 +51,7 @@ describe("rumble termination service", () => {
       receiver_id: receiverId,
     });
     await expect(
-      terminateRumble_service(rumbleId, "22222222-2222-4222-8222-222222222244"),
+      terminateRumble_service(rumbleId, outsiderId),
     ).rejects.toThrow("You are not a participant in this rumble");
   });
   test("returns the rumble unchanged when it is already terminated", async () => {
