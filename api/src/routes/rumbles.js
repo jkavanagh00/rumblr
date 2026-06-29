@@ -1,5 +1,4 @@
 import express from "express";
-import { createRumbleSchema } from "../schemas/rumbles.js";
 import {
   createMessageParamsSchema,
   createMessageSchema,
@@ -7,7 +6,6 @@ import {
 } from "../schemas/messages.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
-  addRumble_controller,
   getRumbles_controller,
   terminateRumble_controller,
 } from "../controllers/rumbles.js";
@@ -16,7 +14,6 @@ import {
   getMessages_controller,
 } from "../controllers/messages.js";
 import {
-  validateBody,
   validateParams,
   validateQuery,
   validateRequest,
