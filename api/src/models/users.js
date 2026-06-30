@@ -16,8 +16,6 @@ const userColumns = [
   "created_at",
 ];
 
-const publicUserColumns = userColumns;
-
 function serializeUser(data) {
   return "threat_levels" in data
     ? { ...data, threat_levels: JSON.stringify(data.threat_levels) }
@@ -85,15 +83,5 @@ export async function findUserByEmail_model(email, trx = db) {
 
 export async function findUserByUsername_model(username, trx = db) {
   const user = await baseQuery(trx).where({ username }).first();
-  return deserializeUser(user);
-}
-
-// this serves the same purpose as getUserById_model
-export async function getPublicUserById_model(id, trx = db) {
-  const user = await baseQuery(trx)
-    .select(publicUserColumns)
-    .where({ id })
-    .first();
-
   return deserializeUser(user);
 }

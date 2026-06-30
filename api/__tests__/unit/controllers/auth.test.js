@@ -5,7 +5,6 @@ jest.unstable_mockModule("../../../src/models/users.js", () => ({
   findUserByEmail_model: jest.fn(),
   findUserByUsername_model: jest.fn(),
   createUser_model: jest.fn(),
-  getPublicUserById_model: jest.fn(),
 }));
 
 jest.unstable_mockModule("../../../src/utils/helpers", () => ({
@@ -35,7 +34,6 @@ const {
   createUser_model,
   findUserByEmail_model,
   findUserByUsername_model,
-  getPublicUserById_model,
 } = await import("../../../src/models/users");
 const { hashPassword, verifyPassword } = await import(
   "../../../src/utils/helpers.js"
