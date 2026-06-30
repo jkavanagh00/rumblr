@@ -6,6 +6,7 @@ import {
   getLatestDeclinedRumbleRequest_model,
   listRumbleRequestsForUser_model,
 } from "../models/requests.js";
+import { getBlockBetweenUsers_model } from "../models/blocks.js";
 import { getUserById_model } from "../models/users.js";
 import { acceptRumbleRequest_service } from "../services/requests.js";
 
@@ -31,6 +32,13 @@ export async function sendRumbleRequest_controller(req, res, next) {
 
     if (!requester || !receiver) {
       return res.status(404).json({ error: "User not found" });
+    }
+
+    const block = await getBlockBetweenUsers_model(req.user.id, req.params.id);
+    if (block) {
+      return res.status(403).json({
+        error: "Cannot send a rumble request between blocked users",
+      });
     }
 
     if (!requester.threat_levels.includes(threat_level)) {
@@ -114,7 +122,9 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       rumble_request_id: rumbleRequest.id,
       requester_id: rumbleRequest.requester_id,
       receiver_id: req.user.id,
+      status: "active",
       threat_level: rumbleRequest.threat_level,
+      status: "active",
     };
     const rumble = await acceptRumbleRequest_service(payload);
     return res.status(201).json(rumble);

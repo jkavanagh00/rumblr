@@ -39,17 +39,34 @@ describe("statements model", () => {
       });
 
       // Call the model directly with the in-memory test database to confirm it reads persisted statements.
-      const result = await listStatements_model(testDb);
+      const result = await listStatements_model({}, testDb);
 
-      // The list endpoint depends on this model returning every stored statement in an array.
-      expect(result).toHaveLength(2);
+      expect(result.data).toHaveLength(2);
+      expect(result.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
     });
-    test("returns null when no statements exist", async () => {
+    test("returns empty paginated result when no statements exist", async () => {
       // Call the model function with an empty table to test the model's explicit no-data behavior.
-      const result = await listStatements_model(testDb);
+      const result = await listStatements_model({}, testDb);
 
-      // This documents the current contract: no statements returns null instead of an empty array.
-      expect(result).toBeNull();
+      // This documents the current contract: no statements returns an empty paginated payload.
+      expect(result).toEqual({
+        data: [],
+        pagination: {
+          page: 1,
+          limit: 20,
+          total: 0,
+          totalPages: 0,
+          hasNext: false,
+          hasPrev: false,
+        },
+      });
     });
   });
 

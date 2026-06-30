@@ -25,6 +25,10 @@ import {
 } from "../models/blocks.js";
 
 import { getOnboardingProgress_model } from "../models/statements.js";
+import {
+  createUserReport_service,
+  listUserReports_service,
+} from "../services/reports.js";
 
 export async function getUser_controller(req, res, next) {
   try {
@@ -136,11 +140,12 @@ export async function getBlockedUsers_controller(req, res, next) {
   try {
     const blockerId = req.user.id;
 
-    const blockedUsers = await getBlockedUsersByBlockerId_model(blockerId);
+    const blockedUsers = await getBlockedUsersByBlockerId_model(
+      blockerId,
+      req.pagination,
+    );
 
-    return res.status(200).json({
-      data: blockedUsers,
-    });
+    return res.status(200).json(blockedUsers);
   } catch (error) {
     next(error);
   }
@@ -153,6 +158,37 @@ export async function getOnboardingProgress_controller(req, res, next) {
     const progress = await getOnboardingProgress_model(userId);
 
     return res.status(200).json(progress);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function reportUser_controller(req, res, next) {
+  try {
+    const reporterId = req.user.id;
+
+    const report = await createUserReport_service({
+      reporterId,
+      reportedUserId: req.params.id,
+      reason: req.validatedBody.reason,
+    });
+
+    return res.status(201).json(report);
+  } catch (error) {
+    if (error.status) {
+      return res.status(error.status).json({
+        error: error.message,
+      });
+    }
+
+    next(error);
+  }
+}
+
+export async function listUserReports_controller(req, res, next) {
+  try {
+    const reports = await listUserReports_service(req.pagination);
+    return res.status(200).json(reports);
   } catch (error) {
     next(error);
   }

@@ -1,13 +1,5 @@
-/*
-all routes related to statements should be here
-
-examples:
-- GET /statements (get an unanswered statement for the current user)
-- POST /statements/:id/answer (submit an answer to a statement)
-- POST /statements (add a new statement to the system)?
-*/
-
 import express from "express";
+import { paginationSchema } from "../schemas/pagination.js";
 import {
   createStatementSchema,
   updateStatementSchema,
@@ -25,10 +17,15 @@ import {
   addResponse_controller,
   listResponses_controller,
 } from "../controllers/responses.js";
-import { validateBody, validateParams } from "../middlewares/errors.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../middlewares/errors.js";
 import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
-import { createResponseSchema } from "../Schemas/response.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { createResponseSchema } from "../schemas/response.js";
+import { idParamsSchema } from "../schemas/common.js";
+
 const statementsRouter = express.Router();
 statementsRouter.use(authenticateToken);
 
@@ -103,7 +100,7 @@ statementsRouter.post(
  *   get:
  *     tags:
  *       - Statements
- *     summary: Get an onboarding statement by its number (1–10)
+ *     summary: Get an onboarding statement by its number (1-10)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -144,15 +141,49 @@ statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
  *     summary: Get all responses submitted by the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
  *     responses:
  *       200:
- *         description: List of responses
+ *         description: Paginated list of responses
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Response'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Response'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
  *       404:
  *         description: No responses found
  *         content:
@@ -162,7 +193,16 @@ statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/responses", listResponses_controller);
+statementsRouter.get(
+  "/responses",
+  validateQuery(paginationSchema, "pagination"),
+  listResponses_controller,
+);
+statementsRouter.get(
+  "/responses",
+  validateQuery(paginationSchema, "pagination"),
+  listResponses_controller,
+);
 
 /**
  * @openapi
@@ -173,21 +213,66 @@ statementsRouter.get("/responses", listResponses_controller);
  *     summary: List all statements (admin only)
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
  *     responses:
  *       200:
- *         description: List of all statements
+ *         description: Paginated list of all statements
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Statement'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Statement'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/list", requireAdmin, listStatements_controller);
+statementsRouter.get(
+  "/list",
+  validateQuery(paginationSchema, "pagination"),
+  requireAdmin,
+  listStatements_controller,
+);
+statementsRouter.get(
+  "/list",
+  validateQuery(paginationSchema, "pagination"),
+  requireAdmin,
+  listStatements_controller,
+);
 
 /**
  * @openapi
@@ -278,7 +363,11 @@ statementsRouter.get("/list", requireAdmin, listStatements_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get("/:id", validateParams(idParamsSchema), getStatementById_controller);
+statementsRouter.get(
+  "/:id",
+  validateParams(idParamsSchema),
+  getStatementById_controller,
+);
 
 /**
  * @openapi
@@ -324,6 +413,11 @@ statementsRouter.patch(
   updateStatement_controller,
 );
 
-statementsRouter.delete("/:id", validateParams(idParamsSchema), requireAdmin, deleteStatement_controller);
+statementsRouter.delete(
+  "/:id",
+  validateParams(idParamsSchema),
+  requireAdmin,
+  deleteStatement_controller,
+);
 
 export default statementsRouter;

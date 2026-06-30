@@ -252,10 +252,18 @@ describe("listResponses_model", () => {
       },
     ]);
 
-    const result = await listResponses_model(userId, testDb);
+    const result = await listResponses_model(userId, {}, testDb);
 
-    expect(result).toHaveLength(2);
-    result.forEach((row) => expect(row.user_id).toBe(userId));
+    expect(result.data).toHaveLength(2);
+    result.data.forEach((row) => expect(row.user_id).toBe(userId));
+    expect(result.pagination).toEqual({
+      page: 1,
+      limit: 20,
+      total: 2,
+      totalPages: 1,
+      hasNext: false,
+      hasPrev: false,
+    });
   });
 
   test("returns an empty array when the user has no responses", async () => {
@@ -265,10 +273,18 @@ describe("listResponses_model", () => {
       email: "user_list-empty@example.com",
     });
 
-    const result = await listResponses_model(userId, testDb);
+    const result = await listResponses_model(userId, {}, testDb);
 
-    expect(Array.isArray(result)).toBe(true);
-    expect(result).toHaveLength(0);
+    expect(Array.isArray(result.data)).toBe(true);
+    expect(result.data).toHaveLength(0);
+    expect(result.pagination).toEqual({
+      page: 1,
+      limit: 20,
+      total: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrev: false,
+    });
   });
 });
 

@@ -1,7 +1,12 @@
 import express from "express";
-import { validateBody, validateParams } from "../middlewares/errors.js";
-import { createRumbleRequestSchema } from "../Schemas/rumble_request.js";
-import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
+import { paginationSchema } from "../schemas/pagination.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../middlewares/errors.js";
+import { createRumbleRequestSchema } from "../schemas/rumble_request.js";
+import { authenticateToken } from "../middlewares/auth.js";
 import {
   acceptRumbleRequest_controller,
   declineRumbleRequest_controller,
@@ -9,7 +14,7 @@ import {
   sendRumbleRequest_controller,
 } from "../controllers/requests.js";
 import { listMismatchesForUser_controller } from "../controllers/mismatches.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { idParamsSchema } from "../schemas/common.js";
 
 const mismatchesRouter = express.Router();
 mismatchesRouter.use(authenticateToken);
@@ -23,15 +28,66 @@ mismatchesRouter.use(authenticateToken);
  *     summary: Get all mismatches for the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of mismatches
+ *         description: Paginated list of mismatches
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Mismatch'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Mismatch'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
+ *             example:
+ *               data:
+ *                 - id: "d8db8ca3-6d7f-4785-a67b-8bf3f31f87fd"
+ *                   user1_id: "22cc44f9-8707-4600-9017-acfce7ece11e"
+ *                   user2_id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
+ *                   mismatch_score: 0.81
+ *                   confidence: 0.72
+ *                   shared_responses: 16
+ *               pagination:
+ *                 page: 1
+ *                 limit: 20
+ *                 total: 1
+ *                 totalPages: 1
+ *                 hasNext: false
+ *                 hasPrev: false
  *       404:
  *         description: No mismatches found
  *         content:
@@ -41,7 +97,11 @@ mismatchesRouter.use(authenticateToken);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-mismatchesRouter.get("/", listMismatchesForUser_controller);
+mismatchesRouter.get(
+  "/",
+  validateQuery(paginationSchema, "pagination"),
+  listMismatchesForUser_controller,
+);
 
 /**
  * @openapi
@@ -110,7 +170,8 @@ mismatchesRouter.get("/requests", listRumbleRequests_controller);
  *         $ref: '#/components/responses/Unauthorized'
  */
 mismatchesRouter.post(
-  "/:id", validateParams(idParamsSchema),
+  "/:id",
+  validateParams(idParamsSchema),
   validateBody(createRumbleRequestSchema),
   sendRumbleRequest_controller,
 );
@@ -134,7 +195,7 @@ mismatchesRouter.post(
  *         description: ID of the rumble request to accept
  *     responses:
  *       201:
- *         description: Rumble request accepted — rumble created
+ *         description: Rumble request accepted - rumble created
  *         content:
  *           application/json:
  *             schema:
@@ -148,7 +209,11 @@ mismatchesRouter.post(
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-mismatchesRouter.post("/:id/accept", validateParams(idParamsSchema), acceptRumbleRequest_controller);
+mismatchesRouter.post(
+  "/:id/accept",
+  validateParams(idParamsSchema),
+  acceptRumbleRequest_controller,
+);
 
 /**
  * @openapi
@@ -187,6 +252,10 @@ mismatchesRouter.post("/:id/accept", validateParams(idParamsSchema), acceptRumbl
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-mismatchesRouter.post("/:id/decline", validateParams(idParamsSchema), declineRumbleRequest_controller);
+mismatchesRouter.post(
+  "/:id/decline",
+  validateParams(idParamsSchema),
+  declineRumbleRequest_controller,
+);
 
 export default mismatchesRouter;

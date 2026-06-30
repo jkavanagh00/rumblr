@@ -36,12 +36,12 @@ export const validateParams = (schema) =>
     },
   );
 
-export const validateQuery = (schema) =>
+export const validateQuery = (schema, targetKey = "validatedQuery") =>
   validate(
     schema,
     (req) => req.query,
     (req, data) => {
-      req.validatedQuery = data;
+      req[targetKey] = data;
     },
   );
 

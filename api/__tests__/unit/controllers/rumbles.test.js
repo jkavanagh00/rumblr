@@ -46,15 +46,25 @@ describe("rumbles controller", () => {
       const req = { user: { id: userId } };
       const res = createMockRes();
       const next = jest.fn();
-      const rumbles = [{ id: "55555555-5555-4555-8555-555555555555" }];
+      const rumbles = {
+        data: [{ id: "55555555-5555-4555-8555-555555555555" }],
+        pagination: {
+          page: 1,
+          limit: 20,
+          total: 1,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
+      };
 
       getRumblesByUserId_model.mockResolvedValue(rumbles);
 
       await getRumbles_controller(req, res, next);
 
-      expect(getRumblesByUserId_model).toHaveBeenCalledWith(userId);
+      expect(getRumblesByUserId_model).toHaveBeenCalledWith(userId, undefined);
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ data: rumbles });
+      expect(res.json).toHaveBeenCalledWith(rumbles);
       expect(next).not.toHaveBeenCalled();
     });
 

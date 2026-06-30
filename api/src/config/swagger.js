@@ -144,6 +144,22 @@ const options = {
             created_at: { type: "string", format: "date-time" },
           },
         },
+        UserReport: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            reporter_id: { type: "string", format: "uuid" },
+            reported_user_id: { type: "string", format: "uuid" },
+            rumble_id: { type: "string", format: "uuid", nullable: true },
+            reason: { type: "string" },
+            message_log: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Message" },
+            },
+            status: { type: "string", enum: ["open", "closed"] },
+            created_at: { type: "string", format: "date-time" },
+          },
+        },
         // ── Composite response shapes ──────────────────────────────────
         AuthResponse: {
           type: "object",
@@ -164,6 +180,10 @@ const options = {
               properties: {
                 page: { type: "integer" },
                 limit: { type: "integer" },
+                total: { type: "integer" },
+                totalPages: { type: "integer" },
+                hasNext: { type: "boolean" },
+                hasPrev: { type: "boolean" },
               },
             },
           },
@@ -278,6 +298,18 @@ const options = {
           properties: {
             agreement_score: { type: "integer", minimum: 1, maximum: 5 },
             importance_score: { type: "integer", minimum: 1, maximum: 5 },
+          },
+        },
+        CreateUserReportBody: {
+          type: "object",
+          required: ["reason"],
+          properties: {
+            reason: {
+              type: "string",
+              minLength: 1,
+              maxLength: 500,
+              example: "Harassment and repeated abusive language in rumble chat",
+            },
           },
         },
         // ── Common error ───────────────────────────────────────────────
