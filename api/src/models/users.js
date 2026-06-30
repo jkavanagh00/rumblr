@@ -1,15 +1,3 @@
-/*
-all models related to users should be here
-
-examples:
-
-- listUsers
-- findUserById
-- createUser
-- updateUser
-- removeUser
-*/
-
 import db from "../database/db.js";
 
 const TABLE = "users";
