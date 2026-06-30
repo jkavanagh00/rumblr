@@ -198,11 +198,6 @@ statementsRouter.get(
   validateQuery(paginationSchema, "pagination"),
   listResponses_controller,
 );
-statementsRouter.get(
-  "/responses",
-  validateQuery(paginationSchema, "pagination"),
-  listResponses_controller,
-);
 
 /**
  * @openapi
@@ -261,12 +256,6 @@ statementsRouter.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-statementsRouter.get(
-  "/list",
-  validateQuery(paginationSchema, "pagination"),
-  requireAdmin,
-  listStatements_controller,
-);
 statementsRouter.get(
   "/list",
   validateQuery(paginationSchema, "pagination"),
