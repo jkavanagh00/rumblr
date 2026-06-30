@@ -76,7 +76,8 @@ export async function listStatements_model(pagination = {}, trx = db) {
 
 export async function addStatement_model(statement, trx = db) {
   const qb = baseQuery(trx);
-  return await qb.insert(statement);
+  const [addedStatement] = await qb.insert(statement).returning("*");
+  return addedStatement;
 }
 
 export async function getStatementById_model(id, trx = db) {
