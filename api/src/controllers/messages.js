@@ -6,6 +6,7 @@ import {
   getRumbleById_model,
   isUserParticipantInRumble_model,
 } from "../models/rumbles.js";
+import { getBlockBetweenUsers_model } from "../models/blocks.js";
 
 export async function addMessage_controller(req, res, next) {
   try {
@@ -19,11 +20,7 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    const isParticipant = await isUserParticipantInRumble_model(
-      rumbleId,
-      userId,
-    );
-    if (!isParticipant) {
+    if (rumble.requester_id !== userId && rumble.receiver_id !== userId) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });
@@ -32,6 +29,16 @@ export async function addMessage_controller(req, res, next) {
     if (rumble.status === "terminated") {
       return res.status(403).json({
         error: "This rumble is terminated",
+      });
+    }
+
+    const otherParticipantId =
+      rumble.requester_id === userId ? rumble.receiver_id : rumble.requester_id;
+
+    const block = await getBlockBetweenUsers_model(userId, otherParticipantId);
+    if (block) {
+      return res.status(403).json({
+        error: "Cannot send messages between blocked users",
       });
     }
 
@@ -65,11 +72,7 @@ export async function getMessages_controller(req, res, next) {
       });
     }
 
-    const isParticipant = await isUserParticipantInRumble_model(
-      rumbleId,
-      userId,
-    );
-    if (!isParticipant) {
+    if (rumble.requester_id !== userId && rumble.receiver_id !== userId) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });

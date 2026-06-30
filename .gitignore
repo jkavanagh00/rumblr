@@ -1,2 +1,4 @@
 .DS_STORE
 .env
+app/node_modules/
+app/dist/
