@@ -48,6 +48,7 @@
     "test:rumbles:model": "npm run test -- __tests__/unit/models/rumbles.test.js",
     "test:rumbles:controller": "npm run test -- __tests__/unit/controllers/rumbles.test.js",
     "test:rumbles:integration": "npm run test -- __tests__/integration/routes/rumbles.test.js",
+    "test:rumbles:service": "npm run test -- __tests__/integration/services/rumbles.test.js",
     "test:statements": "npm run test -- __tests__/unit/models/statements.test.js __tests__/unit/controllers/statements.test.js __tests__/integration/routes/statements.test.js",
     "test:statements:model": "npm run test -- __tests__/unit/models/statements.test.js",
     "test:statements:controller": "npm run test -- __tests__/unit/controllers/statements.test.js",

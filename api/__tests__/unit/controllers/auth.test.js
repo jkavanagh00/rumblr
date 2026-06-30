@@ -18,7 +18,7 @@ jest.unstable_mockModule("jsonwebtoken", () => ({
   default: { sign: mockSign },
 }));
 
-const { signup_controller, login_controller, me_controller } = await import(
+const { signup_controller, login_controller } = await import(
   "../../../src/controllers/auth.js"
 );
 
@@ -314,60 +314,6 @@ describe("auth controller", () => {
       findUserByUsername_model.mockRejectedValue(error);
 
       await login_controller(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(error);
-    });
-  });
-
-  describe("me_controller", () => {
-    test("uses req.user.id when available to load the current user", async () => {
-      const req = { user: { id: 1 } };
-      const res = createMockRes();
-      const next = jest.fn();
-
-      getPublicUserById_model.mockResolvedValue({
-        id: 1,
-        username: "testuser",
-      });
-      await me_controller(req, res, next);
-
-      expect(getPublicUserById_model).toHaveBeenCalledWith(1);
-    });
-    test("returns 404 when no public user exists for the resolved user id", async () => {
-      const req = { user: { id: 3 } };
-      const res = createMockRes();
-      const next = jest.fn();
-      getPublicUserById_model.mockResolvedValue(null);
-
-      await me_controller(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-    });
-    test("returns 200 with the public user profile when found", async () => {
-      const req = { user: { id: 4 } };
-      const res = createMockRes();
-      const next = jest.fn();
-      getPublicUserById_model.mockResolvedValue({
-        id: 4,
-        userName: "username",
-      });
-
-      await me_controller(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(200);
-    });
-    test("forwards model errors to next", async () => {
-      const req = {
-        user: {
-          id: "5",
-        },
-      };
-      const res = createMockRes();
-      const next = jest.fn();
-      const error = new Error("db error");
-      getPublicUserById_model.mockRejectedValue(error);
-
-      await me_controller(req, res, next);
 
       expect(next).toHaveBeenCalledWith(error);
     });

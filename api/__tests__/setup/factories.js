@@ -71,6 +71,71 @@ export async function seedResponse(testDb, overrides = {}) {
   return data;
 }
 
+export async function seedRumbleRequest(testDb, overrides = {}) {
+  let requester_id = overrides.requester_id;
+  if (!requester_id) {
+    const user = await seedUser(testDb);
+    requester_id = user.id;
+  }
+
+  let receiver_id = overrides.receiver_id;
+  if (!receiver_id) {
+    const user = await seedUser(testDb);
+    receiver_id = user.id;
+  }
+
+  const id = overrides.id || randomUUID();
+  const defaultData = {
+    id,
+    requester_id,
+    receiver_id,
+    status: "pending",
+    threat_level: "green",
+  };
+
+  const data = { ...defaultData, ...overrides, requester_id, receiver_id };
+
+  await testDb("rumble_requests").insert(data);
+
+  return data;
+}
+
+export async function seedRumble(testDb, overrides = {}) {
+  let requester_id = overrides.requester_id;
+  if (!requester_id) {
+    const user = await seedUser(testDb);
+    requester_id = user.id;
+  }
+
+  let receiver_id = overrides.receiver_id;
+  if (!receiver_id) {
+    const user = await seedUser(testDb);
+    receiver_id = user.id;
+  }
+
+  let rumble_request_id = overrides.rumble_request_id;
+  if (!rumble_request_id) {
+    const request = await seedRumbleRequest(testDb, { requester_id, receiver_id });
+    rumble_request_id = request.id;
+  }
+
+  const id = overrides.id || randomUUID();
+  const defaultData = {
+    id,
+    rumble_request_id,
+    requester_id,
+    receiver_id,
+    status: "active",
+    threat_level: "green",
+  };
+
+  const data = { ...defaultData, ...overrides, rumble_request_id, requester_id, receiver_id };
+
+  await testDb("rumbles").insert(data);
+
+  return data;
+}
+
 export async function seedMismatch(testDb, overrides = {}) {
   let user1_id = overrides.user1_id;
   if (!user1_id) {

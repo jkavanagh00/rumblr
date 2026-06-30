@@ -8,7 +8,7 @@ const rumbleId = "22222222-2222-4222-8222-222222222222";
 
 jest.unstable_mockModule("../../../src/middlewares/auth.js", () => ({
   authenticateToken: jest.fn((req, _res, next) => {
-    req.userId = testUserId;
+    req.user = { id: testUserId };
     next();
   }),
 }));
