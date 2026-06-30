@@ -146,7 +146,7 @@ export async function declineRumbleRequest_controller(req, res, next) {
       });
     }
     await declineRumbleRequest_model(req.params.id);
-    return res.status(201).json({ message: "Rumble request declined" });
+    return res.status(200).json({ message: "Rumble request declined" });
   } catch (error) {
     next(error);
   }
