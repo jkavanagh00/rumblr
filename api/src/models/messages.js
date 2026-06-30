@@ -1,4 +1,5 @@
 import db from "../database/db.js";
+import { paginate } from "../utils/pagination.js";
 
 const MESSAGES_TABLE = "messages";
 
@@ -8,25 +9,14 @@ function messagesQuery(trx = db) {
 
 export async function getMessagesByRumbleId_model(
   rumbleId,
-  { page = 1, limit = 20 } = {},
+  pagination = {},
   trx = db,
 ) {
-  const offset = (page - 1) * limit;
-
-  const data = await messagesQuery(trx)
-    .select("*")
-    .where({ rumble_id: rumbleId })
-    .orderBy("sent_at", "asc")
-    .limit(limit)
-    .offset(offset);
-
-  return {
-    data,
-    pagination: {
-      page,
-      limit,
-    },
-  };
+  return paginate(
+    messagesQuery(trx).where({ rumble_id: rumbleId }),
+    pagination,
+    (qb) => qb.orderBy("sent_at", "asc"),
+  );
 }
 
 export async function addMessage_model(

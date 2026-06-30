@@ -10,10 +10,8 @@ export async function getRumbles_controller(req, res, next) {
       });
     }
 
-    const rumbles = await getRumblesByUserId_model(userId);
-    return res.status(200).json({
-      data: rumbles,
-    });
+    const rumbles = await getRumblesByUserId_model(userId, req.pagination);
+    return res.status(200).json(rumbles);
   } catch (error) {
     next(error);
   }

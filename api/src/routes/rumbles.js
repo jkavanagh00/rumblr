@@ -3,11 +3,10 @@ import { createRumbleSchema } from "../schemas/rumbles.js";
 import {
   createMessageParamsSchema,
   createMessageSchema,
-  paginationSchema,
 } from "../schemas/messages.js";
+import { paginationSchema } from "../schemas/pagination.js";
 import { authenticateToken } from "../middlewares/auth.js";
 import {
-  addRumble_controller,
   getRumbles_controller,
   terminateRumble_controller,
 } from "../controllers/rumbles.js";
@@ -16,12 +15,11 @@ import {
   getMessages_controller,
 } from "../controllers/messages.js";
 import {
-  validateBody,
   validateParams,
   validateQuery,
   validateRequest,
 } from "../middlewares/errors.js";
-import { idParamsSchema } from "../Schemas/common.js";
+import { idParamsSchema } from "../schemas/common.js";
 
 const router = express.Router();
 
@@ -36,9 +34,27 @@ router.use(authenticateToken);
  *     summary: Get all rumbles for the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of rumbles
+ *         description: Paginated list of rumbles
  *         content:
  *           application/json:
  *             schema:
@@ -48,6 +64,34 @@ router.use(authenticateToken);
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Rumble'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
+ *             example:
+ *               data:
+ *                 - id: "6c260923-bf5e-45fd-a26c-9ec32f174851"
+ *                   requester_id: "22cc44f9-8707-4600-9017-acfce7ece11e"
+ *                   receiver_id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
+ *                   status: "active"
+ *               pagination:
+ *                 page: 1
+ *                 limit: 20
+ *                 total: 1
+ *                 totalPages: 1
+ *                 hasNext: false
+ *                 hasPrev: false
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *   post:
@@ -74,7 +118,13 @@ router.use(authenticateToken);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get("/", getRumbles_controller);
+
+router.get(
+  "/",
+  validateQuery(paginationSchema, "pagination"),
+  getRumbles_controller,
+);
+router.post("/", validateBody(createRumbleSchema), addRumble_controller);
 
 /**
  * @openapi
@@ -111,7 +161,12 @@ router.get("/", getRumbles_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.put("/:id/terminate", validateParams(idParamsSchema), terminateRumble_controller);
+
+router.put(
+  "/:id/terminate",
+  validateParams(idParamsSchema),
+  terminateRumble_controller,
+);
 
 /**
  * @openapi
@@ -195,11 +250,12 @@ router.put("/:id/terminate", validateParams(idParamsSchema), terminateRumble_con
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
+
 router.get(
   "/:id/messages",
   validateParams(idParamsSchema),
   validateParams(createMessageParamsSchema),
-  validateQuery(paginationSchema),
+  validateQuery(paginationSchema, "pagination"),
   getMessages_controller,
 );
 
@@ -220,4 +276,5 @@ router.post(
   ),
   addMessage_controller,
 );
+
 export default router;

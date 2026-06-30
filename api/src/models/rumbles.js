@@ -1,4 +1,5 @@
 import db from "../database/db.js";
+import { paginate } from "../utils/pagination.js";
 
 const RUMBLES_TABLE = "rumbles";
 const MESSAGES_TABLE = "messages";
@@ -16,18 +17,42 @@ export async function addRumble_model(rumbleData, trx = db) {
   return rumble;
 }
 
-export async function getRumblesByUserId_model(userId, trx = db) {
-  return await rumblesQuery(trx)
-    .select("*")
-    .where((builder) => {
-      builder.where({ requester_id: userId }).orWhere({ receiver_id: userId });
-    })
-    .whereIn("status", ["active", "inactive"])
-    .orderBy("created_at", "desc");
+export async function getRumblesByUserId_model(
+  userId,
+  pagination = {},
+  trx = db,
+) {
+  return paginate(
+    rumblesQuery(trx)
+      .where((builder) => {
+        builder
+          .where({ requester_id: userId })
+          .orWhere({ receiver_id: userId });
+      })
+      .whereIn("status", ["active", "inactive"]),
+    pagination,
+    (qb) => qb.orderBy("created_at", "desc"),
+  );
 }
 
 export async function getRumbleById_model(id, trx = db) {
   return await rumblesQuery(trx).where({ id }).first();
+}
+
+export async function getActiveRumbleBetweenUsers_model(
+  userId,
+  otherUserId,
+  trx = db,
+) {
+  return await rumblesQuery(trx)
+    .where({ status: "active" })
+    .andWhere((builder) => {
+      builder
+        .where({ requester_id: userId, receiver_id: otherUserId })
+        .orWhere({ requester_id: otherUserId, receiver_id: userId });
+    })
+    .orderBy("created_at", "desc")
+    .first();
 }
 
 export async function updateRumbleStatus_model(id, status, trx = db) {

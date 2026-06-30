@@ -1,4 +1,5 @@
 import db from "../database/db.js";
+import { paginate } from "../utils/pagination.js";
 
 export async function fetchSharedResponses_model(user1Id, user2Id, trx = db) {
   const user1Responses = await trx("responses")
@@ -89,10 +90,8 @@ export async function deleteResponse_model(id, trx = db) {
   return existingResponse;
 }
 
-export async function listResponses_model(userId, trx = db) {
-  const qb = trx("responses");
-  const responses = await qb.select("*").where("user_id", userId);
-  return responses;
+export async function listResponses_model(userId, pagination = {}, trx = db) {
+  return paginate(trx("responses").where("user_id", userId), pagination);
 }
 
 export async function countResponses_model(userId, trx = db) {
