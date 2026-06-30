@@ -36,7 +36,7 @@ function deserializeUser(user) {
 export async function createUser_model(userData, trx = db) {
   const [createdUser] = await baseQuery(trx)
     .insert(serializeUser(userData))
-    .returning(publicUserColumns);
+    .returning(userColumns);
 
   return deserializeUser(createdUser);
 }
