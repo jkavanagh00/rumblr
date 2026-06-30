@@ -14,12 +14,16 @@ export default function registerRumbleSocket(io) {
 
   io.on("connection", (socket) => {
     socket.on("rumble:join", async ({ rumbleId }) => {
-      if (!rumbleId) return;
-      const isParticipant = await isUserParticipantInRumble_model(
-        rumbleId,
-        socket.user.id,
-      );
-      if (isParticipant) socket.join(`rumble:${rumbleId}`);
+      try {
+        if (!rumbleId) return;
+        const isParticipant = await isUserParticipantInRumble_model(
+          rumbleId,
+          socket.user.id,
+        );
+        if (isParticipant) socket.join(`rumble:${rumbleId}`);
+      } catch (error) {
+        socket.emit("error", { message: "Failed to join rumble" });
+      }
     });
 
     socket.on("rumble:leave", ({ rumbleId }) => {
@@ -31,4 +35,4 @@ export default function registerRumbleSocket(io) {
       // optional logging
     });
   });
-    }
+}
