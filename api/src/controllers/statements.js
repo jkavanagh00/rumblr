@@ -62,7 +62,7 @@ export async function getStatementById_controller(req, res, next) {
 
 export async function listStatements_controller(req, res, next) {
   try {
-    const statements = await listStatements_model(req.pagination);
+    const statements = await listStatements_model(req.validatedQuery);
     return res.status(200).json(statements);
   } catch (error) {
     next(error);

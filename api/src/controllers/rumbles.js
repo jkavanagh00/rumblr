@@ -3,8 +3,9 @@ import { terminateRumble_service } from "../services/rumbles.js";
 
 export async function getRumbles_controller(req, res, next) {
   try {
+    const userId = req.user.id;
 
-    const rumbles = await getRumblesByUserId_model(userId, req.pagination);
+    const rumbles = await getRumblesByUserId_model(userId, req.validatedQuery);
     return res.status(200).json(rumbles);
   } catch (error) {
     next(error);
