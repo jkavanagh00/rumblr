@@ -95,29 +95,6 @@ router.use(authenticateToken);
  *                 hasPrev: false
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
- *   post:
- *     tags:
- *       - Rumbles
- *     summary: Create a new rumble
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateRumbleBody'
- *     responses:
- *       201:
- *         description: Rumble created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Rumble'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
  */
 
 router.get(
