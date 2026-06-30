@@ -67,8 +67,6 @@ export async function addResponse_service(userId, statementId, responseData) {
       trx,
     );
 
-    let totalUpsertedMismatches = 0;
-
     await Promise.all(
       otherUsersWithResponses.map((otherUserId) =>
       upsertMismatch_model(userId, otherUserId, trx))
