@@ -3,12 +3,6 @@ import { terminateRumble_service } from "../services/rumbles.js";
 
 export async function getRumbles_controller(req, res, next) {
   try {
-    const userId = req.user.id;
-    if (!userId) {
-      return res.status(401).json({
-        error: "Unauthorized",
-      });
-    }
 
     const rumbles = await getRumblesByUserId_model(userId, req.pagination);
     return res.status(200).json(rumbles);
