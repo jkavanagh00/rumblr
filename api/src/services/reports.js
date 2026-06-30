@@ -15,14 +15,18 @@ export async function createUserReport_service(
   database = db,
 ) {
   if (reporterId === reportedUserId) {
-    throw new Error("You cannot report yourself");
+      const err = new Error("You cannot report yourself");
+      err.status = 400;
+      throw err;
   }
 
   return await database.transaction(async (trx) => {
     const reportedUser = await getUserById_model(reportedUserId, trx);
 
     if (!reportedUser) {
-      throw new Error("Reported user not found");
+      const err = new Error("Reported user not found");
+      err.status = 400;
+      throw err;
     }
 
     const messageLog = await getMessageLogByRumbleId_model(rumble.id, trx);
