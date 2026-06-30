@@ -125,7 +125,6 @@ router.get(
   validateQuery(paginationSchema, "pagination"),
   getRumbles_controller,
 );
-router.post("/", validateBody(createRumbleSchema), addRumble_controller);
 
 /**
  * @openapi
