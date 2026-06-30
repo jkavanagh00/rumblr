@@ -18,11 +18,7 @@ export async function listResponses_controller(req, res, next) {
   try {
     const responses = await listResponses_model(req.user.id, req.pagination);
 
-    if (!responses.data.length) {
-      return res.status(404).json({ error: "No responses found" });
-    }
-
-    return res.status(200).json(responses);
+    return res.status(200).json({ data: responses, pagination: req.pagination });
   } catch (error) {
     next(error);
   }
