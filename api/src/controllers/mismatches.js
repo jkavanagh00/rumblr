@@ -19,9 +19,6 @@ export async function listMismatchesForUser_controller(req, res, next) {
       req.pagination,
     );
 
-    if (!mismatches.data.length) {
-      return res.status(404).json({ error: "No mismatches found" });
-    }
     return res.status(200).json(mismatches);
   } catch (error) {
     next(error);
