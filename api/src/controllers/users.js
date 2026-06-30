@@ -142,7 +142,7 @@ export async function getBlockedUsers_controller(req, res, next) {
 
     const blockedUsers = await getBlockedUsersByBlockerId_model(
       blockerId,
-      req.pagination,
+      req.validatedQuery,
     );
 
     return res.status(200).json(blockedUsers);
