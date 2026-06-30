@@ -4,7 +4,6 @@ import {
 } from "../models/messages.js";
 import {
   getRumbleById_model,
-  isUserParticipantInRumble_model,
 } from "../models/rumbles.js";
 import { getBlockBetweenUsers_model } from "../models/blocks.js";
 
