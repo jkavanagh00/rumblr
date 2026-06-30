@@ -3,6 +3,7 @@ import {
   fetchSharedResponses_model,
   listUsersWhoResponded_model,
   listResponses_model,
+  countResponses_model,
 } from "../models/responses.js";
 import { upsertMismatch_model } from "../models/mismatches.js";
 import {
@@ -51,13 +52,9 @@ export async function addResponse_service(userId, statementId, responseData) {
       trx,
     );
 
-    const totalResponses = await listResponses_model(
-      userId,
-      { page: 1, limit: 10 },
-      trx,
-    );
+    const totalResponses = await countResponses_model(userId, trx);
 
-    if (totalResponses.data.length < 10) {
+    if (totalResponses < 10) {
       return {
         upsertedResponse,
         totalUpsertedMismatches: 0,
@@ -71,10 +68,12 @@ export async function addResponse_service(userId, statementId, responseData) {
     );
 
     let totalUpsertedMismatches = 0;
-    for (const otherUserId of otherUsersWithResponses) {
-      await upsertMismatch_model(userId, otherUserId, trx);
-      totalUpsertedMismatches++;
-    }
+
+    await Promise.all(
+      otherUsersWithResponses.map((otherUserId) =>
+      upsertMismatch_model(userId, otherUserId, trx))
+    );
+    const totalUpsertedMismatches = otherUsersWithResponses.length;
 
     return {
       upsertedResponse,
