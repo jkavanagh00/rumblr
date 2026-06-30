@@ -18,7 +18,7 @@ export async function listResponses_controller(req, res, next) {
   try {
     const responses = await listResponses_model(req.user.id, req.pagination);
 
-    return res.status(200).json({ data: responses, pagination: req.pagination });
+    return res.status(200).json(responses);
   } catch (error) {
     next(error);
   }
