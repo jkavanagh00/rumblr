@@ -28,6 +28,7 @@ const apiRouter = express.Router();
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);
+apiRouter.use("/users", usersRouter);
 apiRouter.use("/mismatches", mismatchesRouter);
 apiRouter.use("/statements", statementsRouter);
 

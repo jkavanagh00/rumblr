@@ -1,8 +1,8 @@
 import express from "express";
 import { paginationSchema } from "../schemas/pagination.js";
-import { updateUserSchema } from "../schemas/users.js";
+import { createUserReportSchema, updateUserSchema } from "../schemas/users.js";
 import { blockParamsSchema } from "../schemas/block.js";
-import { authenticateToken } from "../middlewares/auth.js";
+import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import {
   getUser_controller,
   updateUser_controller,
@@ -11,6 +11,8 @@ import {
   unblockUser_controller,
   getBlockedUsers_controller,
   getOnboardingProgress_controller,
+  listUserReports_controller,
+  reportUser_controller,
 } from "../controllers/users.js";
 import {
   validateBody,
@@ -94,6 +96,127 @@ router.get(
   "/blocks",
   validateQuery(paginationSchema, "pagination"),
   getBlockedUsers_controller,
+);
+
+/**
+ * @openapi
+ * /users/reports:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get all user reports (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Paginated list of user reports
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/UserReport'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get(
+  "/reports",
+  requireAdmin,
+  validateQuery(paginationSchema, "pagination"),
+  listUserReports_controller,
+);
+
+/**
+ * @openapi
+ * /users/{id}/report:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Report a user for breaking community guidelines
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the user being reported
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateUserReportBody'
+ *     responses:
+ *       201:
+ *         description: User report created and rumble terminated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 report:
+ *                   $ref: '#/components/schemas/UserReport'
+ *                 rumble:
+ *                   $ref: '#/components/schemas/Rumble'
+ *       400:
+ *         description: Cannot report yourself or invalid request body
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Reported user or active rumble not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.post(
+  "/:id/report",
+  validateParams(blockParamsSchema),
+  validateBody(createUserReportSchema),
+  reportUser_controller,
 );
 
 /**
