@@ -18,6 +18,7 @@ import {
   validateParams,
   validateQuery,
   validateRequest,
+  validateBody,
 } from "../middlewares/errors.js";
 import { idParamsSchema } from "../schemas/common.js";
 
