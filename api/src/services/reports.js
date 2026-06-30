@@ -15,14 +15,18 @@ export async function createUserReport_service(
   database = db,
 ) {
   if (reporterId === reportedUserId) {
-    throw new Error("You cannot report yourself");
+    const err = new Error("You cannot report yourself");
+    err.status = 400;
+    throw err;
   }
 
   return await database.transaction(async (trx) => {
     const reportedUser = await getUserById_model(reportedUserId, trx);
 
     if (!reportedUser) {
-      throw new Error("Reported user not found");
+      const err = new Error("Reported user not found");
+      err.status = 400;
+      throw err;
     }
 
     const rumble = await getActiveRumbleBetweenUsers_model(
@@ -31,29 +35,26 @@ export async function createUserReport_service(
       trx,
     );
 
-    if (!rumble) {
-      throw new Error("No active rumble found with this user");
-    }
-
-    const messageLog = await getMessageLogByRumbleId_model(rumble.id, trx);
+    const messageLog = rumble
+      ? await getMessageLogByRumbleId_model(rumble.id, trx)
+      : null;
 
     const report = await createUserReport_model(
       {
         reporter_id: reporterId,
         reported_user_id: reportedUserId,
-        rumble_id: rumble.id,
+        rumble_id: rumble?.id ?? null,
         reason,
         message_log: messageLog,
       },
       trx,
     );
 
-    const terminatedRumble = await terminateRumble_model(rumble.id, trx);
+    const terminatedRumble = rumble
+      ? await terminateRumble_model(rumble.id, trx)
+      : null;
 
-    return {
-      report,
-      rumble: terminatedRumble,
-    };
+    return { report, rumble: terminatedRumble };
   });
 }
 

@@ -1,15 +1,3 @@
-/*
-all models related to users should be here
-
-examples:
-
-- listUsers
-- findUserById
-- createUser
-- updateUser
-- removeUser
-*/
-
 import db from "../database/db.js";
 
 const TABLE = "users";
@@ -27,8 +15,6 @@ const userColumns = [
   "threat_levels",
   "created_at",
 ];
-
-const publicUserColumns = userColumns;
 
 function serializeUser(data) {
   return "threat_levels" in data
@@ -50,7 +36,7 @@ function deserializeUser(user) {
 export async function createUser_model(userData, trx = db) {
   const [createdUser] = await baseQuery(trx)
     .insert(serializeUser(userData))
-    .returning(publicUserColumns);
+    .returning(userColumns);
 
   return deserializeUser(createdUser);
 }
@@ -97,15 +83,5 @@ export async function findUserByEmail_model(email, trx = db) {
 
 export async function findUserByUsername_model(username, trx = db) {
   const user = await baseQuery(trx).where({ username }).first();
-  return deserializeUser(user);
-}
-
-// this serves the same purpose as getUserById_model
-export async function getPublicUserById_model(id, trx = db) {
-  const user = await baseQuery(trx)
-    .select(publicUserColumns)
-    .where({ id })
-    .first();
-
   return deserializeUser(user);
 }

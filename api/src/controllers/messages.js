@@ -2,10 +2,7 @@ import {
   addMessage_model,
   getMessagesByRumbleId_model,
 } from "../models/messages.js";
-import {
-  getRumbleById_model,
-  isUserParticipantInRumble_model,
-} from "../models/rumbles.js";
+import { getRumbleById_model } from "../models/rumbles.js";
 import { getBlockBetweenUsers_model } from "../models/blocks.js";
 
 export async function addMessage_controller(req, res, next) {
@@ -42,7 +39,12 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    const message = await addMessage_model(req.validatedBody);
+    const message = await addMessage_model({
+      rumble_id: rumbleId,
+      sender_id: userId,
+      content: req.validatedBody.content,
+    });
+    
     const io = req.app.get("io");
 
     if (io) {

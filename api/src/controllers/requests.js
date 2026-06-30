@@ -124,7 +124,6 @@ export async function acceptRumbleRequest_controller(req, res, next) {
       receiver_id: req.user.id,
       status: "active",
       threat_level: rumbleRequest.threat_level,
-      status: "active",
     };
     const rumble = await acceptRumbleRequest_service(payload);
     return res.status(201).json(rumble);
@@ -147,7 +146,7 @@ export async function declineRumbleRequest_controller(req, res, next) {
       });
     }
     await declineRumbleRequest_model(req.params.id);
-    return res.status(201).json({ message: "Rumble request declined" });
+    return res.status(200).json({ message: "Rumble request declined" });
   } catch (error) {
     next(error);
   }

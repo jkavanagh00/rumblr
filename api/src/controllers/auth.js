@@ -3,7 +3,6 @@ import {
   createUser_model,
   findUserByEmail_model,
   findUserByUsername_model,
-  getPublicUserById_model,
 } from "../models/users.js";
 import { hashPassword, verifyPassword } from "../utils/helpers.js";
 

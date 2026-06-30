@@ -44,7 +44,9 @@ export async function listMismatchesForUser_model(
   trx = db,
 ) {
   return paginate(
-    trx("mismatches").where("user1_id", userId).orWhere("user2_id", userId),
+    trx("mismatches").where((builder) => {
+      builder.where("user1_id", userId).orWhere("user2_id", userId);
+    }),
     pagination,
     (qb) =>
       qb.orderBy("mismatch_score", "desc").orderBy("shared_responses", "desc"),
