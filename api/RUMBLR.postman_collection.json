@@ -1,140 +1,901 @@
 {
   "info": {
-    "_postman_id": "97c5b4f0-a11c-44d5-b256-4b4cb56d279d",
-    "name": "RUMBLR",
+    "_postman_id": "bbc760a5-cab7-466a-adc7-5855f3371fc4",
+    "name": "Rumblr",
+    "description": "Postman collection for jkavanagh00/rumblr including user reporting endpoints from PR #76. Uses seeded users where possible.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "51214963",
-    "_collection_link": "https://go.postman.co/collection/51214963-97c5b4f0-a11c-44d5-b256-4b4cb56d279d?source=collection_link"
+    "_exporter_id": "50885542",
+    "_collection_link": "https://go.postman.co/collection/50885542-bbc760a5-cab7-466a-adc7-5855f3371fc4?source=collection_link"
   },
   "item": [
     {
-      "name": "Login",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login as Alice",
+          "event": [
             {
-              "key": "token",
-              "value": "{{supabase_service_role_api_key_0qph}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "{{supabase_service_role_api_key_1ckp}}",
-            "type": "text",
-            "disabled": true
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"identifier\": \"testemail4@gmail.com\",\r\n    \"password\": \"asdflkjsf11212\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"identifier\":\"alice@example.com\",\"password\":\"{{seedPassword}}\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "http://localhost:3001/api/auth/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3001",
-          "path": ["api", "auth", "login"]
+        {
+          "name": "Login as Bob",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"identifier\":\"{{bobEmail}}\",\"password\":\"{{seedPassword}}\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login as David",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"identifier\":\"{{davidEmail}}\",\"password\":\"{{seedPassword}}\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"identifier\":\"admin@example.com\",\"password\":\"{{seedPassword}}\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Signup sample user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"ryan_disagrees\",\"email\":\"Ryan@example.com\",\"password\":\"seedPassword\",\"bio\":\"I like to agree on important issues\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Get Account Info",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{auth_secret_0qph}}",
-              "type": "string"
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get onboarding progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/onboarding",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "onboarding"
+              ]
             }
-          ]
+          },
+          "response": []
         },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bio\": \"Test bio info\"\r\n}"
+        {
+          "name": "Get blocked users (Alice)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/blocks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "blocks"
+              ]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "http://localhost:3001/api/account",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3001",
-          "path": ["api", "account"]
+        {
+          "name": "Block Bob as Alice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/blocks/{{bobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "blocks",
+                "{{bobId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unblock Bob as Alice",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/blocks/{{bobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "blocks",
+                "{{bobId}}"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Update Account Info",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+      "name": "Statements",
+      "item": [
+        {
+          "name": "Get unanswered statement",
+          "event": [
             {
-              "key": "token",
-              "value": "{{auth_secret_0qph}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// if (pm.response.code === 200) {",
+                  "//   const json = pm.response.json();",
+                  "//   if (json.id) pm.collectionVariables.set('statementId', json.id);",
+                  "// }"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
-        },
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bio\": \"Test bio info\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statements"
+              ]
             }
-          }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "http://localhost:3001/api/account",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3001",
-          "path": ["api", "account"]
+        {
+          "name": "Respond to statement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"agreement_score\":5,\"importance_score\":4}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/statements/{{statementId}}/respond",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statements",
+                "{{statementId}}",
+                "respond"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List my responses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statements/responses?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statements",
+                "responses"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get onboarding statement 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statements/onboarding/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statements",
+                "onboarding",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin list statements",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statements/list?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statements",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Delete Account",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
+      "name": "Mismatches & Requests",
+      "item": [
+        {
+          "name": "List mismatches (Alice)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mismatches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mismatches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List rumble requests (Alice)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// const json = pm.response.json();",
+                  "// const data = json.data || [];",
+                  "// if (data.length && data[0].id) pm.collectionVariables.set('requestId', data[0].id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mismatches/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mismatches",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List rumble requests (Bob)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const data = json.data || [];",
+                  "if (data.length && data[0].id) pm.collectionVariables.set('requestId', data[0].id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bobToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mismatches/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mismatches",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send rumble request Alice -> Bob",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"threat_level\":\"green\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mismatches/{{bobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mismatches",
+                "{{bobId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept rumble request as Bob",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bobToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mismatches/{{requestId}}/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mismatches",
+                "{{requestId}}",
+                "accept"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Decline rumble request as Bob",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bobToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mismatches/{{requestId}}/decline",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mismatches",
+                "{{requestId}}",
+                "decline"
+              ]
+            },
+            "description": "How can I decline the rumble request when it's already accepted?"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rumbles",
+      "item": [
+        {
+          "name": "List my rumbles (Alice)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// const json = pm.response.json();",
+                  "// const data = json.data || [];",
+                  "// if (data.length && data[0].id) pm.collectionVariables.set('rumbleId', data[0].id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rumbles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rumbles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send message in rumble",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\":\"Testing rumble messaging\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rumbles/{{rumbleId}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rumbles",
+                "{{rumbleId}}",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get rumble messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rumbles/{{rumbleId}}/messages?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rumbles",
+                "{{rumbleId}}",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Terminate rumble",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rumbles/{{rumbleId}}/terminate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rumbles",
+                "{{rumbleId}}",
+                "terminate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "List user reports (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/reports?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "reports"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Report Bob from Alice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"reason\":\"Harassment and repeated abusive language in rumble chat\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{bobId}}/report",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{bobId}}",
+                "report"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
     {
-      "key": "supabase_service_role_api_key_1ckp",
-      "secret": true
+      "key": "baseUrl",
+      "value": "http://localhost:3001/api"
     },
     {
-      "key": "supabase_service_role_api_key_0qph",
-      "secret": true
+      "key": "aliceEmail",
+      "value": "alice@example.com"
     },
     {
-      "key": "auth_secret_0qph",
-      "secret": true
+      "key": "bobEmail",
+      "value": "bob@example.com"
+    },
+    {
+      "key": "carolEmail",
+      "value": "carol@example.com"
+    },
+    {
+      "key": "davidEmail",
+      "value": "david@example.com"
+    },
+    {
+      "key": "seedPassword",
+      "value": "password123"
+    },
+    {
+      "key": "aliceId",
+      "value": "fef581bd-7396-4446-a337-ae6cd8bff6cf"
+    },
+    {
+      "key": "bobId",
+      "value": "fb9123f7-1666-4850-97b3-237647a07b15"
+    },
+    {
+      "key": "carolId",
+      "value": "66151732-4c06-4372-8bee-00dcb3a5d446"
+    },
+    {
+      "key": "davidId",
+      "value": "1c8dd889-2423-4663-8c37-47dcc810b92e"
+    },
+    {
+      "key": "graceId",
+      "value": "5b1c48ce-66ca-4d0c-9c91-4b2f1c237d80"
+    },
+    {
+      "key": "frankId",
+      "value": "468e1877-ec10-4bb8-9385-3320cc6ed093"
+    },
+    {
+      "key": "aliceToken",
+      "value": ""
+    },
+    {
+      "key": "bobToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "statementId",
+      "value": ""
+    },
+    {
+      "key": "rumbleId",
+      "value": ""
+    },
+    {
+      "key": "requestId",
+      "value": ""
     }
   ]
 }
