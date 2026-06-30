@@ -60,7 +60,7 @@ describe("rumbles model", () => {
   });
 
   describe("getRumblesByUserId_model", () => {
-    test("returns only active rumbles where user participates", async () => {
+    test("returns active and inactive rumbles in which user participates", async () => {
       await seedUser(testDb, { id: userId });
       await seedUser(testDb, { id: otherUserId });
       await seedUser(testDb, { id: outsiderId });
