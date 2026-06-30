@@ -25,16 +25,6 @@ export async function createUserReport_service(
       throw new Error("Reported user not found");
     }
 
-    const rumble = await getActiveRumbleBetweenUsers_model(
-      reporterId,
-      reportedUserId,
-      trx,
-    );
-
-    if (!rumble) {
-      throw new Error("No active rumble found with this user");
-    }
-
     const messageLog = await getMessageLogByRumbleId_model(rumble.id, trx);
 
     const report = await createUserReport_model(
