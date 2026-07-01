@@ -1,4 +1,5 @@
 import db from "./../database/db.js";
+import { paginate } from "../utils/pagination.js";
 import { calculateMismatchScore } from "./../utils/mismatches.js";
 import { fetchSharedResponses_model } from "./responses.js";
 
@@ -39,43 +40,27 @@ export async function upsertMismatch_model(user1Id, user2Id, trx = db) {
 
 export async function listMismatchesForUser_model(
   userId,
-  { page = 1, limit = 20 } = {},
+  pagination = {},
   trx = db,
 ) {
-  const baseQuery = trx("mismatches")
+  const mismatchesWithUsernames = trx("mismatches")
     .join("users as user1", "mismatches.user1_id", "user1.id")
     .join("users as user2", "mismatches.user2_id", "user2.id")
     .where((builder) => {
       builder
         .where("mismatches.user1_id", userId)
         .orWhere("mismatches.user2_id", userId);
-    });
-
-  const [countResult] = await baseQuery.clone().count({ total: "*" });
-  const total = Number(countResult.total);
-  const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
-
-  const data = await baseQuery
-    .clone()
+    })
     .select([
       "mismatches.*",
       "user1.username as user1_username",
       "user2.username as user2_username",
-    ])
-    .orderBy("mismatches.mismatch_score", "desc")
-    .orderBy("mismatches.shared_responses", "desc")
-    .limit(limit)
-    .offset((page - 1) * limit);
+    ]);
 
-  return {
-    data,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages,
-      hasNext: page < totalPages,
-      hasPrev: page > 1,
-    },
-  };
+  return paginate(
+    trx(mismatchesWithUsernames.as("mismatches_with_usernames")),
+    pagination,
+    (qb) =>
+      qb.orderBy("mismatch_score", "desc").orderBy("shared_responses", "desc"),
+  );
 }
