@@ -66,6 +66,7 @@ export async function seed(knex) {
       requester_id: userMap["bob_disagrees"],
       receiver_id: userMap["emma_passive"],
       status: "declined",
+      declined_at: new Date().toISOString(),
     });
   }
 
@@ -75,6 +76,7 @@ export async function seed(knex) {
       requester_id: userMap["carol_moderate"],
       receiver_id: userMap["frank_blocked"],
       status: "declined",
+      declined_at: new Date().toISOString(),
     });
   }
 
