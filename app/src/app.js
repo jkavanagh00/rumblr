@@ -1,6 +1,6 @@
 import "./main.css";
 
-const API_URL = "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 const SOCKET_URL = API_URL;
 const SESSION_KEY = "rumblr-demo-session";
 
