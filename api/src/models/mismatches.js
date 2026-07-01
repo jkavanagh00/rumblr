@@ -43,10 +43,22 @@ export async function listMismatchesForUser_model(
   pagination = {},
   trx = db,
 ) {
+  const mismatchesWithUsernames = trx("mismatches")
+    .join("users as user1", "mismatches.user1_id", "user1.id")
+    .join("users as user2", "mismatches.user2_id", "user2.id")
+    .where((builder) => {
+      builder
+        .where("mismatches.user1_id", userId)
+        .orWhere("mismatches.user2_id", userId);
+    })
+    .select([
+      "mismatches.*",
+      "user1.username as user1_username",
+      "user2.username as user2_username",
+    ]);
+
   return paginate(
-    trx("mismatches").where((builder) => {
-      builder.where("user1_id", userId).orWhere("user2_id", userId);
-    }),
+    trx(mismatchesWithUsernames.as("mismatches_with_usernames")),
     pagination,
     (qb) =>
       qb.orderBy("mismatch_score", "desc").orderBy("shared_responses", "desc"),

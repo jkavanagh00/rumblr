@@ -1,6 +1,60 @@
 :root {
-  color: #18201d;
-  background: #f5f4ef;
+  /* Core */
+  --color-bg: #00000093;
+  --color-text: #801511;
+  --color-white: #fff;
+
+  /* Text scale */
+  --color-text-strong: #1f2a24;
+  --color-text-secondary: #4d5851;
+  --color-text-medium: #405149;
+  --color-text-muted: #66736b;
+
+  /* Brand – teal */
+  --color-brand: #76160f;
+  --color-brand-dark: #5e1515;
+  --color-brand-light: #d66565;
+  --color-brand-surface: #e9f7f4;
+  --color-brand-surface-strong: #eefaf7;
+  --color-brand-border: #b8e4da;
+  --color-brand-message-bg: #dff7f1;
+  --color-brand-message-border: #a9ddd4;
+
+  /* Danger – red */
+  --color-danger: #b42318;
+  --color-danger-surface: #fee4e2;
+
+  /* Warning – amber */
+  --color-warning: #8a4b00;
+  --color-warning-surface: #fff1d6;
+
+  /* Success – green */
+  --color-success: #1f6b35;
+  --color-success-surface: #e2f6e7;
+
+  /* Borders */
+  --color-border: #d5d7cf;
+  --color-border-ghost: #cbd2cc;
+  --color-border-panel: #ddded7;
+  --color-border-light: #eceee7;
+  --color-border-chat: #dfe2da;
+  --color-border-message: #e2e6df;
+  --color-border-empty: #cfd5ce;
+
+  /* Surfaces */
+  --color-surface: #ffffffeb;
+  --color-surface-row: #fbfbf8;
+  --color-surface-chat: #f8f8f3;
+  --color-surface-message: #f1f3ef;
+  --color-surface-subtle: #eff1eb;
+
+  /* Dark panels */
+  --color-dark-border: #1d2a25;
+  --color-dark-text: #d9e4de;
+  --color-dark-text-muted: #aab8b1;
+
+  color: var(--color-text);
+  background: var(--color-bg);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -10,21 +64,13 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-}
-
-body::before {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(#f5f4ef9e, #f5f4efc7),
-    url("./assets/rumblr-watermark.png") center 64px / min(1500px, 116vw) auto no-repeat;
-  content: "";
-  opacity: 0.38;
-  pointer-events: none;
 }
 
 button,
@@ -39,8 +85,8 @@ button {
   border: 0;
   border-radius: 7px;
   padding: 0 16px;
-  background: #0f766e;
-  color: #fff;
+  background: var(--color-brand);
+  color: var(--color-white);
   font-weight: 700;
   cursor: pointer;
 }
@@ -54,10 +100,10 @@ input,
 textarea,
 select {
   width: 100%;
-  border: 1px solid #d5d7cf;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  background: #fff;
-  color: #18201d;
+  background: var(--color-white);
+  color: var(--color-text);
   padding: 11px 12px;
 }
 
@@ -69,7 +115,7 @@ textarea {
 label {
   display: grid;
   gap: 7px;
-  color: #4d5851;
+  color: var(--color-text-secondary);
   font-size: 0.92rem;
   font-weight: 700;
 }
@@ -91,7 +137,7 @@ label {
 
 .eyebrow {
   margin: 0 0 8px;
-  color: #b42318;
+  color: var(--color-danger);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -130,37 +176,37 @@ h2 {
 }
 
 .ghost {
-  border: 1px solid #cbd2cc;
-  background: #fff;
-  color: #1f2a24;
+  border: 1px solid var(--color-border-ghost);
+  background: var(--color-white);
+  color: var(--color-text-strong);
 }
 
 .danger {
-  color: #b42318;
+  color: var(--color-danger);
 }
 
 .status {
   border-radius: 7px;
   margin-bottom: 18px;
   padding: 12px 14px;
-  background: #e9f7f4;
-  color: #155e54;
+  background: var(--color-brand-surface);
+  color: var(--color-brand-dark);
   font-weight: 700;
 }
 
 .status.error {
-  background: #fee4e2;
-  color: #b42318;
+  background: var(--color-danger-surface);
+  color: var(--color-danger);
 }
 
 .status.warn {
-  background: #fff1d6;
-  color: #8a4b00;
+  background: var(--color-warning-surface);
+  color: var(--color-warning);
 }
 
 .status.success {
-  background: #e2f6e7;
-  color: #1f6b35;
+  background: var(--color-success-surface);
+  color: var(--color-success);
 }
 
 .auth-grid,
@@ -180,9 +226,9 @@ h2 {
 
 .panel,
 .intro-panel {
-  border: 1px solid #ddded7;
+  border: 1px solid var(--color-border-panel);
   border-radius: 8px;
-  background: #ffffffeb;
+  background: var(--color-surface);
   padding: 20px;
 }
 
@@ -190,13 +236,13 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #18201d;
-  color: #fff;
+  background: var(--color-text);
+  color: var(--color-white);
 }
 
 .intro-panel p {
   max-width: 560px;
-  color: #d9e4de;
+  color: var(--color-dark-text);
   font-size: 1.08rem;
   line-height: 1.6;
 }
@@ -213,7 +259,7 @@ h2 {
   border-radius: 7px;
   padding: 12px;
   background: rgb(255 255 255 / 8%);
-  color: #fff;
+  color: var(--color-white);
   font-weight: 800;
 }
 
@@ -223,18 +269,18 @@ h2 {
   gap: 6px;
   margin-bottom: 18px;
   border-radius: 8px;
-  background: #eff1eb;
+  background: var(--color-surface-subtle);
   padding: 5px;
 }
 
 .segmented button {
   background: transparent;
-  color: #4d5851;
+  color: var(--color-text-secondary);
 }
 
 .segmented .active {
-  background: #fff;
-  color: #18201d;
+  background: var(--color-white);
+  color: var(--color-text);
 }
 
 form {
@@ -261,7 +307,7 @@ form {
 
 .statement {
   margin-bottom: 4px;
-  font-size: 1.35rem;
+  font-size: 2rem;
   font-weight: 800;
   line-height: 1.25;
 }
@@ -269,37 +315,67 @@ form {
 .complete-state {
   display: grid;
   gap: 12px;
-  border: 1px solid #b8e4da;
+  border: 1px solid var(--color-brand-border);
   border-radius: 8px;
-  background: #eefaf7;
+  background: var(--color-brand-surface-strong);
   padding: 16px;
 }
 
 .complete-state strong {
-  color: #0f766e;
+  color: var(--color-brand);
   font-size: 1.25rem;
 }
 
 .complete-state p {
   margin-bottom: 0;
-  color: #405149;
+  color: var(--color-text-medium);
 }
 
 .subtle {
   margin: 6px 0 0;
-  color: #66736b;
+  color: var(--color-text-muted);
   font-size: 0.92rem;
 }
 
 .sliders {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
 .sliders label {
   grid-template-columns: 100px 1fr 42px;
   align-items: center;
+}
+
+.agreement-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agreement-group legend {
+  width: 100%;
+  margin-bottom: 8px;
+  color: var(--color-text-secondary);
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 0;
+}
+
+.agreement-group label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 0.88rem;
+}
+
+.agreement-group input[type="radio"] {
+  width: auto;
 }
 
 .stats {
@@ -311,7 +387,7 @@ form {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  border-bottom: 1px solid #eceee7;
+  border-bottom: 1px solid var(--color-border-light);
   padding-bottom: 10px;
 }
 
@@ -319,11 +395,11 @@ form {
 .row p,
 .mini-row span,
 .empty {
-  color: #66736b;
+  color: var(--color-text-muted);
 }
 
 .stat strong {
-  color: #b42318;
+  color: var(--color-danger);
   font-size: 1.35rem;
 }
 
@@ -342,10 +418,15 @@ form {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  border: 1px solid #eceee7;
+  border: 1px solid var(--color-border-light);
   border-radius: 8px;
   padding: 12px;
-  background: #fbfbf8;
+  background: var(--color-surface-row);
+}
+
+.request-card {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .row p {
@@ -356,8 +437,8 @@ form {
 .score {
   min-width: 54px;
   border-radius: 7px;
-  background: #fff1d6;
-  color: #8a4b00;
+  background: var(--color-warning-surface);
+  color: var(--color-warning);
   padding: 10px;
   text-align: center;
   font-weight: 900;
@@ -365,18 +446,18 @@ form {
 
 .pill {
   border-radius: 999px;
-  background: #eef1eb;
-  color: #66736b;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
   padding: 8px 10px;
   font-size: 0.86rem;
   font-weight: 800;
 }
 
 .rumble-panel {
-  border: 1px solid #1d2a25;
+  border: 1px solid var(--color-dark-border);
   border-radius: 8px;
-  background: #18201d;
-  color: #fff;
+  background: var(--color-text);
+  color: var(--color-white);
   padding: 18px;
 }
 
@@ -394,7 +475,7 @@ form {
 
 .rumble-top .eyebrow {
   margin-bottom: 6px;
-  color: #65d6c4;
+  color: var(--color-brand-light);
 }
 
 .rumble-top h2 {
@@ -422,7 +503,7 @@ form {
 .rumble-meta span {
   display: block;
   margin-bottom: 6px;
-  color: #aab8b1;
+  color: var(--color-dark-text-muted);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -435,7 +516,7 @@ form {
 
 .chat-shell {
   border-radius: 8px;
-  background: #f8f8f3;
+  background: var(--color-surface-chat);
   padding: 12px;
 }
 
@@ -446,26 +527,33 @@ form {
   min-height: 320px;
   max-height: 430px;
   overflow: auto;
-  border: 1px solid #dfe2da;
+  border: 1px solid var(--color-border-chat);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-white);
   padding: 14px;
 }
 
 .message {
   width: fit-content;
   max-width: min(74%, 680px);
-  border: 1px solid #e2e6df;
+  border: 1px solid var(--color-border-message);
   border-radius: 8px;
-  background: #f1f3ef;
+  background: var(--color-surface-message);
   padding: 10px 12px;
-  color: #18201d;
+  color: var(--color-text);
+}
+
+.requests-and-blocks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .message span {
   display: block;
   margin-bottom: 5px;
-  color: #66736b;
+  color: var(--color-text-muted);
   font-size: 0.76rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -478,25 +566,25 @@ form {
 
 .message.mine {
   justify-self: end;
-  border-color: #a9ddd4;
-  background: #dff7f1;
+  border-color: var(--color-brand-message-border);
+  background: var(--color-brand-message-bg);
 }
 
 .chat-empty {
   align-self: center;
   justify-self: center;
   max-width: 520px;
-  border: 1px dashed #cfd5ce;
+  border: 1px dashed var(--color-border-empty);
   border-radius: 8px;
   padding: 22px;
-  color: #405149;
+  color: var(--color-text-medium);
   text-align: center;
 }
 
 .chat-empty strong {
   display: block;
   margin-bottom: 8px;
-  color: #18201d;
+  color: var(--color-text);
   font-size: 1.1rem;
 }
 
@@ -549,13 +637,6 @@ form {
 }
 
 @media (max-width: 560px) {
-  body::before {
-    background:
-      linear-gradient(#f5f4efc2, #f5f4efe6),
-      url("./assets/rumblr-watermark.png") center 42px / 210vw auto no-repeat;
-    opacity: 0.28;
-  }
-
   h1 {
     font-size: 2.25rem;
   }
