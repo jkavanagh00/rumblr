@@ -1,57 +1,31 @@
 :root {
   /* Core */
-  --color-bg: #00000093;
-  --color-text: #801511;
+  --color-bg: #1d0f28;
+  --color-text: #0c7473;
   --color-white: #fff;
 
   /* Text scale */
   --color-text-strong: #1f2a24;
-  --color-text-secondary: #4d5851;
   --color-text-medium: #405149;
   --color-text-muted: #66736b;
 
   /* Brand – teal */
-  --color-brand: #76160f;
+  --color-brand: #e10109;
   --color-brand-dark: #5e1515;
   --color-brand-light: #d66565;
-  --color-brand-surface: #e9f7f4;
-  --color-brand-surface-strong: #eefaf7;
-  --color-brand-border: #b8e4da;
   --color-brand-message-bg: #dff7f1;
   --color-brand-message-border: #a9ddd4;
 
-  /* Danger – red */
   --color-danger: #b42318;
-  --color-danger-surface: #fee4e2;
-
-  /* Warning – amber */
   --color-warning: #8a4b00;
-  --color-warning-surface: #fff1d6;
-
-  /* Success – green */
   --color-success: #1f6b35;
-  --color-success-surface: #e2f6e7;
 
-  /* Borders */
   --color-border: #d5d7cf;
-  --color-border-ghost: #cbd2cc;
-  --color-border-panel: #ddded7;
-  --color-border-light: #eceee7;
-  --color-border-chat: #dfe2da;
-  --color-border-message: #e2e6df;
-  --color-border-empty: #cfd5ce;
-
-  /* Surfaces */
   --color-surface: #ffffffeb;
-  --color-surface-row: #fbfbf8;
-  --color-surface-chat: #f8f8f3;
-  --color-surface-message: #f1f3ef;
-  --color-surface-subtle: #eff1eb;
 
   /* Dark panels */
   --color-dark-border: #1d2a25;
   --color-dark-text: #d9e4de;
-  --color-dark-text-muted: #aab8b1;
 
   color: var(--color-text);
   background: var(--color-bg);
@@ -119,7 +93,7 @@ textarea {
 label {
   display: grid;
   gap: 7px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-medium);
   font-size: 0.92rem;
   font-weight: 700;
 }
@@ -181,7 +155,7 @@ h2 {
 }
 
 .ghost {
-  border: 1px solid var(--color-border-ghost);
+  border: 1px solid var(--color-border);
   background: var(--color-white);
   color: var(--color-text-strong);
 }
@@ -194,23 +168,23 @@ h2 {
   border-radius: 7px;
   margin-bottom: 18px;
   padding: 12px 14px;
-  background: var(--color-brand-surface);
+  background: var(--color-surface);
   color: var(--color-brand-dark);
   font-weight: 700;
 }
 
 .status.error {
-  background: var(--color-danger-surface);
+  background: var(--color-surface);
   color: var(--color-danger);
 }
 
 .status.warn {
-  background: var(--color-warning-surface);
+  background: var(--color-surface);
   color: var(--color-warning);
 }
 
 .status.success {
-  background: var(--color-success-surface);
+  background: var(--color-surface);
   color: var(--color-success);
 }
 
@@ -231,7 +205,7 @@ h2 {
 
 .panel,
 .intro-panel {
-  border: 1px solid var(--color-border-panel);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
   padding: 20px;
@@ -285,13 +259,13 @@ h2 {
   grid-template-columns: 1fr 1fr;
   gap: 6px;
   border-radius: 8px;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface);
   padding: 5px;
 }
 
 .segmented button {
   background: transparent;
-  color: var(--color-text-secondary);
+  color: var(--color-text-medium);
 }
 
 .segmented .active {
@@ -331,9 +305,9 @@ form {
 .complete-state {
   display: grid;
   gap: 12px;
-  border: 1px solid var(--color-brand-border);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-brand-surface-strong);
+  background: var(--color-surface);
   padding: 16px;
 }
 
@@ -375,7 +349,7 @@ form {
 .agreement-group legend {
   width: 100%;
   margin-bottom: 8px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-medium);
   font-size: 0.92rem;
   font-weight: 700;
   padding: 0;
@@ -403,7 +377,7 @@ form {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 10px;
 }
 
@@ -434,10 +408,10 @@ form {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  border: 1px solid var(--color-border-light);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 12px;
-  background: var(--color-surface-row);
+  background: var(--color-surface);
 }
 
 .request-card {
@@ -462,7 +436,7 @@ form {
 
 .pill {
   border-radius: 999px;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   padding: 8px 10px;
   font-size: 0.86rem;
@@ -472,7 +446,7 @@ form {
 .rumble-panel {
   border: 1px solid var(--color-dark-border);
   border-radius: 8px;
-  background: var(--color-text);
+  background: var(--color-brand);
   color: var(--color-white);
   padding: 18px;
 }
@@ -519,7 +493,7 @@ form {
 .rumble-meta span {
   display: block;
   margin-bottom: 6px;
-  color: var(--color-dark-text-muted);
+  color: var(--color-dark-text);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -532,7 +506,7 @@ form {
 
 .chat-shell {
   border-radius: 8px;
-  background: var(--color-surface-chat);
+  background: var(--color-surface);
   padding: 12px;
 }
 
@@ -543,7 +517,7 @@ form {
   min-height: 320px;
   max-height: 430px;
   overflow: auto;
-  border: 1px solid var(--color-border-chat);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-white);
   padding: 14px;
@@ -552,9 +526,9 @@ form {
 .message {
   width: fit-content;
   max-width: min(74%, 680px);
-  border: 1px solid var(--color-border-message);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-surface-message);
+  background: var(--color-surface);
   padding: 10px 12px;
   color: var(--color-text);
 }
@@ -590,7 +564,7 @@ form {
   align-self: center;
   justify-self: center;
   max-width: 520px;
-  border: 1px dashed var(--color-border-empty);
+  border: 1px dashed var(--color-border);
   border-radius: 8px;
   padding: 22px;
   color: var(--color-text-medium);
