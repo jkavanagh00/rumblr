@@ -248,19 +248,31 @@ h2 {
 }
 
 .flow-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   margin-top: 36px;
 }
 
-.flow-list span {
+.flow-item {
   border: 1px solid rgb(255 255 255 / 22%);
   border-radius: 7px;
-  padding: 12px;
+  padding: 12px 14px;
   background: rgb(255 255 255 / 8%);
+}
+
+.flow-item h3 {
+  margin: 0 0 4px;
   color: var(--color-white);
+  font-size: 1rem;
   font-weight: 800;
+}
+
+.flow-item p {
+  margin: 0;
+  color: rgb(255 255 255 / 75%);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .segmented {
@@ -646,7 +658,6 @@ form {
     padding: 20px 0;
   }
 
-  .flow-list,
   .sliders,
   .password-row,
   .message-form,
