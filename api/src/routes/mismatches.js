@@ -99,7 +99,7 @@ mismatchesRouter.use(authenticateToken);
  */
 mismatchesRouter.get(
   "/",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   listMismatchesForUser_controller,
 );
 
