@@ -362,7 +362,7 @@ function renderRumbles() {
   $("rumble-opponent").textContent = getOpponentName(activeRumble);
   $("rumble-threat").textContent = activeThreatLevel;
   $("rumble-threat").className = `threat-${activeThreatLevel}`;
-  $("rumble-status").textContent = activeRumble?.status || "waiting";
+  $("rumble-status").textContent = activeRumble?.status.toUpperCase() || "INACTIVE";
   $("btn-terminate-rumble").disabled = state.loading || !activeRumble;
   $("btn-send-message").disabled = state.loading || !activeRumble;
 }
