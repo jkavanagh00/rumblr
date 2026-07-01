@@ -22,14 +22,23 @@ export async function getRumblesByUserId_model(
   pagination = {},
   trx = db,
 ) {
+  const rumblesWithUsernames = rumblesQuery(trx)
+    .join("users as requester", "rumbles.requester_id", "requester.id")
+    .join("users as receiver", "rumbles.receiver_id", "receiver.id")
+    .where((builder) => {
+      builder
+        .where({ "rumbles.requester_id": userId })
+        .orWhere({ "rumbles.receiver_id": userId });
+    })
+    .whereIn("rumbles.status", ["active", "inactive"])
+    .select([
+      "rumbles.*",
+      "requester.username as requester_username",
+      "receiver.username as receiver_username",
+    ]);
+
   return paginate(
-    rumblesQuery(trx)
-      .where((builder) => {
-        builder
-          .where({ requester_id: userId })
-          .orWhere({ receiver_id: userId });
-      })
-      .whereIn("status", ["active", "inactive"]),
+    trx(rumblesWithUsernames.as("rumbles_with_usernames")),
     pagination,
     (qb) => qb.orderBy("created_at", "desc"),
   );
