@@ -164,6 +164,18 @@ h2 {
   color: var(--color-danger);
 }
 
+.threat-green {
+  color: var(--color-success);
+}
+
+.threat-orange {
+  color: var(--color-warning);
+}
+
+.threat-red {
+  color: var(--color-danger);
+}
+
 .status {
   border-radius: 7px;
   margin-bottom: 18px;

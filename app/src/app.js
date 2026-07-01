@@ -267,11 +267,11 @@ function renderMismatches() {
           </div>
           <div class="actions">
             <span class="score">${mismatch.mismatch_score ?? 0}%</span>
-            <select data-threat-select="${key}">
+            <select data-threat-select="${key}" class="threat-${selectedThreatLevel}">
               ${availableThreatLevels
                 .map(
                   (level) =>
-                    `<option value="${level}" ${level === selectedThreatLevel ? "selected" : ""}>${level.charAt(0).toUpperCase() + level.slice(1)}</option>`
+                    `<option value="${level}" class="threat-${level}" ${level === selectedThreatLevel ? "selected" : ""}>${level.charAt(0).toUpperCase() + level.slice(1)}</option>`
                 )
                 .join("")}
             </select>
@@ -353,13 +353,15 @@ function renderRumbles() {
             rumble.requester_id === activeUserId
               ? rumble.receiver_username || rumble.receiver_id
               : rumble.requester_username || rumble.requester_id;
-          return `<option value="${rumble.id}" ${rumble.id === (activeRumble?.id || "") ? "selected" : ""}>vs. ${escapeHtml(opponentLabel)} · ${escapeHtml(rumble.threat_level)}</option>`;
+          return `<option value="${rumble.id}" class="threat-${rumble.threat_level}" ${rumble.id === (activeRumble?.id || "") ? "selected" : ""}>vs. ${escapeHtml(opponentLabel)} · ${escapeHtml(rumble.threat_level)}</option>`;
         })
         .join("")
     : '<option value="">No active rumble</option>';
 
+  const activeThreatLevel = activeRumble?.threat_level.toUpperCase() || "GREEN";
   $("rumble-opponent").textContent = getOpponentName(activeRumble);
-  $("rumble-threat").textContent = activeRumble?.threat_level || "green";
+  $("rumble-threat").textContent = activeThreatLevel;
+  $("rumble-threat").className = `threat-${activeThreatLevel}`;
   $("rumble-status").textContent = activeRumble?.status || "waiting";
   $("btn-terminate-rumble").disabled = state.loading || !activeRumble;
   $("btn-send-message").disabled = state.loading || !activeRumble;
@@ -770,7 +772,10 @@ function init() {
 
   $("mismatches-list").addEventListener("change", (e) => {
     const sel = e.target.closest("[data-threat-select]");
-    if (sel) state.threatLevelSelections[sel.dataset.threatSelect] = sel.value;
+    if (sel) {
+      state.threatLevelSelections[sel.dataset.threatSelect] = sel.value;
+      sel.className = `threat-${sel.value}`;
+    }
   });
 
   // Requests — event delegation
