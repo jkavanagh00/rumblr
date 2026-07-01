@@ -99,7 +99,7 @@ router.use(authenticateToken);
 
 router.get(
   "/",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   getRumbles_controller,
 );
 
@@ -232,7 +232,7 @@ router.get(
   "/:id/messages",
   validateParams(idParamsSchema),
   validateParams(createMessageParamsSchema),
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   getMessages_controller,
 );
 

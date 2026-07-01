@@ -118,6 +118,13 @@ export async function acceptRumbleRequest_controller(req, res, next) {
         error: "You are not authorized to accept this rumble request",
       });
     }
+
+    // Only pending requests can be accepted (already accepted/declined ones are locked)
+    if (rumbleRequest.status !== "pending") {
+      return res.status(409).json({
+        error: "This rumble request is no longer pending",
+      });
+    }
     const payload = {
       rumble_request_id: rumbleRequest.id,
       requester_id: rumbleRequest.requester_id,
@@ -143,6 +150,13 @@ export async function declineRumbleRequest_controller(req, res, next) {
     if (rumbleRequest.receiver_id !== req.user.id) {
       return res.status(403).json({
         error: "You are not authorized to decline this rumble request",
+      });
+    }
+
+    // Only pending requests can be declined (already accepted/declined ones are locked)
+    if (rumbleRequest.status !== "pending") {
+      return res.status(409).json({
+        error: "This rumble request is no longer pending",
       });
     }
     await declineRumbleRequest_model(req.params.id);

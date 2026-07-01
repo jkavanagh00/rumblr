@@ -16,7 +16,10 @@ export async function addResponse_controller(req, res, next) {
 
 export async function listResponses_controller(req, res, next) {
   try {
-    const responses = await listResponses_model(req.user.id, req.pagination);
+    const responses = await listResponses_model(
+      req.user.id,
+      req.validatedQuery,
+    );
 
     return res.status(200).json(responses);
   } catch (error) {

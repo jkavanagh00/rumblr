@@ -195,7 +195,7 @@ statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
  */
 statementsRouter.get(
   "/responses",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   listResponses_controller,
 );
 
@@ -258,7 +258,7 @@ statementsRouter.get(
  */
 statementsRouter.get(
   "/list",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   requireAdmin,
   listStatements_controller,
 );
