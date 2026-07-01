@@ -630,6 +630,18 @@ form {
     grid-template-columns: 1fr;
   }
 
+  #auth-form {
+    order: 1;
+  }
+
+  .intro-panel {
+    order: 2;
+  }
+
+  #resume-panel {
+    order: 3;
+  }
+
   .span-2,
   .span-3 {
     grid-column: span 1;
