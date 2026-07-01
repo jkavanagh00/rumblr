@@ -94,7 +94,7 @@ router.use(authenticateToken);
  */
 router.get(
   "/blocks",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   getBlockedUsers_controller,
 );
 

@@ -58,6 +58,7 @@ export async function getStatementWithNoResponse_model(userId, trx = db) {
     .select("*")
     .whereNotIn("id", existingResponses)
     .whereNotIn("content", Object.values(ONBOARDING_STATEMENT_CONTENT))
+    .orderByRaw("RANDOM()")
     .first();
 
   if (!unansweredStatement) {
