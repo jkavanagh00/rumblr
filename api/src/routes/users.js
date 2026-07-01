@@ -94,7 +94,7 @@ router.use(authenticateToken);
  */
 router.get(
   "/blocks",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   getBlockedUsers_controller,
 );
 
@@ -198,13 +198,13 @@ router.get(
  *                 rumble:
  *                   $ref: '#/components/schemas/Rumble'
  *       400:
- *         description: Cannot report yourself or invalid request body
+ *         description: Cannot report yourself, no active rumble, or invalid request body
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       404:
- *         description: Reported user or active rumble not found
+ *         description: Reported user not found
  *         content:
  *           application/json:
  *             schema:

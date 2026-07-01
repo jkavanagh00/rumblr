@@ -99,7 +99,7 @@ mismatchesRouter.use(authenticateToken);
  */
 mismatchesRouter.get(
   "/",
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   listMismatchesForUser_controller,
 );
 
@@ -200,7 +200,7 @@ mismatchesRouter.post(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Rumble'
- *       401:
+ *       403:
  *         description: Not authorized to accept this request
  *         content:
  *           application/json:
@@ -208,6 +208,12 @@ mismatchesRouter.post(
  *               $ref: '#/components/schemas/Error'
  *       404:
  *         $ref: '#/components/responses/NotFound'
+ *       409:
+ *         description: Rumble request is no longer pending
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 mismatchesRouter.post(
   "/:id/accept",
@@ -233,7 +239,7 @@ mismatchesRouter.post(
  *           format: uuid
  *         description: ID of the rumble request to decline
  *     responses:
- *       201:
+ *       200:
  *         description: Rumble request declined
  *         content:
  *           application/json:
@@ -243,7 +249,7 @@ mismatchesRouter.post(
  *                 message:
  *                   type: string
  *                   example: Rumble request declined
- *       401:
+ *       403:
  *         description: Not authorized to decline this request
  *         content:
  *           application/json:
@@ -251,6 +257,12 @@ mismatchesRouter.post(
  *               $ref: '#/components/schemas/Error'
  *       404:
  *         $ref: '#/components/responses/NotFound'
+ *       409:
+ *         description: Rumble request is no longer pending
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 mismatchesRouter.post(
   "/:id/decline",
