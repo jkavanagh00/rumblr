@@ -371,11 +371,11 @@ function renderMessages() {
   if (!messages.length) {
     chat.innerHTML = `
       <div class="chat-empty">
-        <strong>${activeRumble ? "Ready for the first message" : "Waiting for an active rumble"}</strong>
+        <strong>${activeRumble ? "Your rumble has begun!" : "Waiting for an active rumble"}</strong>
         <p>${
           activeRumble
-            ? "The room is open. Start with one clear claim or question."
-            : "Once an incoming request is accepted and the backend marks it active, messages will appear here."
+            ? "Send them a message when you're ready."
+            : "You have no active rumbles, send someone a request or accept an incoming request."
         }</p>
       </div>
     `;
