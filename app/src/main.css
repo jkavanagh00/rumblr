@@ -151,6 +151,7 @@ h1,
 h2,
 p {
   margin-top: 0;
+  margin-bottom: 0;
 }
 
 h1 {
@@ -283,7 +284,6 @@ h2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  margin-bottom: 18px;
   border-radius: 8px;
   background: var(--color-surface-subtle);
   padding: 5px;

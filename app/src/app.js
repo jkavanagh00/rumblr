@@ -208,7 +208,7 @@ function renderStatement() {
   const progress = $("onboarding-progress");
   if (onboarding) {
     progress.textContent = onboarding.completed
-      ? "Respond to even more statements to increase mismatch accuracy."
+      ? "Keep responding to more statements to increase mismatch accuracy."
       : `Responded to ${onboarding.answeredCount} of ${onboarding.requiredCount} onboarding statements`;
     progress.hidden = false;
   } else {
@@ -234,7 +234,11 @@ function renderMismatches() {
     return;
   }
 
-  list.innerHTML = mismatches
+  const topMismatches = [...mismatches]
+    .sort((a, b) => (b.mismatch_score ?? 0) - (a.mismatch_score ?? 0))
+    .slice(0, 5);
+
+  list.innerHTML = topMismatches
     .map((mismatch) => {
       const otherUserId = getOtherUserId(mismatch, activeUserId);
       const otherUsername =
@@ -271,7 +275,7 @@ function renderMismatches() {
                 )
                 .join("")}
             </select>
-            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}>Start request</button>
+            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}>Send request</button>
             <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}>Block</button>
           </div>
         </article>
