@@ -96,6 +96,10 @@ button:disabled {
   opacity: 0.6;
 }
 
+.logo {
+  max-width: 200px;
+}
+
 input,
 textarea,
 select {
