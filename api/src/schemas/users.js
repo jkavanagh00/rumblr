@@ -20,3 +20,13 @@ export const updateUserSchema = z.object({
     .optional(),
   threat_levels: threatLevelsSchema.optional(),
 });
+
+export const createUserReportSchema = z.object({
+  reason: z
+    .string({ required_error: "Reason is required" })
+    .trim()
+    .min(1, { message: "Reason is required" })
+    .max(500, {
+      message: "Reason must be 500 characters or fewer",
+    }),
+});

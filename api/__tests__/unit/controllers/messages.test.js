@@ -36,7 +36,7 @@ describe("messages controller", () => {
     test("returns 404 when rumble cannot be found", async () => {
       const req = {
         params: { id: "11111111-1111-4111-8111-111111111111" },
-        userId: "22222222-2222-4222-8222-222222222222",
+        user: { id: "22222222-2222-4222-8222-222222222222" },
         validatedBody: { content: "Hello" },
         app: { get: jest.fn().mockReturnValue(undefined) },
       };
@@ -58,7 +58,7 @@ describe("messages controller", () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
       const req = {
         params: { id: rumbleId },
-        userId: "22222222-2222-4222-8222-222222222222",
+        user: { id: "22222222-2222-4222-8222-222222222222" },
         validatedBody: { content: "Hello" },
         app: { get: jest.fn().mockReturnValue(undefined) },
       };
@@ -81,8 +81,7 @@ describe("messages controller", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-// todoTest("Add tests for addMessage_controller when rumble is terminated.");
-
+    // todoTest("Add tests for addMessage_controller when rumble is terminated.");
 
     test("creates message and emits socket event for an active rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
@@ -90,7 +89,7 @@ describe("messages controller", () => {
       const io = { to: jest.fn().mockReturnValue({ emit: jest.fn() }) };
       const req = {
         params: { id: rumbleId },
-        userId,
+        user: { id: userId },
         validatedBody: {
           rumble_id: rumbleId,
           sender_id: userId,
@@ -132,7 +131,7 @@ describe("messages controller", () => {
       const userId = "22222222-2222-4222-8222-222222222222";
       const req = {
         params: { id: rumbleId },
-        userId,
+        user: { id: userId },
         validatedBody: {
           rumble_id: rumbleId,
           sender_id: userId,
@@ -163,7 +162,7 @@ describe("messages controller", () => {
     test("passes errors to next", async () => {
       const req = {
         params: { id: "11111111-1111-4111-8111-111111111111" },
-        userId: "22222222-2222-4222-8222-222222222222",
+        user: { id: "22222222-2222-4222-8222-222222222222" },
         validatedBody: { content: "Hello" },
         app: { get: jest.fn().mockReturnValue(undefined) },
       };
@@ -183,8 +182,8 @@ describe("messages controller", () => {
     test("returns 404 when rumble cannot be found", async () => {
       const req = {
         params: { id: "11111111-1111-4111-8111-111111111111" },
-        pagination: { page: 1, limit: 20 },
-        userId: "22222222-2222-4222-8222-222222222222",
+        validatedQuery: { page: 1, limit: 20 },
+        user: { id: "22222222-2222-4222-8222-222222222222" },
       };
       const res = createMockRes();
       const next = jest.fn();
@@ -204,8 +203,8 @@ describe("messages controller", () => {
       const userId = "22222222-2222-4222-8222-222222222222";
       const req = {
         params: { id: rumbleId },
-        pagination: { page: 1, limit: 20 },
-        userId,
+        validatedQuery: { page: 1, limit: 20 },
+        user: { id: userId },
       };
       const res = createMockRes();
       const next = jest.fn();
@@ -223,15 +222,17 @@ describe("messages controller", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    todoTest("Add tests for getMessages_controller when rumble is terminated.");
+    test.todo(
+      "Add tests for getMessages_controller when rumble is terminated.",
+    );
 
     test("returns paginated messages for rumble", async () => {
       const rumbleId = "11111111-1111-4111-8111-111111111111";
       const userId = "22222222-2222-4222-8222-222222222222";
       const req = {
         params: { id: rumbleId },
-        pagination: { page: 2, limit: 5 },
-        userId,
+        validatedQuery: { page: 2, limit: 5 },
+        user: { id: userId },
       };
       const res = createMockRes();
       const next = jest.fn();
@@ -258,8 +259,8 @@ describe("messages controller", () => {
     test("passes errors to next", async () => {
       const req = {
         params: { id: "11111111-1111-4111-8111-111111111111" },
-        pagination: { page: 1, limit: 20 },
-        userId: "22222222-2222-4222-8222-222222222222",
+        validatedQuery: { page: 1, limit: 20 },
+        user: { id: "22222222-2222-4222-8222-222222222222" },
       };
       const res = createMockRes();
       const next = jest.fn();

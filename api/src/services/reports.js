@@ -1,0 +1,63 @@
+import db from "../database/db.js";
+import { getMessageLogByRumbleId_model } from "../models/messages.js";
+import {
+  createUserReport_model,
+  listUserReports_model,
+} from "../models/reports.js";
+import {
+  getActiveRumbleBetweenUsers_model,
+  terminateRumble_model,
+} from "../models/rumbles.js";
+import { getUserById_model } from "../models/users.js";
+
+export async function createUserReport_service(
+  { reporterId, reportedUserId, reason },
+  database = db,
+) {
+  if (reporterId === reportedUserId) {
+    const err = new Error("You cannot report yourself");
+    err.status = 400;
+    throw err;
+  }
+
+  return await database.transaction(async (trx) => {
+    const reportedUser = await getUserById_model(reportedUserId, trx);
+
+    if (!reportedUser) {
+      const err = new Error("Reported user not found");
+      err.status = 400;
+      throw err;
+    }
+
+    const rumble = await getActiveRumbleBetweenUsers_model(
+      reporterId,
+      reportedUserId,
+      trx,
+    );
+
+    const messageLog = rumble
+      ? await getMessageLogByRumbleId_model(rumble.id, trx)
+      : null;
+
+    const report = await createUserReport_model(
+      {
+        reporter_id: reporterId,
+        reported_user_id: reportedUserId,
+        rumble_id: rumble?.id ?? null,
+        reason,
+        message_log: messageLog,
+      },
+      trx,
+    );
+
+    const terminatedRumble = rumble
+      ? await terminateRumble_model(rumble.id, trx)
+      : null;
+
+    return { report, rumble: terminatedRumble };
+  });
+}
+
+export async function listUserReports_service(pagination, database = db) {
+  return listUserReports_model(pagination, database);
+}

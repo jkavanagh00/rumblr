@@ -2,7 +2,7 @@ import testDb from "../../setup/testDb.js";
 import { seedUser } from "../../setup/factories.js";
 import {
   addRumble_model,
-  getActiveRumblesByUserId_model,
+  getRumblesByUserId_model,
   getRumbleById_model,
   updateRumbleStatus_model,
   isUserParticipantInRumble_model,
@@ -59,8 +59,8 @@ describe("rumbles model", () => {
     });
   });
 
-  describe("getActiveRumblesByUserId_model", () => {
-    test("returns only active rumbles where user participates", async () => {
+  describe("getRumblesByUserId_model", () => {
+    test("returns active and inactive rumbles in which user participates", async () => {
       await seedUser(testDb, { id: userId });
       await seedUser(testDb, { id: otherUserId });
       await seedUser(testDb, { id: outsiderId });
@@ -107,11 +107,26 @@ describe("rumbles model", () => {
         },
       ]);
 
-      const result = await getActiveRumblesByUserId_model(userId, testDb);
+      const result = await getRumblesByUserId_model(userId, {}, testDb);
 
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(rumbleId);
-      expect(result[0].status).toBe("active");
+      expect(result.data).toHaveLength(2);
+      expect(result.data.map((row) => row.id)).toEqual(
+        expect.arrayContaining([
+          rumbleId,
+          "88888888-8888-4888-8888-888888888888",
+        ]),
+      );
+      expect(result.data.every((row) => row.status !== "terminated")).toBe(
+        true,
+      );
+      expect(result.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 2,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
     });
   });
 

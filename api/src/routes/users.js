@@ -1,7 +1,8 @@
 import express from "express";
-import { updateUserSchema } from "../Schemas/users.js";
-import { blockParamsSchema } from "../Schemas/block.js";
-import { authenticateToken } from "../middlewares/auth.js";
+import { paginationSchema } from "../schemas/pagination.js";
+import { createUserReportSchema, updateUserSchema } from "../schemas/users.js";
+import { blockParamsSchema } from "../schemas/block.js";
+import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 import {
   getUser_controller,
   updateUser_controller,
@@ -10,13 +11,18 @@ import {
   unblockUser_controller,
   getBlockedUsers_controller,
   getOnboardingProgress_controller,
+  listUserReports_controller,
+  reportUser_controller,
 } from "../controllers/users.js";
-import { validateBody, validateParams } from "../middlewares/errors.js";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../middlewares/errors.js";
 
 const router = express.Router();
 
 router.use(authenticateToken);
-
 
 /**
  * @openapi
@@ -27,9 +33,27 @@ router.use(authenticateToken);
  *     summary: Get all users blocked by the current user
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of blocked users
+ *         description: Paginated list of blocked users
  *         content:
  *           application/json:
  *             schema:
@@ -39,10 +63,161 @@ router.use(authenticateToken);
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/User'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
+ *             example:
+ *               data:
+ *                 - id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
+ *                   username: "blocked_user"
+ *               pagination:
+ *                 page: 1
+ *                 limit: 20
+ *                 total: 1
+ *                 totalPages: 1
+ *                 hasNext: false
+ *                 hasPrev: false
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get("/blocks", getBlockedUsers_controller);
+router.get(
+  "/blocks",
+  validateQuery(paginationSchema, "pagination"),
+  getBlockedUsers_controller,
+);
+
+/**
+ * @openapi
+ * /users/reports:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get all user reports (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Paginated list of user reports
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/UserReport'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNext:
+ *                       type: boolean
+ *                     hasPrev:
+ *                       type: boolean
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.get(
+  "/reports",
+  requireAdmin,
+  validateQuery(paginationSchema, "pagination"),
+  listUserReports_controller,
+);
+
+/**
+ * @openapi
+ * /users/{id}/report:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Report a user for breaking community guidelines
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the user being reported
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateUserReportBody'
+ *     responses:
+ *       201:
+ *         description: User report created and rumble terminated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 report:
+ *                   $ref: '#/components/schemas/UserReport'
+ *                 rumble:
+ *                   $ref: '#/components/schemas/Rumble'
+ *       400:
+ *         description: Cannot report yourself, no active rumble, or invalid request body
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Reported user not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+router.post(
+  "/:id/report",
+  validateParams(blockParamsSchema),
+  validateBody(createUserReportSchema),
+  reportUser_controller,
+);
 
 /**
  * @openapi
@@ -108,8 +283,16 @@ router.get("/blocks", getBlockedUsers_controller);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.post("/blocks/:id", validateParams(blockParamsSchema), blockUser_controller);
-router.delete("/blocks/:id", validateParams(blockParamsSchema), unblockUser_controller);
+router.post(
+  "/blocks/:id",
+  validateParams(blockParamsSchema),
+  blockUser_controller,
+);
+router.delete(
+  "/blocks/:id",
+  validateParams(blockParamsSchema),
+  unblockUser_controller,
+);
 /**
  * @openapi
  * /user/onboarding:

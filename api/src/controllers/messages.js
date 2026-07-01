@@ -2,15 +2,13 @@ import {
   addMessage_model,
   getMessagesByRumbleId_model,
 } from "../models/messages.js";
-import {
-  getRumbleById_model,
-  isUserParticipantInRumble_model,
-} from "../models/rumbles.js";
+import { getRumbleById_model } from "../models/rumbles.js";
+import { getBlockBetweenUsers_model } from "../models/blocks.js";
 
 export async function addMessage_controller(req, res, next) {
   try {
     const rumbleId = req.params.id;
-    const userId = req.userId; // Set by validation middleware
+    const userId = req.user.id;
 
     const rumble = await getRumbleById_model(rumbleId);
     if (!rumble) {
@@ -19,11 +17,7 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    const isParticipant = await isUserParticipantInRumble_model(
-      rumbleId,
-      userId,
-    );
-    if (!isParticipant) {
+    if (rumble.requester_id !== userId && rumble.receiver_id !== userId) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });
@@ -35,7 +29,22 @@ export async function addMessage_controller(req, res, next) {
       });
     }
 
-    const message = await addMessage_model(req.validatedBody);
+    const otherParticipantId =
+      rumble.requester_id === userId ? rumble.receiver_id : rumble.requester_id;
+
+    const block = await getBlockBetweenUsers_model(userId, otherParticipantId);
+    if (block) {
+      return res.status(403).json({
+        error: "Cannot send messages between blocked users",
+      });
+    }
+
+    const message = await addMessage_model({
+      rumble_id: rumbleId,
+      sender_id: userId,
+      content: req.validatedBody.content,
+    });
+    
     const io = req.app.get("io");
 
     if (io) {
@@ -56,7 +65,7 @@ export async function getMessages_controller(req, res, next) {
     const rumbleId = req.params.id;
     const page = req.validatedQuery.page;
     const limit = req.validatedQuery.limit;
-    const userId = req.userId; // Set by validation middleware
+    const userId = req.user.id;
 
     const rumble = await getRumbleById_model(rumbleId);
     if (!rumble) {
@@ -65,11 +74,7 @@ export async function getMessages_controller(req, res, next) {
       });
     }
 
-    const isParticipant = await isUserParticipantInRumble_model(
-      rumbleId,
-      userId,
-    );
-    if (!isParticipant) {
+    if (rumble.requester_id !== userId && rumble.receiver_id !== userId) {
       return res.status(403).json({
         error: "You are not a participant in this rumble",
       });

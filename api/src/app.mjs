@@ -14,22 +14,21 @@ import statementsRouter from "./routes/statements.js";
 import { errorHandler } from "./middlewares/errors.js";
 
 const app = express();
-app.use(cors());
+const allowedOrigin = process.env.CLIENT_ORIGIN;
+
+// If CLIENT_ORIGIN is set, restrict CORS to that origin only.
+// Without a frontend this can be left unset.
+if (allowedOrigin) {
+  app.use(cors({ origin: allowedOrigin, credentials: true }));
+}
 app.use(bodyParser.json());
 
 const apiRouter = express.Router();
 
-// This is an example of how to set up a route. Replace it with your own.
-apiRouter.get("/", async (req, res) => {
-  // Here is an example of making a query to the database you set up:
-  const query = "SELECT 'Hello, world!' AS message;";
-  const result = await db.raw(query);
-  res.json(result);
-});
-
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/rumbles", rumblesRouter);
 apiRouter.use("/user", usersRouter);
+apiRouter.use("/users", usersRouter);
 apiRouter.use("/mismatches", mismatchesRouter);
 apiRouter.use("/statements", statementsRouter);
 

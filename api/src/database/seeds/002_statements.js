@@ -11,22 +11,44 @@ export async function seed(knex) {
     { content: "Donald Trump is a force for good in the world." },
     { content: "LGBT people face discrimination in society." },
     { content: "Pineapple on pizza is delicious." },
-    { content: "Climate change is the most important issue faced by humanity in the 21st century." },
-    { content: "The transatlantic slave trade represents the darkest chapter in Western history." },
-    { content: "People who rely on government welfare are a burden on society." },
+    {
+      content:
+        "Climate change is the most important issue faced by humanity in the 21st century.",
+    },
+    {
+      content:
+        "The transatlantic slave trade represents the darkest chapter in Western history.",
+    },
+    {
+      content: "People who rely on government welfare are a burden on society.",
+    },
     { content: "Global communism is a desirable state of affairs." },
     { content: "Men in dresses are invading women's private spaces." },
-    { content: "Racial discrimination makes it harder for non-white people to succeed in life." },
+    {
+      content:
+        "Racial discrimination makes it harder for non-white people to succeed in life.",
+    },
     { content: "Non-binary genders are not real." },
-    { content: "Toilet paper should always be oriented in the \"over\" position." },
+    {
+      content: 'Toilet paper should always be oriented in the "over" position.',
+    },
     { content: "The earth is round." },
     { content: "Vaccines cause autism." },
     { content: "Covid-19 was produced in a laboratory in China." },
-    { content: "Children on social media are being indoctrinated into gender ideology." },
+    {
+      content:
+        "Children on social media are being indoctrinated into gender ideology.",
+    },
     { content: "Some people deserve more rights than others." },
     { content: "True equality is impossible to achieve." },
-    { content: "The rise of right-wing populism is a danger to European politics." },
-    { content: "All the greatest achievements of western civilization are the work of men." },
+    {
+      content:
+        "The rise of right-wing populism is a danger to European politics.",
+    },
+    {
+      content:
+        "All the greatest achievements of western civilization are the work of men.",
+    },
     { content: "Elon Musk is a brilliant inventor." },
     { content: "Rap is an art form." },
     { content: "Things were better in the good old days." },
@@ -34,7 +56,9 @@ export async function seed(knex) {
     { content: "Animal testing is sometimes necessary." },
     { content: "Abortion should be available to all who want it." },
     { content: "Cats are better than dogs." },
-    { content: "DEI policies are needed to address historical discrimination." },
+    {
+      content: "DEI policies are needed to address historical discrimination.",
+    },
     { content: "E-sports should be considered real sports." },
     { content: "Sunscreen is a scam." },
     { content: "Pet cats should be kept indoors." },
@@ -50,13 +74,22 @@ export async function seed(knex) {
     { content: "Voting should be made compulsory." },
     { content: "People should require a license in order to become parents." },
     { content: "People in jail should be allowed to vote in elections." },
-    { content: "AI is going to replace all human workers within the next ten years." },
-    { content: "Parents should be able to monitor their children's online activity." },
+    {
+      content:
+        "AI is going to replace all human workers within the next ten years.",
+    },
+    {
+      content:
+        "Parents should be able to monitor their children's online activity.",
+    },
     { content: "Online dating has ruined the dating scene." },
     { content: "Social media is addictive." },
     { content: "Smartphones should be banned for children under thirteen." },
     { content: "Humanity must establish a colony on Mars to survive." },
-    { content: "ADHD medications are being given to children for no good reason." },
+    {
+      content:
+        "ADHD medications are being given to children for no good reason.",
+    },
     { content: "Israel has a right to exist." },
     { content: "All drugs should be decriminalised." },
     { content: "Religion is a cancer on society." },
@@ -65,11 +98,17 @@ export async function seed(knex) {
     { content: "People want to work." },
     { content: "Hard work is a virtue." },
     { content: "Teachers are not paid enough for their labour." },
-    { content: "Universal basic income will become a necessity in the 21st century." },
+    {
+      content:
+        "Universal basic income will become a necessity in the 21st century.",
+    },
     { content: "Social media is making us stupid." },
     { content: "Women need men to look after them." },
     { content: "Contraception and abortion are wiping humanity out." },
-    { content: "It would have been better if eastern and central Europe had stayed communist." },
+    {
+      content:
+        "It would have been better if eastern and central Europe had stayed communist.",
+    },
     { content: "AI will become conscious and force us to change." },
     { content: "Data centres are reversing progress on green energy." },
     { content: "Donald Trump has changed American politics for the better." },
@@ -81,8 +120,14 @@ export async function seed(knex) {
     { content: "Global warming is a hoax." },
     { content: "Brigitte Macron and Michelle Obama are men." },
     { content: "There are only two genders." },
-    { content: "Liberal democracy has had its time and needs to be replaced by something else." },
+    {
+      content:
+        "Liberal democracy has had its time and needs to be replaced by something else.",
+    },
     { content: "There will be a Third World War within the next decade." },
-    { content: "Immigrants will outnumber natives in Europe within the next decade." }
+    {
+      content:
+        "Immigrants will outnumber natives in Europe within the next decade.",
+    },
   ]);
 }

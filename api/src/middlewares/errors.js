@@ -36,12 +36,12 @@ export const validateParams = (schema) =>
     },
   );
 
-export const validateQuery = (schema) =>
+export const validateQuery = (schema, targetKey = "validatedQuery") =>
   validate(
     schema,
     (req) => req.query,
     (req, data) => {
-      req.validatedQuery = data;
+      req[targetKey] = data;
     },
   );
 
@@ -68,8 +68,17 @@ export const errorHandler = (err, req, res, next) => {
 
   // Handle all other unexpected server errors
   const statusCode = err.status || 500;
+
+  if (statusCode >= 500) {
+    console.error(err);
+    return res.status(statusCode).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+
   return res.status(statusCode).json({
     status: "error",
-    message: err.message || "Internal Server Error",
+    message: err.message,
   });
 };

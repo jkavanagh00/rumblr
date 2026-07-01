@@ -1,31 +1,12 @@
-import {
-  addRumble_model,
-  getActiveRumblesByUserId_model,
-} from "../models/rumbles.js";
+import { getRumblesByUserId_model } from "../models/rumbles.js";
 import { terminateRumble_service } from "../services/rumbles.js";
-
-export async function addRumble_controller(req, res, next) {
-  try {
-    const rumble = await addRumble_model(req.validatedBody);
-    return res.status(201).json(rumble);
-  } catch (error) {
-    next(error);
-  }
-}
 
 export async function getRumbles_controller(req, res, next) {
   try {
-    const userId = req.userId;
-    if (!userId) {
-      return res.status(401).json({
-        error: "Unauthorized",
-      });
-    }
+    const userId = req.user.id;
 
-    const rumbles = await getActiveRumblesByUserId_model(userId);
-    return res.status(200).json({
-      data: rumbles,
-    });
+    const rumbles = await getRumblesByUserId_model(userId, req.validatedQuery);
+    return res.status(200).json(rumbles);
   } catch (error) {
     next(error);
   }
@@ -33,7 +14,7 @@ export async function getRumbles_controller(req, res, next) {
 
 export async function terminateRumble_controller(req, res, next) {
   try {
-    const userId = req.userId;
+    const userId = req.user.id;
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
     }

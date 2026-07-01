@@ -3,7 +3,6 @@ import {
   createUser_model,
   findUserByEmail_model,
   findUserByUsername_model,
-  getPublicUserById_model,
 } from "../models/users.js";
 import { hashPassword, verifyPassword } from "../utils/helpers.js";
 
@@ -64,6 +63,12 @@ export async function signup_controller(req, res, next) {
       user: toPublicUser(createdUser),
     });
   } catch (error) {
+    // Postgres unique_violation = 23505; SQLite message contains "UNIQUE"
+    if (error.code === "23505" || /unique/i.test(error.message)) {
+      return res
+        .status(409)
+        .json({ error: "Email or username already in use" });
+    }
     next(error);
   }
 }
@@ -86,21 +91,6 @@ export async function login_controller(req, res, next) {
       accessToken,
       user: toPublicUser(user),
     });
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function me_controller(req, res, next) {
-  try {
-    const userId = req.user.id ?? req.userId;
-    const user = await getPublicUserById_model(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    return res.status(200).json(user);
   } catch (error) {
     next(error);
   }
