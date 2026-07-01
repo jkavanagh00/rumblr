@@ -259,6 +259,9 @@ function renderMismatches() {
       const selectedThreatLevel =
         state.threatLevelSelections[key] || availableThreatLevels[0] || "green";
 
+      const scoreValue = mismatch.mismatch_score ?? 0;
+      const scoreClass = scoreValue > 74 ? "danger" : scoreValue > 50 ? "warning" : "success";
+
       return `
         <article class="row" data-mismatch-key="${key}">
           <div>
@@ -266,7 +269,7 @@ function renderMismatches() {
             <p>${escapeHtml(mismatch.confidence || "unknown")} confidence - ${mismatch.shared_responses || 0} shared answers</p>
           </div>
           <div class="actions">
-            <span class="score">${mismatch.mismatch_score ?? 0}%</span>
+            <span class="score ${scoreClass}">${scoreValue}%</span>
             <select data-threat-select="${key}" class="threat-${selectedThreatLevel}">
               ${availableThreatLevels
                 .map(
