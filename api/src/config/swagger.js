@@ -357,6 +357,16 @@ const options = {
             },
           },
         },
+        ContentFlagged: {
+          description:
+            "Submitted content was flagged by the moderation service and rejected",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Error" },
+              example: { error: "Content violates our community guidelines" },
+            },
+          },
+        },
       },
     },
   },
