@@ -171,6 +171,33 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Signup flagged content (422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"kill_them_all\",\"email\":\"flagged@example.com\",\"password\":\"seedPassword\",\"bio\":\"I want to hurt and murder people who disagree with me.\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -266,6 +293,66 @@
                 "user",
                 "blocks",
                 "{{bobId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update my profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bio\":\"I enjoy respectful debates about important topics.\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update profile flagged content (422)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bio\":\"I will hunt down and kill everyone who disagrees with me.\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
               ]
             }
           },
@@ -746,6 +833,38 @@
                 "rumbles",
                 "{{rumbleId}}",
                 "terminate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send flagged message (422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{aliceToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\":\"I am going to find you and kill you, you worthless piece of trash.\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rumbles/{{rumbleId}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rumbles",
+                "{{rumbleId}}",
+                "messages"
               ]
             }
           },

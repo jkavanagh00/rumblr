@@ -2,6 +2,7 @@ import express from "express";
 import { loginSchema, signupSchema } from "../schemas/auth.js";
 import { login_controller, signup_controller } from "../controllers/auth.js";
 import { validateBody } from "../middlewares/errors.js";
+import { moderateBody } from "../middlewares/moderation.js";
 
 const router = express.Router();
 
@@ -33,8 +34,15 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Error'
  *       400:
  *         $ref: '#/components/responses/BadRequest'
+ *       422:
+ *         $ref: '#/components/responses/ContentFlagged'
  */
-router.post("/signup", validateBody(signupSchema), signup_controller);
+router.post(
+  "/signup",
+  validateBody(signupSchema),
+  moderateBody("username", "bio"),
+  signup_controller,
+);
 
 /**
  * @openapi
