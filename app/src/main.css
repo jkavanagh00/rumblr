@@ -115,9 +115,9 @@ label {
 }
 
 .topbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
   gap: 24px;
   margin-bottom: 22px;
 }
@@ -305,6 +305,10 @@ h2 {
 form {
   display: grid;
   gap: 14px;
+}
+
+#auth-form {
+  align-content: start;
 }
 
 .span-2 {
@@ -650,7 +654,10 @@ form {
     grid-column: span 1;
   }
 
-  .topbar,
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
   .row,
   .rumble-top,
   .panel-header {
