@@ -1,7 +1,7 @@
 import { moderateContent } from "../services/moderation.js";
 
 /**
-    * Middleware to check specified fields in the request body for unsafe content.
+ * Middleware to check specified fields in the request body for unsafe content.
  * @param {...string} fields - Names of the `req.validatedBody` fields to check.
  */
 export const moderateBody =
@@ -22,7 +22,7 @@ export const moderateBody =
 
       if (flagged) {
         return res.status(422).json({
-          error: "Content violates our community guidelines",
+          error: "This content violates our community guidelines",
         });
       }
 
