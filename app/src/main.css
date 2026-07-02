@@ -1,13 +1,21 @@
 :root {
+  /*
+  hex codes
+  blue    #0c7473
+  yellow  #ff8c01
+  orange  #ff8c01
+  red     #e10109
+  purple  #1d0f28
+  */
+
   /* Core */
-  --color-bg: #1d0f28;
-  --color-text: #0c7473;
+  --color-bg: #0c7473;
+  --color-text: #ff8c01;
   --color-white: #fff;
 
-  /* Text scale */
-  --color-text-strong: #1f2a24;
-  --color-text-medium: #405149;
-  --color-text-muted: #66736b;
+  --color-text-strong: #d87700;
+  --color-text-medium: #ff8c01;
+  --color-text-muted: #ffb861;
 
   /* Brand – teal */
   --color-brand: #e10109;
@@ -20,8 +28,9 @@
   --color-warning: #8a4b00;
   --color-success: #1f6b35;
 
-  --color-border: #d5d7cf;
-  --color-surface: #ffffffeb;
+  --color-border: #ff8c01;
+  --color-surface: #1d0f28;
+  --color-card-surface: #1b1b1b;
 
   /* Dark panels */
   --color-dark-border: #1d2a25;
@@ -431,12 +440,13 @@ form {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 12px;
-  background: var(--color-surface);
+  background: var(--color-card-surface);
 }
 
 .request-card {
   flex-direction: column;
   align-items: flex-start;
+  background: var(--color-card-surface)
 }
 
 .row p {

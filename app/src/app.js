@@ -315,7 +315,7 @@ function renderRequests() {
                 </div>`
               : ""
           }
-          ${view.outgoing ? '<span class="pill">Waiting for accept</span>' : ""}
+          ${view.outgoing ? '<span class="pill">Awaiting reply</span>' : ""}
         </article>
       `;
     })
