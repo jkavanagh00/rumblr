@@ -372,6 +372,10 @@ form {
   font-size: 0.92rem;
 }
 
+.subtle:not(:last-child) {
+  margin-bottom: 14px;
+}
+
 .sliders {
   display: grid;
   gap: 14px;
