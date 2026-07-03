@@ -1,5 +1,4 @@
 import express from "express";
-import { createRumbleSchema } from "../schemas/rumbles.js";
 import {
   createMessageParamsSchema,
   createMessageSchema,
@@ -18,7 +17,6 @@ import {
   validateParams,
   validateQuery,
   validateRequest,
-  validateBody,
 } from "../middlewares/errors.js";
 import { moderateBody } from "../middlewares/moderation.js";
 import { idParamsSchema } from "../schemas/common.js";
@@ -84,9 +82,11 @@ router.use(authenticateToken);
  *             example:
  *               data:
  *                 - id: "6c260923-bf5e-45fd-a26c-9ec32f174851"
+ *                   rumble_request_id: "0b9f9d61-1a1f-4d76-9e46-8f4a0c2f7b21"
  *                   requester_id: "22cc44f9-8707-4600-9017-acfce7ece11e"
  *                   receiver_id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
  *                   status: "active"
+ *                   threat_level: "green"
  *               pagination:
  *                 page: 1
  *                 limit: 20
@@ -218,7 +218,7 @@ router.put(
  *             schema:
  *               $ref: '#/components/schemas/Message'
  *       403:
- *         description: Not a participant or rumble is terminated
+ *         description: Not a participant, rumble is terminated, or users have blocked each other
  *         content:
  *           application/json:
  *             schema:
