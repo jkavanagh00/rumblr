@@ -187,7 +187,7 @@ export async function reportUser_controller(req, res, next) {
 
 export async function listUserReports_controller(req, res, next) {
   try {
-    const reports = await listUserReports_service(req.pagination);
+    const reports = await listUserReports_service(req.validatedQuery);
     return res.status(200).json(reports);
   } catch (error) {
     next(error);
