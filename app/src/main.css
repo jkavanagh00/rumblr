@@ -9,7 +9,7 @@
   */
 
   /* Core */
-  --color-bg: #0c7473;
+  --color-bg: #1b1b1b;
   --color-text: #ff8c01;
   --color-white: #fff;
 
@@ -30,7 +30,7 @@
 
   --color-border: #ff8c01;
   --color-surface: #1d0f28;
-  --color-card-surface: #1b1b1b;
+  --color-card-surface: #0c7473;
 
   /* Dark panels */
   --color-dark-border: #1d2a25;
