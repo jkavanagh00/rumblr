@@ -514,6 +514,11 @@ form {
   background: var(--color-card-surface);
 }
 
+/* Nested panels inside the requests-and-blocks column: outer panel already draws the border */
+.requests-and-blocks .panel {
+  border: none;
+}
+
 .row p {
   margin: 5px 0 0;
   font-size: 0.9rem;
@@ -640,6 +645,7 @@ form {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  padding: 0;
 }
 
 .message span {
