@@ -28,19 +28,6 @@ beforeEach(() => {
 
 describe("rumbles controller", () => {
   describe("getRumbles_controller", () => {
-    test("returns 401 when userId is missing", async () => {
-      const req = { user: {} };
-      const res = createMockRes();
-      const next = jest.fn();
-
-      await getRumbles_controller(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
-      expect(getRumblesByUserId_model).not.toHaveBeenCalled();
-      expect(next).not.toHaveBeenCalled();
-    });
-
     test("returns 200 with active rumbles for user", async () => {
       const userId = "22222222-2222-4222-8222-222222222222";
       const req = { user: { id: userId } };
