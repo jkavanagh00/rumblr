@@ -500,13 +500,21 @@ form {
   font-size: 0.9rem;
 }
 
+/* Fixed width (fits "100%") so the chip doesn't resize with its value */
 .score {
-  min-width: 54px;
+  width: 68px;
+  flex: 0 0 auto;
   border-radius: 7px;
   background: var(--color-surface);
   padding: 10px;
   text-align: center;
   font-weight: 900;
+}
+
+/* Fixed width so the select doesn't resize with the chosen option */
+[data-threat-select] {
+  width: 110px;
+  flex: 0 0 auto;
 }
 
 .pill {
