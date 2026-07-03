@@ -220,26 +220,31 @@ h2 {
 }
 
 .status {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  max-width: min(560px, calc(100vw - 32px));
+  margin: 0;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  margin-bottom: 18px;
   padding: 12px 14px;
-  background: var(--color-surface);
+  background: var(--color-bg);
   color: var(--color-text);
   font-weight: 700;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 45%);
 }
 
 .status.error {
-  background: var(--color-surface);
   color: var(--color-danger);
 }
 
 .status.warn {
-  background: var(--color-surface);
   color: var(--color-warning);
 }
 
 .status.success {
-  background: var(--color-surface);
   color: var(--color-success);
 }
 
