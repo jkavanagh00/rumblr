@@ -1,7 +1,6 @@
 import express from "express";
 import request from "supertest";
 import { jest } from "@jest/globals";
-import { terminateRumble_controller } from "../../../src/controllers/rumbles.js";
 
 const testUserId = "11111111-1111-4111-8111-111111111111";
 const rumbleId = "22222222-2222-4222-8222-222222222222";
