@@ -221,9 +221,8 @@ h2 {
 
 .status {
   position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 16px;
+  left: 16px;
   z-index: 100;
   max-width: min(560px, calc(100vw - 32px));
   margin: 0;
