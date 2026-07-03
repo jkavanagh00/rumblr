@@ -33,12 +33,13 @@ beforeEach(async () => {
   await testDb("users").del();
 });
 
-async function seedRumbleWithParticipants() {
+async function seedRumbleWithParticipants(overrides = {}) {
   const requester = await seedUser(testDb);
   const receiver = await seedUser(testDb);
   const rumble = await seedRumble(testDb, {
     requester_id: requester.id,
     receiver_id: receiver.id,
+    ...overrides,
   });
   return { requester, receiver, rumble };
 }
@@ -123,7 +124,7 @@ describe("messages integration routes", () => {
 
       const response = await request(app)
         .get(`/api/rumbles/${rumble.id}/messages`)
-        .set("Authorization", `Bearer ${makeToken(randomUUID())}`);
+        .set("Authorization", `Bearer ${makeToken({ id: randomUUID() })}`);
 
       expect(response.status).toBe(403);
       expect(response.body).toEqual({
@@ -188,13 +189,101 @@ describe("messages integration routes", () => {
       });
     });
 
-    test.todo("returns 401 when no bearer token is provided");
-    test.todo("returns 403 when bearer token is invalid or expired");
-    test.todo("returns 400 when content is missing or empty");
-    test.todo("returns 404 when the rumble does not exist");
-    test.todo("returns 403 when the user is not a participant");
-    test.todo("returns 403 when the rumble is terminated");
-    test.todo("returns 403 when a block exists between the participants");
-    test.todo("returns 422 when moderation flags the content");
+    test("returns 401 when no bearer token is provided", async () => {
+      const { requester, rumble } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(401);
+    });
+    test("returns 403 when bearer token is invalid or expired", async () => {
+      const { requester, rumble } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeExpiredToken(requester)}`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(403);
+    });
+    test("returns 400 when content is missing or empty", async () => {
+      const { requester, rumble } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeToken(requester)}`)
+        .send({ content: "" });
+
+      expect(response.status).toBe(400);
+    });
+    test("returns 404 when the rumble does not exist", async () => {
+      const { requester, rumble } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .post(`/api/rumbles/${randomUUID()}/messages`)
+        .set("Authorization", `Bearer ${makeToken(requester)}`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(404);
+    });
+    test("returns 403 when the user is not a participant", async () => {
+      const { rumble } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeToken({ id: randomUUID() })}`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(403);
+    });
+    test("returns 403 when the rumble is terminated", async () => {
+      const { rumble, requester } = await seedRumbleWithParticipants({
+        status: "terminated",
+      });
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeToken(requester)}`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(403);
+    });
+    test("returns 403 when a block exists between the participants", async () => {
+      const { rumble, requester, receiver } =
+        await seedRumbleWithParticipants();
+
+      await testDb("blocks").insert({
+        blocker_id: requester.id,
+        blocked_id: receiver.id,
+      });
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeToken(receiver)}`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(403);
+    });
+    test("returns 422 when moderation flags the content", async () => {
+      const { rumble, requester } = await seedRumbleWithParticipants();
+      moderateContent.mockResolvedValue({ flagged: true, results: [] });
+
+      const response = await request(app)
+        .post(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeToken(requester)}`)
+        .send({ content: "First message" });
+
+      expect(response.status).toBe(422);
+      expect(response.body).toEqual({
+        error: "This content violates our community guidelines",
+      });
+
+      const rows = await testDb("messages").where({ rumble_id: rumble.id });
+      expect(rows).toHaveLength(0);
+      expect(io.emit).not.toHaveBeenCalled();
+    });
   });
 });
