@@ -1,5 +1,4 @@
 :root {
-
   /* Core */
   --color-bg: #1b1b1b;
   --color-text: #ece7df;
@@ -18,7 +17,7 @@
   --color-accent: #ff8c01;
 
   /* Feedback – light tints so they stay readable on dark surfaces */
-  --color-danger: #E10109;
+  --color-danger: #e10109;
   --color-warning: #fdb022;
   --color-success: #3edb53;
 
@@ -36,7 +35,14 @@
 
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -62,6 +68,10 @@ select {
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 42px;
   border: 0;
   border-radius: 7px;
@@ -70,6 +80,10 @@ button {
   color: var(--color-white);
   font-weight: 700;
   cursor: pointer;
+}
+
+button .material-symbols-outlined {
+  font-size: 20px;
 }
 
 button:disabled {
@@ -432,6 +446,16 @@ form {
   padding-bottom: 10px;
 }
 
+.stat > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat .material-symbols-outlined {
+  font-size: 18px;
+}
+
 .stat span,
 .row p,
 .mini-row span,
@@ -468,7 +492,7 @@ form {
 .request-card {
   flex-direction: column;
   align-items: flex-start;
-  background: var(--color-card-surface)
+  background: var(--color-card-surface);
 }
 
 .row p {
@@ -710,7 +734,14 @@ form {
   }
 
   button {
-    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  button .material-symbols-outlined {
+    font-size: 20px;
   }
 
   .message {

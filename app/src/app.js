@@ -308,8 +308,8 @@ function renderMismatches() {
                 )
                 .join("")}
             </select>
-            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}>Challenge</button>
-            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}>Block</button>
+            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">swords</span> Challenge</button>
+            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">block</span></button>
           </div>
         </article>
       `;
@@ -340,8 +340,8 @@ function renderRequests() {
           ${
             view.incoming
               ? `<div class="actions">
-                  <button data-accept-request="${request.id}" ${state.loading ? "disabled" : ""}>Accept</button>
-                  <button class="ghost" data-decline-request="${request.id}" ${state.loading ? "disabled" : ""}>Decline</button>
+                  <button data-accept-request="${request.id}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">thumb_up</span></button>
+                  <button class="ghost" data-decline-request="${request.id}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">thumb_down</span></button>
                 </div>`
               : ""
           }
@@ -765,7 +765,9 @@ function init() {
   $("btn-show-password").addEventListener("click", () => {
     state.showPassword = !state.showPassword;
     $("input-password").type = state.showPassword ? "text" : "password";
-    $("btn-show-password").textContent = state.showPassword ? "Hide" : "Show";
+    $("btn-show-password").innerHTML = state.showPassword
+      ? '<span class="material-symbols-outlined" aria-hidden="true">visibility_off</span> Hide'
+      : '<span class="material-symbols-outlined" aria-hidden="true">visibility</span> Show';
   });
 
   // Resume / logout

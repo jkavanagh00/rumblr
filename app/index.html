@@ -4,6 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=block,comment,done_outline,logout,refresh,send,skip_next,sports_mma,swords,thumb_down,thumb_up,thumbs_up_down,visibility,visibility_off" />
   <title>Rumblr Demo</title>
 </head>
 
@@ -17,7 +21,10 @@
       </div>
       <div class="account" id="account-bar" hidden>
         <span id="account-username"></span>
-        <button class="ghost" id="btn-logout">Log out</button>
+        <button class="ghost" id="btn-logout">
+          <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+          Log out
+        </button>
       </div>
     </header>
 
@@ -105,7 +112,10 @@
           Password
           <div class="password-row">
             <input id="input-password" type="password" autocomplete="current-password" />
-            <button class="ghost" type="button" id="btn-show-password">Show</button>
+            <button class="ghost" type="button" id="btn-show-password">
+              <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+              Show
+            </button>
           </div>
         </label>
 
@@ -117,7 +127,10 @@
         <p class="subtle">Create an account here, then head to the demo and start responding to statements.</p>
         <div class="actions">
           <button type="button" id="btn-continue">Continue to demo</button>
-          <button class="ghost" type="button" id="btn-logout-resume">Log out</button>
+          <button class="ghost" type="button" id="btn-logout-resume">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            Log out
+          </button>
         </div>
       </section>
     </section>
@@ -132,7 +145,9 @@
             <h2>Responses</h2>
             <p class="subtle" id="onboarding-progress" hidden></p>
           </div>
-          <button class="ghost" id="btn-skip-statement">Skip</button>
+          <button class="ghost" id="btn-skip-statement" aria-label="Skip statement">
+            <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
+          </button>
         </div>
 
         <form id="response-form" hidden>
@@ -160,12 +175,18 @@
       <section class="panel">
         <h2>Backend snapshot</h2>
         <div class="stats">
-          <div class="stat"><span>Mismatches</span><strong id="stat-mismatches">0</strong></div>
-          <div class="stat"><span>Responses saved</span><strong id="stat-answers">0</strong></div>
-          <div class="stat"><span>Onboarding completion</span><strong id="stat-onboarding">0/10</strong></div>
-          <div class="stat"><span>Challenges</span><strong id="stat-requests">0</strong></div>
-          <div class="stat"><span>Active rumbles</span><strong id="stat-rumbles">0</strong></div>
-          <div class="stat"><span>Users blocked</span><strong id="stat-blocked">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">thumbs_up_down</span>
+              Mismatches</span><strong id="stat-mismatches">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">comment</span>
+              Responses saved</span><strong id="stat-answers">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">done_outline</span>
+              Onboarding completion</span><strong id="stat-onboarding">0/10</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">swords</span>
+              Challenges</span><strong id="stat-requests">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">sports_mma</span>
+              Active rumbles</span><strong id="stat-rumbles">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">block</span>
+              Users blocked</span><strong id="stat-blocked">0</strong></div>
         </div>
       </section>
 
@@ -188,7 +209,9 @@
               <p class="subtle">See your pending challenges here. Once a challenge is accepted, a rumble will begin.
               </p>
             </div>
-            <button class="ghost" id="btn-refresh-requests">Refresh</button>
+            <button class="ghost" id="btn-refresh-requests">
+              <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+            </button>
           </div>
           <div class="list compact" id="requests-list">
             <p class="empty">No pending challenges.</p>
@@ -240,7 +263,9 @@
           </div>
           <form class="message-form" id="message-form">
             <input id="message-input" placeholder="Write a message" />
-            <button type="submit" id="btn-send-message" disabled>Send</button>
+            <button type="submit" id="btn-send-message" disabled>
+              <span class="material-symbols-outlined" aria-hidden="true">send</span>
+            </button>
           </form>
         </div>
       </section>
