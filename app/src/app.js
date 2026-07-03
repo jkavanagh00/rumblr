@@ -278,7 +278,7 @@ function renderMismatches() {
                 )
                 .join("")}
             </select>
-            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}>Send request</button>
+            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}>Challenge</button>
             <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}>Block</button>
           </div>
         </article>
@@ -361,9 +361,9 @@ function renderRumbles() {
         .join("")
     : '<option value="">No active rumble</option>';
 
-  const activeThreatLevel = activeRumble?.threat_level.toUpperCase() || "GREEN";
+  const activeThreatLevel = activeRumble?.threat_level || "green";
   $("rumble-opponent").textContent = getOpponentName(activeRumble);
-  $("rumble-threat").textContent = activeThreatLevel;
+  $("rumble-threat").textContent = activeThreatLevel.toUpperCase();
   $("rumble-threat").className = `threat-${activeThreatLevel}`;
   $("rumble-status").textContent = activeRumble?.status.toUpperCase() || "INACTIVE";
   $("btn-terminate-rumble").disabled = state.loading || !activeRumble;
