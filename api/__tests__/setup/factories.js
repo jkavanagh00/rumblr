@@ -194,7 +194,7 @@ export async function seedMismatch(testDb, overrides = {}) {
 
 export function makeToken(user = {}) {
   return jwt.sign(
-    { id: user.id, role: user.role ?? user },
+    { id: user.id, role: user.role ?? "user" },
     process.env.ACCESS_TOKEN_SECRET,
     { algorithm: "HS256" },
   );
@@ -202,7 +202,7 @@ export function makeToken(user = {}) {
 
 export function makeExpiredToken(user = {}) {
   return jwt.sign(
-    { id: user.id, role: user.role ?? user },
+    { id: user.id, role: user.role ?? "user" },
     process.env.ACCESS_TOKEN_SECRET,
     { algorithm: "HS256",
       expiresIn: -60
