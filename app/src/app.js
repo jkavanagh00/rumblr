@@ -209,6 +209,7 @@ function renderStatement() {
   const { statement, onboarding } = state;
 
   $("response-form").hidden = !statement;
+  $("btn-skip-statement").hidden = Boolean(onboarding && !onboarding.completed);
 
   const progress = $("onboarding-progress");
   if (onboarding) {
