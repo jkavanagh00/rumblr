@@ -2,7 +2,13 @@ import { jest } from "@jest/globals";
 import request from "supertest";
 import testDb from "../../setup/testDb.js";
 import { buildTestApp, makeFakeIo } from "../../setup/testApp.js";
-import { seedUser, seedRumble, makeToken } from "../../setup/factories.js";
+import {
+  seedUser,
+  seedRumble,
+  makeToken,
+  makeExpiredToken,
+} from "../../setup/factories.js";
+import { randomUUID } from "node:crypto";
 
 // Importing testApp.js registers the db (-> testDb) and swagger mocks.
 // Moderation is the one other external boundary — mock it so no OpenAI calls happen.
@@ -10,9 +16,7 @@ jest.unstable_mockModule("../../../src/services/moderation.js", () => ({
   moderateContent: jest.fn(),
 }));
 
-const { moderateContent } = await import(
-  "../../../src/services/moderation.js"
-);
+const { moderateContent } = await import("../../../src/services/moderation.js");
 
 const io = makeFakeIo();
 const app = await buildTestApp({ io });
@@ -75,12 +79,85 @@ describe("messages integration routes", () => {
       });
     });
 
-    test.todo("returns 401 when no bearer token is provided");
-    test.todo("returns 403 when bearer token is invalid or expired");
-    test.todo("returns 400 when the rumble id is not a valid UUID");
-    test.todo("returns 404 when the rumble does not exist");
-    test.todo("returns 403 when the user is not a participant");
-    test.todo("respects page and limit query parameters");
+    test("returns 401 when no bearer token is provided", async () => {
+      const { rumble } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .get(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", ``);
+
+      expect(response.status).toBe(401);
+    });
+    test("returns 403 when bearer token is invalid or expired", async () => {
+      const { requester, receiver, rumble } =
+        await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .get(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeExpiredToken(requester)}`);
+
+      expect(response.status).toBe(403);
+    });
+    test("returns 400 when the rumble id is not a valid UUID", async () => {
+      const { requester } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .get(`/api/rumbles/invalid-id/messages`)
+        .set("Authorization", `Bearer ${makeToken(requester)}`);
+
+      expect(response.status).toBe(400);
+    });
+    test("returns 404 when the rumble does not exist", async () => {
+      const { requester } = await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .get(`/api/rumbles/${randomUUID()}/messages`)
+        .set("Authorization", `Bearer ${makeToken(requester)}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({ error: "Rumble not found" });
+    });
+    test("returns 403 when the user is not a participant", async () => {
+      const { requester, receiver, rumble } =
+        await seedRumbleWithParticipants();
+
+      const response = await request(app)
+        .get(`/api/rumbles/${rumble.id}/messages`)
+        .set("Authorization", `Bearer ${makeToken(randomUUID())}`);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toEqual({
+        error: "You are not a participant in this rumble",
+      });
+    });
+    test("respects page and limit query parameters", async () => {
+      const { requester, rumble } = await seedRumbleWithParticipants();
+
+      await testDb("messages").insert(
+        ["m1", "m2", "m3", "m4", "m5"].map((content, i) => ({
+          rumble_id: rumble.id,
+          sender_id: requester.id,
+          content,
+          sent_at: `2026-07-01T10:0${i}:00.000Z`,
+        })),
+      );
+
+      const response = await request(app)
+        .get(`/api/rumbles/${rumble.id}/messages`)
+        .query({ page: 2, limit: 2 })
+        .set("Authorization", `Bearer ${makeToken(requester)}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.map((m) => m.content)).toEqual(["m3", "m4"]);
+      expect(response.body.pagination).toEqual({
+        page: 2,
+        limit: 2,
+        total: 5,
+        totalPages: 3,
+        hasNext: true,
+        hasPrev: true,
+      });
+    });
   });
 
   describe("POST /api/rumbles/:id/messages", () => {
