@@ -1,11 +1,4 @@
 :root {
-  /*
-  palette
-  teal    #0c7473  brand / primary actions
-  orange  #ff8c01  accent only (eyebrows, highlights)
-  red     reserved for danger/threat
-  purple  #1d0f28  panel surfaces
-  */
 
   /* Core */
   --color-bg: #1b1b1b;
@@ -25,17 +18,17 @@
   --color-accent: #ff8c01;
 
   /* Feedback – light tints so they stay readable on dark surfaces */
-  --color-danger: #f97066;
+  --color-danger: #E10109;
   --color-warning: #fdb022;
-  --color-success: #75e0a7;
+  --color-success: #3edb53;
 
   /* Surfaces: page < panel < card; inset for inputs/wells */
   --color-surface: #1d0f28;
   --color-card-surface: #2a1f36;
   --color-inset: #14101c;
 
-  --color-border: rgb(255 255 255 / 18%);
-  --color-border-strong: rgb(255 255 255 / 32%);
+  --color-border: rgb(255 140 1 / 40%);
+  --color-border-strong: rgb(255 140 1 / 80%);
 
   /* Own messages in chat */
   --color-message-mine-bg: #0e3f3e;
@@ -282,7 +275,7 @@ h2 {
 }
 
 .flow-item {
-  border: 1px solid rgb(255 255 255 / 22%);
+  border: 1px solid var(--color-border);
   border-radius: 7px;
   padding: 12px 14px;
   background: rgb(255 255 255 / 8%);
@@ -496,7 +489,7 @@ form {
 }
 
 .rumble-panel {
-  border: 1px solid var(--color-brand);
+  border: 1px solid var(--color-danger);
   border-radius: 8px;
   background: var(--color-surface);
   color: var(--color-text);
@@ -536,7 +529,7 @@ form {
 }
 
 .rumble-meta div {
-  border: 1px solid rgb(255 255 255 / 12%);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   background: rgb(255 255 255 / 6%);
   padding: 12px;
