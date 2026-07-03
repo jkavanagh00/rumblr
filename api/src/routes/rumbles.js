@@ -20,6 +20,7 @@ import {
   validateRequest,
   validateBody,
 } from "../middlewares/errors.js";
+import { moderateBody } from "../middlewares/moderation.js";
 import { idParamsSchema } from "../schemas/common.js";
 
 const router = express.Router();
@@ -226,6 +227,8 @@ router.put(
  *         $ref: '#/components/responses/NotFound'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
+ *       422:
+ *         $ref: '#/components/responses/ContentFlagged'
  */
 
 router.get(
@@ -251,6 +254,7 @@ router.post(
       req.validatedBody = data;
     },
   ),
+  moderateBody("content"),
   addMessage_controller,
 );
 

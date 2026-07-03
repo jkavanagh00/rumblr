@@ -19,6 +19,7 @@ import {
   validateParams,
   validateQuery,
 } from "../middlewares/errors.js";
+import { moderateBody } from "../middlewares/moderation.js";
 
 const router = express.Router();
 
@@ -158,7 +159,7 @@ router.get(
 router.get(
   "/reports",
   requireAdmin,
-  validateQuery(paginationSchema, "pagination"),
+  validateQuery(paginationSchema, "validatedQuery"),
   listUserReports_controller,
 );
 
@@ -359,6 +360,8 @@ router.get("/onboarding", getOnboardingProgress_controller);
  *         $ref: '#/components/responses/BadRequest'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
+ *       422:
+ *         $ref: '#/components/responses/ContentFlagged'
  *   delete:
  *     tags:
  *       - Users
@@ -374,7 +377,12 @@ router.get("/onboarding", getOnboardingProgress_controller);
  *         $ref: '#/components/responses/Unauthorized'
  */
 router.get("/", getUser_controller);
-router.put("/", validateBody(updateUserSchema), updateUser_controller);
+router.put(
+  "/",
+  validateBody(updateUserSchema),
+  moderateBody("username", "bio"),
+  updateUser_controller,
+);
 router.delete("/", deleteUser_controller);
 
 export default router;
