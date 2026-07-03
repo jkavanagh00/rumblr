@@ -174,7 +174,12 @@ function setAuthMode(mode) {
   $("field-username").hidden = !isSignup;
   $("field-email").hidden = !isSignup;
   $("field-bio").hidden = !isSignup;
+  $("field-threat-levels").hidden = !isSignup;
   $("field-identifier").hidden = isSignup;
+
+  $("field-threat-levels")
+    .querySelectorAll("input")
+    .forEach((input) => (input.checked = input.value === "green"));
 
   $("input-username").value = "";
   $("input-email").value = "";
@@ -527,13 +532,23 @@ async function submitAuth(e) {
 
   try {
     const isSignup = state.authMode === "signup";
+
+    const threatLevels = [...$("field-threat-levels").querySelectorAll("input:checked")].map(
+      (input) => input.value
+    );
+
+    if (isSignup && !threatLevels.length) {
+      showStatus("Select at least one threat level.", "error");
+      return;
+    }
+
     const body = isSignup
       ? {
           username: $("input-username").value,
           email: $("input-email").value,
           password: $("input-password").value,
           bio: $("input-bio").value,
-          threat_levels: ["green"],
+          threat_levels: threatLevels,
         }
       : {
           identifier: $("input-identifier").value,
