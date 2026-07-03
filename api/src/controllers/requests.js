@@ -137,6 +137,18 @@ export async function acceptRumbleRequest_controller(req, res, next) {
         error: "This rumble request is no longer pending",
       });
     }
+
+    // A block between the two users (in either direction) prevents accepting.
+    const block = await getBlockBetweenUsers_model(
+      rumbleRequest.requester_id,
+      rumbleRequest.receiver_id,
+    );
+    if (block) {
+      return res.status(403).json({
+        error: "Cannot accept a rumble request between blocked users",
+      });
+    }
+
     const payload = {
       rumble_request_id: rumbleRequest.id,
       requester_id: rumbleRequest.requester_id,
