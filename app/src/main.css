@@ -337,6 +337,21 @@ form {
   align-content: start;
 }
 
+#responses-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#response-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+#response-form .sliders {
+  margin-top: auto;
+}
+
 .span-2 {
   grid-column: span 2;
 }
