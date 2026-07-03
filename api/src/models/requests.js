@@ -72,7 +72,7 @@ export async function listRumbleRequestsForUser_model(userId, trx = db) {
     .orderBy("rr.created_at", "desc");
 }
 
-export async function findPendingRumbleRequestBetweenUsers_model(
+export async function getPendingRumbleRequestBetweenUsers_model(
   requester_id,
   receiver_id,
   threat_level,

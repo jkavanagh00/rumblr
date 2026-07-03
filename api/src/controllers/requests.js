@@ -4,7 +4,7 @@ import {
   declineRumbleRequest_model,
   getLatestDeclinedRumbleRequest_model,
   listRumbleRequestsForUser_model,
-  findPendingRumbleRequestBetweenUsers_model,
+  getPendingRumbleRequestBetweenUsers_model,
 } from "../models/requests.js";
 import { getActiveRumbleBetweenUsers_model } from "../models/rumbles.js";
 import { getBlockBetweenUsers_model } from "../models/blocks.js";
@@ -82,7 +82,7 @@ export async function sendRumbleRequest_controller(req, res, next) {
       });
     }
 
-    const pendingRequest = await findPendingRumbleRequestBetweenUsers_model(
+    const pendingRequest = await getPendingRumbleRequestBetweenUsers_model(
       req.user.id,
       req.params.id,
       threat_level,
