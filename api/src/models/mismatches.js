@@ -55,6 +55,8 @@ export async function listMismatchesForUser_model(
       "mismatches.*",
       "user1.username as user1_username",
       "user2.username as user2_username",
+      "user1.threat_levels as user1_threat_levels",
+      "user2.threat_levels as user2_threat_levels",
     ]);
 
   return paginate(

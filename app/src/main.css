@@ -1,61 +1,48 @@
 :root {
   /* Core */
-  --color-bg: #00000093;
-  --color-text: #801511;
+  --color-bg: #1b1b1b;
+  --color-text: #ece7df;
   --color-white: #fff;
 
-  /* Text scale */
-  --color-text-strong: #1f2a24;
-  --color-text-secondary: #4d5851;
-  --color-text-medium: #405149;
-  --color-text-muted: #66736b;
+  --color-text-strong: #ffffff;
+  --color-text-medium: #d6d0c6;
+  --color-text-muted: #a39d92;
 
   /* Brand – teal */
-  --color-brand: #76160f;
-  --color-brand-dark: #5e1515;
-  --color-brand-light: #d66565;
-  --color-brand-surface: #e9f7f4;
-  --color-brand-surface-strong: #eefaf7;
-  --color-brand-border: #b8e4da;
-  --color-brand-message-bg: #dff7f1;
-  --color-brand-message-border: #a9ddd4;
+  --color-brand: #0c7473;
+  --color-brand-dark: #095c5b;
+  --color-brand-light: #7adcd3;
 
-  /* Danger – red */
-  --color-danger: #b42318;
-  --color-danger-surface: #fee4e2;
+  /* Accent – orange, highlights only */
+  --color-accent: #ff8c01;
 
-  /* Warning – amber */
-  --color-warning: #8a4b00;
-  --color-warning-surface: #fff1d6;
+  /* Feedback – light tints so they stay readable on dark surfaces */
+  --color-danger: #e10109;
+  --color-warning: #fdb022;
+  --color-success: #3edb53;
 
-  /* Success – green */
-  --color-success: #1f6b35;
-  --color-success-surface: #e2f6e7;
+  /* Surfaces: page < panel < card; inset for inputs/wells */
+  --color-surface: #1d0f28;
+  --color-card-surface: #2a1f36;
+  --color-inset: #14101c;
 
-  /* Borders */
-  --color-border: #d5d7cf;
-  --color-border-ghost: #cbd2cc;
-  --color-border-panel: #ddded7;
-  --color-border-light: #eceee7;
-  --color-border-chat: #dfe2da;
-  --color-border-message: #e2e6df;
-  --color-border-empty: #cfd5ce;
+  --color-border: rgb(255 140 1 / 40%);
+  --color-border-strong: rgb(255 140 1 / 80%);
 
-  /* Surfaces */
-  --color-surface: #ffffffeb;
-  --color-surface-row: #fbfbf8;
-  --color-surface-chat: #f8f8f3;
-  --color-surface-message: #f1f3ef;
-  --color-surface-subtle: #eff1eb;
-
-  /* Dark panels */
-  --color-dark-border: #1d2a25;
-  --color-dark-text: #d9e4de;
-  --color-dark-text-muted: #aab8b1;
+  /* Own messages in chat */
+  --color-message-mine-bg: #0e3f3e;
+  --color-message-mine-border: #17615f;
 
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -81,6 +68,10 @@ select {
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 42px;
   border: 0;
   border-radius: 7px;
@@ -91,9 +82,17 @@ button {
   cursor: pointer;
 }
 
+button .material-symbols-outlined {
+  font-size: 20px;
+}
+
 button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.logo {
+  max-width: 200px;
 }
 
 input,
@@ -102,9 +101,23 @@ select {
   width: 100%;
   border: 1px solid var(--color-border);
   border-radius: 7px;
-  background: var(--color-white);
+  background: var(--color-inset);
   color: var(--color-text);
   padding: 11px 12px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
 }
 
 textarea {
@@ -115,7 +128,7 @@ textarea {
 label {
   display: grid;
   gap: 7px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-medium);
   font-size: 0.92rem;
   font-weight: 700;
 }
@@ -128,16 +141,16 @@ label {
 }
 
 .topbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
   gap: 24px;
   margin-bottom: 22px;
 }
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--color-danger);
+  color: var(--color-accent);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -147,6 +160,7 @@ h1,
 h2,
 p {
   margin-top: 0;
+  margin-bottom: 0;
 }
 
 h1 {
@@ -176,36 +190,60 @@ h2 {
 }
 
 .ghost {
-  border: 1px solid var(--color-border-ghost);
-  background: var(--color-white);
-  color: var(--color-text-strong);
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text);
 }
 
 .danger {
   color: var(--color-danger);
 }
 
+.warning {
+  color: var(--color-warning);
+}
+
+.success {
+  color: var(--color-success);
+}
+
+.threat-green {
+  color: var(--color-success);
+}
+
+.threat-orange {
+  color: var(--color-warning);
+}
+
+.threat-red {
+  color: var(--color-danger);
+}
+
 .status {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 100;
+  max-width: min(560px, calc(100vw - 32px));
+  margin: 0;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  margin-bottom: 18px;
   padding: 12px 14px;
-  background: var(--color-brand-surface);
-  color: var(--color-brand-dark);
+  background: var(--color-bg);
+  color: var(--color-text);
   font-weight: 700;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 45%);
 }
 
 .status.error {
-  background: var(--color-danger-surface);
   color: var(--color-danger);
 }
 
 .status.warn {
-  background: var(--color-warning-surface);
   color: var(--color-warning);
 }
 
 .status.success {
-  background: var(--color-success-surface);
   color: var(--color-success);
 }
 
@@ -226,7 +264,7 @@ h2 {
 
 .panel,
 .intro-panel {
-  border: 1px solid var(--color-border-panel);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
   padding: 20px;
@@ -236,56 +274,86 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--color-text);
+  background: var(--color-brand);
   color: var(--color-white);
 }
 
 .intro-panel p {
   max-width: 560px;
-  color: var(--color-dark-text);
+  color: rgb(255 255 255 / 92%);
   font-size: 1.08rem;
   line-height: 1.6;
 }
 
 .flow-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   margin-top: 36px;
 }
 
-.flow-list span {
-  border: 1px solid rgb(255 255 255 / 22%);
+.flow-item {
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  padding: 12px;
+  padding: 12px 14px;
   background: rgb(255 255 255 / 8%);
+}
+
+.flow-item h3 {
+  margin: 0 0 4px;
   color: var(--color-white);
+  font-size: 1rem;
   font-weight: 800;
+}
+
+.flow-item p {
+  margin: 0;
+  color: rgb(255 255 255 / 75%);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .segmented {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  margin-bottom: 18px;
   border-radius: 8px;
-  background: var(--color-surface-subtle);
+  background: var(--color-inset);
   padding: 5px;
 }
 
 .segmented button {
   background: transparent;
-  color: var(--color-text-secondary);
+  color: var(--color-text-medium);
 }
 
 .segmented .active {
-  background: var(--color-white);
-  color: var(--color-text);
+  background: var(--color-brand);
+  color: var(--color-white);
 }
 
 form {
   display: grid;
   gap: 14px;
+}
+
+#auth-form {
+  align-content: start;
+}
+
+#responses-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#response-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+#response-form .sliders {
+  margin-top: auto;
 }
 
 .span-2 {
@@ -315,14 +383,14 @@ form {
 .complete-state {
   display: grid;
   gap: 12px;
-  border: 1px solid var(--color-brand-border);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-brand-surface-strong);
+  background: var(--color-surface);
   padding: 16px;
 }
 
 .complete-state strong {
-  color: var(--color-brand);
+  color: var(--color-accent);
   font-size: 1.25rem;
 }
 
@@ -335,6 +403,10 @@ form {
   margin: 6px 0 0;
   color: var(--color-text-muted);
   font-size: 0.92rem;
+}
+
+.subtle:not(:last-child) {
+  margin-bottom: 14px;
 }
 
 .sliders {
@@ -359,7 +431,7 @@ form {
 .agreement-group legend {
   width: 100%;
   margin-bottom: 8px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-medium);
   font-size: 0.92rem;
   font-weight: 700;
   padding: 0;
@@ -374,8 +446,10 @@ form {
   font-size: 0.88rem;
 }
 
-.agreement-group input[type="radio"] {
+.agreement-group input[type="radio"],
+.agreement-group input[type="checkbox"] {
   width: auto;
+  accent-color: var(--color-brand);
 }
 
 .stats {
@@ -387,8 +461,18 @@ form {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 10px;
+}
+
+.stat > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat .material-symbols-outlined {
+  font-size: 18px;
 }
 
 .stat span,
@@ -399,7 +483,7 @@ form {
 }
 
 .stat strong {
-  color: var(--color-danger);
+  color: var(--color-accent);
   font-size: 1.35rem;
 }
 
@@ -418,15 +502,21 @@ form {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  border: 1px solid var(--color-border-light);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 12px;
-  background: var(--color-surface-row);
+  background: var(--color-card-surface);
 }
 
 .request-card {
   flex-direction: column;
   align-items: flex-start;
+  background: var(--color-card-surface);
+}
+
+/* Nested panels inside the requests-and-blocks column: outer panel already draws the border */
+.requests-and-blocks .panel {
+  border: none;
 }
 
 .row p {
@@ -434,19 +524,26 @@ form {
   font-size: 0.9rem;
 }
 
+/* Fixed width (fits "100%") so the chip doesn't resize with its value */
 .score {
-  min-width: 54px;
+  width: 68px;
+  flex: 0 0 auto;
   border-radius: 7px;
-  background: var(--color-warning-surface);
-  color: var(--color-warning);
+  background: var(--color-surface);
   padding: 10px;
   text-align: center;
   font-weight: 900;
 }
 
+/* Fixed width so the select doesn't resize with the chosen option */
+[data-threat-select] {
+  width: 110px;
+  flex: 0 0 auto;
+}
+
 .pill {
   border-radius: 999px;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   padding: 8px 10px;
   font-size: 0.86rem;
@@ -454,10 +551,10 @@ form {
 }
 
 .rumble-panel {
-  border: 1px solid var(--color-dark-border);
+  border: 1px solid var(--color-danger);
   border-radius: 8px;
-  background: var(--color-text);
-  color: var(--color-white);
+  background: var(--color-surface);
+  color: var(--color-text);
   padding: 18px;
 }
 
@@ -494,7 +591,7 @@ form {
 }
 
 .rumble-meta div {
-  border: 1px solid rgb(255 255 255 / 12%);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   background: rgb(255 255 255 / 6%);
   padding: 12px;
@@ -503,7 +600,7 @@ form {
 .rumble-meta span {
   display: block;
   margin-bottom: 6px;
-  color: var(--color-dark-text-muted);
+  color: var(--color-text-muted);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -516,7 +613,7 @@ form {
 
 .chat-shell {
   border-radius: 8px;
-  background: var(--color-surface-chat);
+  background: var(--color-surface);
   padding: 12px;
 }
 
@@ -527,18 +624,18 @@ form {
   min-height: 320px;
   max-height: 430px;
   overflow: auto;
-  border: 1px solid var(--color-border-chat);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-white);
+  background: var(--color-inset);
   padding: 14px;
 }
 
 .message {
   width: fit-content;
   max-width: min(74%, 680px);
-  border: 1px solid var(--color-border-message);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-surface-message);
+  background: var(--color-card-surface);
   padding: 10px 12px;
   color: var(--color-text);
 }
@@ -548,6 +645,7 @@ form {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  padding: 0;
 }
 
 .message span {
@@ -566,15 +664,15 @@ form {
 
 .message.mine {
   justify-self: end;
-  border-color: var(--color-brand-message-border);
-  background: var(--color-brand-message-bg);
+  border-color: var(--color-message-mine-border);
+  background: var(--color-message-mine-bg);
 }
 
 .chat-empty {
   align-self: center;
   justify-self: center;
   max-width: 520px;
-  border: 1px dashed var(--color-border-empty);
+  border: 1px dashed var(--color-border);
   border-radius: 8px;
   padding: 22px;
   color: var(--color-text-medium);
@@ -614,12 +712,27 @@ form {
     grid-template-columns: 1fr;
   }
 
+  #auth-form {
+    order: 1;
+  }
+
+  .intro-panel {
+    order: 2;
+  }
+
+  #resume-panel {
+    order: 3;
+  }
+
   .span-2,
   .span-3 {
     grid-column: span 1;
   }
 
-  .topbar,
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
   .row,
   .rumble-top,
   .panel-header {
@@ -646,7 +759,6 @@ form {
     padding: 20px 0;
   }
 
-  .flow-list,
   .sliders,
   .password-row,
   .message-form,
@@ -655,7 +767,14 @@ form {
   }
 
   button {
-    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  button .material-symbols-outlined {
+    font-size: 20px;
   }
 
   .message {

@@ -174,7 +174,12 @@ function setAuthMode(mode) {
   $("field-username").hidden = !isSignup;
   $("field-email").hidden = !isSignup;
   $("field-bio").hidden = !isSignup;
+  $("field-threat-levels").hidden = !isSignup;
   $("field-identifier").hidden = isSignup;
+
+  $("field-threat-levels")
+    .querySelectorAll("input")
+    .forEach((input) => (input.checked = input.value === "green"));
 
   $("input-username").value = "";
   $("input-email").value = "";
@@ -204,11 +209,12 @@ function renderStatement() {
   const { statement, onboarding } = state;
 
   $("response-form").hidden = !statement;
+  $("btn-skip-statement").hidden = Boolean(onboarding && !onboarding.completed);
 
   const progress = $("onboarding-progress");
   if (onboarding) {
     progress.textContent = onboarding.completed
-      ? "Respond to even more statements to increase mismatch accuracy."
+      ? "Keep responding to more statements to increase mismatch accuracy."
       : `Responded to ${onboarding.answeredCount} of ${onboarding.requiredCount} onboarding statements`;
     progress.hidden = false;
   } else {
@@ -219,6 +225,24 @@ function renderStatement() {
     $("statement-text").textContent = `"${statement.content || "Statement unavailable"}"`;
     $("btn-submit-response").disabled = state.loading;
   }
+}
+
+function parseThreatLevels(raw) {
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function getSharedThreatLevels(mismatch) {
+  const user1Levels = parseThreatLevels(mismatch.user1_threat_levels);
+  const user2Levels = parseThreatLevels(mismatch.user2_threat_levels);
+
+  return ["green", "orange", "red"].filter(
+    (level) => user1Levels.includes(level) && user2Levels.includes(level)
+  );
 }
 
 function renderMismatches() {
@@ -234,26 +258,39 @@ function renderMismatches() {
     return;
   }
 
-  list.innerHTML = mismatches
-    .map((mismatch) => {
+  const mismatchesWithSharedLevels = [...mismatches]
+    .map((mismatch) => ({
+      mismatch,
+      sharedThreatLevels: getSharedThreatLevels(mismatch),
+    }))
+    .filter(({ sharedThreatLevels }) => sharedThreatLevels.length);
+
+  if (!mismatchesWithSharedLevels.length) {
+    list.innerHTML =
+      '<p class="empty">No mismatches share any of your threat levels.</p>';
+    return;
+  }
+
+  const topMismatches = mismatchesWithSharedLevels
+    .sort((a, b) => (b.mismatch.mismatch_score ?? 0) - (a.mismatch.mismatch_score ?? 0))
+    .slice(0, 5);
+
+  list.innerHTML = topMismatches
+    .map(({ mismatch, sharedThreatLevels }) => {
       const otherUserId = getOtherUserId(mismatch, activeUserId);
       const otherUsername =
         mismatch.user1_id === activeUserId ? mismatch.user2_username : mismatch.user1_username;
 
-      let availableThreatLevels;
-      try {
-        const raw =
-          mismatch.user1_id === activeUserId
-            ? mismatch.user2_threat_levels
-            : mismatch.user1_threat_levels;
-        availableThreatLevels = JSON.parse(raw);
-      } catch {
-        availableThreatLevels = ["green"];
-      }
+      const availableThreatLevels = sharedThreatLevels;
 
       const key = mismatch.id || `${mismatch.user1_id}-${mismatch.user2_id}`;
-      const selectedThreatLevel =
-        state.threatLevelSelections[key] || availableThreatLevels[0] || "green";
+      const storedSelection = state.threatLevelSelections[key];
+      const selectedThreatLevel = availableThreatLevels.includes(storedSelection)
+        ? storedSelection
+        : availableThreatLevels[0];
+
+      const scoreValue = mismatch.mismatch_score ?? 0;
+      const scoreClass = scoreValue > 74 ? "danger" : scoreValue > 50 ? "warning" : "success";
 
       return `
         <article class="row" data-mismatch-key="${key}">
@@ -262,17 +299,17 @@ function renderMismatches() {
             <p>${escapeHtml(mismatch.confidence || "unknown")} confidence - ${mismatch.shared_responses || 0} shared answers</p>
           </div>
           <div class="actions">
-            <span class="score">${mismatch.mismatch_score ?? 0}%</span>
-            <select data-threat-select="${key}">
+            <span class="score ${scoreClass}">${scoreValue}%</span>
+            <select data-threat-select="${key}" class="threat-${selectedThreatLevel}">
               ${availableThreatLevels
                 .map(
                   (level) =>
-                    `<option value="${level}" ${level === selectedThreatLevel ? "selected" : ""}>${level.charAt(0).toUpperCase() + level.slice(1)}</option>`
+                    `<option value="${level}" class="threat-${level}" ${level === selectedThreatLevel ? "selected" : ""}>${level.charAt(0).toUpperCase() + level.slice(1)}</option>`
                 )
                 .join("")}
             </select>
-            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}>Start request</button>
-            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}>Block</button>
+            <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">swords</span> Challenge</button>
+            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">block</span></button>
           </div>
         </article>
       `;
@@ -303,12 +340,12 @@ function renderRequests() {
           ${
             view.incoming
               ? `<div class="actions">
-                  <button data-accept-request="${request.id}" ${state.loading ? "disabled" : ""}>Accept</button>
-                  <button class="ghost" data-decline-request="${request.id}" ${state.loading ? "disabled" : ""}>Decline</button>
+                  <button data-accept-request="${request.id}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">thumb_up</span></button>
+                  <button class="ghost" data-decline-request="${request.id}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">thumb_down</span></button>
                 </div>`
               : ""
           }
-          ${view.outgoing ? '<span class="pill">Waiting for accept</span>' : ""}
+          ${view.outgoing ? '<span class="pill">Awaiting reply</span>' : ""}
         </article>
       `;
     })
@@ -349,14 +386,16 @@ function renderRumbles() {
             rumble.requester_id === activeUserId
               ? rumble.receiver_username || rumble.receiver_id
               : rumble.requester_username || rumble.requester_id;
-          return `<option value="${rumble.id}" ${rumble.id === (activeRumble?.id || "") ? "selected" : ""}>vs. ${escapeHtml(opponentLabel)} · ${escapeHtml(rumble.threat_level)}</option>`;
+          return `<option value="${rumble.id}" class="threat-${rumble.threat_level}" ${rumble.id === (activeRumble?.id || "") ? "selected" : ""}>vs. ${escapeHtml(opponentLabel)} · ${escapeHtml(rumble.threat_level)}</option>`;
         })
         .join("")
     : '<option value="">No active rumble</option>';
 
+  const activeThreatLevel = activeRumble?.threat_level || "green";
   $("rumble-opponent").textContent = getOpponentName(activeRumble);
-  $("rumble-threat").textContent = activeRumble?.threat_level || "green";
-  $("rumble-status").textContent = activeRumble?.status || "waiting";
+  $("rumble-threat").textContent = activeThreatLevel.toUpperCase();
+  $("rumble-threat").className = `threat-${activeThreatLevel}`;
+  $("rumble-status").textContent = activeRumble?.status.toUpperCase() || "INACTIVE";
   $("btn-terminate-rumble").disabled = state.loading || !activeRumble;
   $("btn-send-message").disabled = state.loading || !activeRumble;
 }
@@ -371,11 +410,11 @@ function renderMessages() {
   if (!messages.length) {
     chat.innerHTML = `
       <div class="chat-empty">
-        <strong>${activeRumble ? "Ready for the first message" : "Waiting for an active rumble"}</strong>
+        <strong>${activeRumble ? "Your rumble has begun!" : "Waiting for an active rumble"}</strong>
         <p>${
           activeRumble
-            ? "The room is open. Start with one clear claim or question."
-            : "Once an incoming request is accepted and the backend marks it active, messages will appear here."
+            ? "Send them a message when you're ready."
+            : "You have no active rumbles, send someone a request or accept an incoming request."
         }</p>
       </div>
     `;
@@ -518,13 +557,23 @@ async function submitAuth(e) {
 
   try {
     const isSignup = state.authMode === "signup";
+
+    const threatLevels = [...$("field-threat-levels").querySelectorAll("input:checked")].map(
+      (input) => input.value
+    );
+
+    if (isSignup && !threatLevels.length) {
+      showStatus("Select at least one threat level.", "error");
+      return;
+    }
+
     const body = isSignup
       ? {
           username: $("input-username").value,
           email: $("input-email").value,
           password: $("input-password").value,
           bio: $("input-bio").value,
-          threat_levels: ["green"],
+          threat_levels: threatLevels,
         }
       : {
           identifier: $("input-identifier").value,
@@ -716,7 +765,9 @@ function init() {
   $("btn-show-password").addEventListener("click", () => {
     state.showPassword = !state.showPassword;
     $("input-password").type = state.showPassword ? "text" : "password";
-    $("btn-show-password").textContent = state.showPassword ? "Hide" : "Show";
+    $("btn-show-password").innerHTML = state.showPassword
+      ? '<span class="material-symbols-outlined" aria-hidden="true">visibility_off</span> Hide'
+      : '<span class="material-symbols-outlined" aria-hidden="true">visibility</span> Show';
   });
 
   // Resume / logout
@@ -766,7 +817,10 @@ function init() {
 
   $("mismatches-list").addEventListener("change", (e) => {
     const sel = e.target.closest("[data-threat-select]");
-    if (sel) state.threatLevelSelections[sel.dataset.threatSelect] = sel.value;
+    if (sel) {
+      state.threatLevelSelections[sel.dataset.threatSelect] = sel.value;
+      sel.className = `threat-${sel.value}`;
+    }
   });
 
   // Requests — event delegation
