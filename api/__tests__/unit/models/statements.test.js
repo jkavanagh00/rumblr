@@ -83,8 +83,8 @@ describe("statements model", () => {
         { content: "Content data" },
         testDb,
       );
-      expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBeGreaterThan(0);
+      expect(result).toMatchObject({ content: "Content data" });
+      expect(result.id).toBeDefined();
     });
     test("throws an error when content is missing", async () => {
       await expect(addStatement_model({}, testDb)).rejects.toThrow();
