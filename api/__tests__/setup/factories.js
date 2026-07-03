@@ -2,7 +2,7 @@
  * Test data factories for seeding the test database.
  * These helpers provide a consistent, readable way to insert test fixtures.
  */
-
+import jwt from "jsonwebtoken";
 import { randomUUID } from "node:crypto";
 
 export async function seedUser(testDb, overrides = {}) {
@@ -115,7 +115,10 @@ export async function seedRumble(testDb, overrides = {}) {
 
   let rumble_request_id = overrides.rumble_request_id;
   if (!rumble_request_id) {
-    const request = await seedRumbleRequest(testDb, { requester_id, receiver_id });
+    const request = await seedRumbleRequest(testDb, {
+      requester_id,
+      receiver_id,
+    });
     rumble_request_id = request.id;
   }
 
@@ -129,7 +132,13 @@ export async function seedRumble(testDb, overrides = {}) {
     threat_level: "green",
   };
 
-  const data = { ...defaultData, ...overrides, rumble_request_id, requester_id, receiver_id };
+  const data = {
+    ...defaultData,
+    ...overrides,
+    rumble_request_id,
+    requester_id,
+    receiver_id,
+  };
 
   await testDb("rumbles").insert(data);
 
@@ -181,4 +190,22 @@ export async function seedMismatch(testDb, overrides = {}) {
   await testDb("mismatches").insert(data);
 
   return data;
+}
+
+export function makeToken(user = {}) {
+  return jwt.sign(
+    { id: user.id, role: user.role ?? user },
+    process.env.ACCESS_TOKEN_SECRET,
+    { algorithm: "HS256" },
+  );
+}
+
+export function makeExpiredToken(user = {}) {
+  return jwt.sign(
+    { id: user.id, role: user.role ?? user },
+    process.env.ACCESS_TOKEN_SECRET,
+    { algorithm: "HS256",
+      expiresIn: -60
+     }
+  );
 }
