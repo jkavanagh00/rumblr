@@ -1,40 +1,45 @@
 :root {
   /*
-  hex codes
-  blue    #0c7473
-  yellow  #ff8c01
-  orange  #ff8c01
-  red     #e10109
-  purple  #1d0f28
+  palette
+  teal    #0c7473  brand / primary actions
+  orange  #ff8c01  accent only (eyebrows, highlights)
+  red     reserved for danger/threat
+  purple  #1d0f28  panel surfaces
   */
 
   /* Core */
   --color-bg: #1b1b1b;
-  --color-text: #ff8c01;
+  --color-text: #ece7df;
   --color-white: #fff;
 
-  --color-text-strong: #d87700;
-  --color-text-medium: #ff8c01;
-  --color-text-muted: #ffb861;
+  --color-text-strong: #ffffff;
+  --color-text-medium: #d6d0c6;
+  --color-text-muted: #a39d92;
 
   /* Brand – teal */
-  --color-brand: #e10109;
-  --color-brand-dark: #5e1515;
-  --color-brand-light: #d66565;
-  --color-brand-message-bg: #dff7f1;
-  --color-brand-message-border: #a9ddd4;
+  --color-brand: #0c7473;
+  --color-brand-dark: #095c5b;
+  --color-brand-light: #7adcd3;
 
-  --color-danger: #b42318;
-  --color-warning: #8a4b00;
-  --color-success: #1f6b35;
+  /* Accent – orange, highlights only */
+  --color-accent: #ff8c01;
 
-  --color-border: #ff8c01;
+  /* Feedback – light tints so they stay readable on dark surfaces */
+  --color-danger: #f97066;
+  --color-warning: #fdb022;
+  --color-success: #75e0a7;
+
+  /* Surfaces: page < panel < card; inset for inputs/wells */
   --color-surface: #1d0f28;
-  --color-card-surface: #0c7473;
+  --color-card-surface: #2a1f36;
+  --color-inset: #14101c;
 
-  /* Dark panels */
-  --color-dark-border: #1d2a25;
-  --color-dark-text: #d9e4de;
+  --color-border: rgb(255 255 255 / 18%);
+  --color-border-strong: rgb(255 255 255 / 32%);
+
+  /* Own messages in chat */
+  --color-message-mine-bg: #0e3f3e;
+  --color-message-mine-border: #17615f;
 
   color: var(--color-text);
   background: var(--color-bg);
@@ -89,9 +94,23 @@ select {
   width: 100%;
   border: 1px solid var(--color-border);
   border-radius: 7px;
-  background: var(--color-white);
+  background: var(--color-inset);
   color: var(--color-text);
   padding: 11px 12px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
 }
 
 textarea {
@@ -124,7 +143,7 @@ label {
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--color-danger);
+  color: var(--color-accent);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -164,9 +183,9 @@ h2 {
 }
 
 .ghost {
-  border: 1px solid var(--color-border);
-  background: var(--color-white);
-  color: var(--color-text-strong);
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text);
 }
 
 .danger {
@@ -198,7 +217,7 @@ h2 {
   margin-bottom: 18px;
   padding: 12px 14px;
   background: var(--color-surface);
-  color: var(--color-brand-dark);
+  color: var(--color-text);
   font-weight: 700;
 }
 
@@ -244,13 +263,13 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--color-text);
+  background: var(--color-brand);
   color: var(--color-white);
 }
 
 .intro-panel p {
   max-width: 560px;
-  color: var(--color-dark-text);
+  color: rgb(255 255 255 / 92%);
   font-size: 1.08rem;
   line-height: 1.6;
 }
@@ -288,7 +307,7 @@ h2 {
   grid-template-columns: 1fr 1fr;
   gap: 6px;
   border-radius: 8px;
-  background: var(--color-surface);
+  background: var(--color-inset);
   padding: 5px;
 }
 
@@ -298,8 +317,8 @@ h2 {
 }
 
 .segmented .active {
-  background: var(--color-white);
-  color: var(--color-text);
+  background: var(--color-brand);
+  color: var(--color-white);
 }
 
 form {
@@ -345,7 +364,7 @@ form {
 }
 
 .complete-state strong {
-  color: var(--color-brand);
+  color: var(--color-accent);
   font-size: 1.25rem;
 }
 
@@ -422,7 +441,7 @@ form {
 }
 
 .stat strong {
-  color: var(--color-danger);
+  color: var(--color-accent);
   font-size: 1.35rem;
 }
 
@@ -477,10 +496,10 @@ form {
 }
 
 .rumble-panel {
-  border: 1px solid var(--color-dark-border);
+  border: 1px solid var(--color-brand);
   border-radius: 8px;
-  background: var(--color-brand);
-  color: var(--color-white);
+  background: var(--color-surface);
+  color: var(--color-text);
   padding: 18px;
 }
 
@@ -526,7 +545,7 @@ form {
 .rumble-meta span {
   display: block;
   margin-bottom: 6px;
-  color: var(--color-dark-text);
+  color: var(--color-text-muted);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -552,7 +571,7 @@ form {
   overflow: auto;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-white);
+  background: var(--color-inset);
   padding: 14px;
 }
 
@@ -561,7 +580,7 @@ form {
   max-width: min(74%, 680px);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--color-surface);
+  background: var(--color-card-surface);
   padding: 10px 12px;
   color: var(--color-text);
 }
@@ -589,8 +608,8 @@ form {
 
 .message.mine {
   justify-self: end;
-  border-color: var(--color-brand-message-border);
-  background: var(--color-brand-message-bg);
+  border-color: var(--color-message-mine-border);
+  background: var(--color-message-mine-bg);
 }
 
 .chat-empty {
