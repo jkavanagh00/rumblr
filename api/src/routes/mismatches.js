@@ -161,7 +161,23 @@ mismatchesRouter.get("/requests", listRumbleRequests_controller);
  *             schema:
  *               $ref: '#/components/schemas/RumbleRequest'
  *       400:
- *         description: A rumble request is already pending
+ *         description: >-
+ *           Request rejected. Possible reasons: an active rumble already exists
+ *           with this user, another rumble request is already pending, the
+ *           threat level is not accepted by the requester or receiver, or the
+ *           rejection cooldown for this user has not yet expired.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Cannot send a rumble request between blocked users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Requester or receiver user not found
  *         content:
  *           application/json:
  *             schema:

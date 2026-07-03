@@ -5,7 +5,7 @@ import {
   acceptRumbleRequest_model,
   declineRumbleRequest_model,
   getLatestDeclinedRumbleRequest_model,
-  checkForPendingRumbleRequest_model,
+  findPendingRumbleRequestBetweenUsers_model,
 } from "../../../src/models/requests.js";
 
 describe("requests model", () => {
@@ -53,7 +53,7 @@ describe("requests model", () => {
     test.todo("uses the provided transaction object when trx is passed");
   });
 
-  describe("checkForPendingRumbleRequest_model", () => {
+  describe("findPendingRumbleRequestBetweenUsers_model", () => {
     test.todo(
       "returns the pending request for requester/receiver when the same threat_level exists",
     );
