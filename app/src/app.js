@@ -226,6 +226,24 @@ function renderStatement() {
   }
 }
 
+function parseThreatLevels(raw) {
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function getSharedThreatLevels(mismatch) {
+  const user1Levels = parseThreatLevels(mismatch.user1_threat_levels);
+  const user2Levels = parseThreatLevels(mismatch.user2_threat_levels);
+
+  return ["green", "orange", "red"].filter(
+    (level) => user1Levels.includes(level) && user2Levels.includes(level)
+  );
+}
+
 function renderMismatches() {
   const { mismatches, onboarding } = state;
   const activeUserId = state.session?.user?.id;
@@ -239,30 +257,36 @@ function renderMismatches() {
     return;
   }
 
-  const topMismatches = [...mismatches]
-    .sort((a, b) => (b.mismatch_score ?? 0) - (a.mismatch_score ?? 0))
+  const mismatchesWithSharedLevels = [...mismatches]
+    .map((mismatch) => ({
+      mismatch,
+      sharedThreatLevels: getSharedThreatLevels(mismatch),
+    }))
+    .filter(({ sharedThreatLevels }) => sharedThreatLevels.length);
+
+  if (!mismatchesWithSharedLevels.length) {
+    list.innerHTML =
+      '<p class="empty">No mismatches share any of your threat levels.</p>';
+    return;
+  }
+
+  const topMismatches = mismatchesWithSharedLevels
+    .sort((a, b) => (b.mismatch.mismatch_score ?? 0) - (a.mismatch.mismatch_score ?? 0))
     .slice(0, 5);
 
   list.innerHTML = topMismatches
-    .map((mismatch) => {
+    .map(({ mismatch, sharedThreatLevels }) => {
       const otherUserId = getOtherUserId(mismatch, activeUserId);
       const otherUsername =
         mismatch.user1_id === activeUserId ? mismatch.user2_username : mismatch.user1_username;
 
-      let availableThreatLevels;
-      try {
-        const raw =
-          mismatch.user1_id === activeUserId
-            ? mismatch.user2_threat_levels
-            : mismatch.user1_threat_levels;
-        availableThreatLevels = JSON.parse(raw);
-      } catch {
-        availableThreatLevels = ["green"];
-      }
+      const availableThreatLevels = sharedThreatLevels;
 
       const key = mismatch.id || `${mismatch.user1_id}-${mismatch.user2_id}`;
-      const selectedThreatLevel =
-        state.threatLevelSelections[key] || availableThreatLevels[0] || "green";
+      const storedSelection = state.threatLevelSelections[key];
+      const selectedThreatLevel = availableThreatLevels.includes(storedSelection)
+        ? storedSelection
+        : availableThreatLevels[0];
 
       const scoreValue = mismatch.mismatch_score ?? 0;
       const scoreClass = scoreValue > 74 ? "danger" : scoreValue > 50 ? "warning" : "success";
