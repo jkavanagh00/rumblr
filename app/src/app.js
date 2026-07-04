@@ -654,7 +654,7 @@ async function createRequest(userId, threatLevel) {
       { method: "POST", body: JSON.stringify({ threat_level: threatLevel }) },
       state.session.accessToken
     );
-    showStatus("Rumble request sent.", "success");
+    showStatus("Challenge sent.", "success");
     await loadDashboard(false);
   } catch (err) {
     showStatus(err.message, "error");
@@ -671,7 +671,7 @@ async function updateRequest(requestId, action) {
       { method: "POST" },
       state.session.accessToken
     );
-    showStatus(`Request ${action === "accept" ? "accepted" : "declined"}.`, "success");
+    showStatus(`Challenge ${action === "accept" ? "accepted" : "declined"}.`, "success");
     await loadDashboard(false);
   } catch (err) {
     showStatus(err.message, "error");
@@ -766,8 +766,8 @@ function init() {
     state.showPassword = !state.showPassword;
     $("input-password").type = state.showPassword ? "text" : "password";
     $("btn-show-password").innerHTML = state.showPassword
-      ? '<span class="material-symbols-outlined" aria-hidden="true">visibility_off</span> Hide'
-      : '<span class="material-symbols-outlined" aria-hidden="true">visibility</span> Show';
+      ? '<span class="material-symbols-outlined" aria-hidden="true">visibility_off</span>'
+      : '<span class="material-symbols-outlined" aria-hidden="true">visibility</span>';
   });
 
   // Resume / logout
