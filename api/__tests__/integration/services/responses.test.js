@@ -1,11 +1,19 @@
-import testDb from "../../../src/database/testDb.js";
+import testDb from "../../setup/testDb.js";
 import {
   seedUser,
   seedStatement,
   seedResponse,
 } from "../../setup/factories.js";
-import { addResponse_service } from "../../../src/services/responses.js";
+import { jest } from "@jest/globals";
 import { randomUUID } from "node:crypto";
+
+jest.unstable_mockModule("../../../src/database/db.js", () => ({
+  default: testDb,
+}));
+
+const { addResponse_service } = await import(
+  "../../../src/services/responses.js"
+);
 
 describe("addResponse_service", () => {
   beforeAll(async () => {
