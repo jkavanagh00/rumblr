@@ -94,6 +94,9 @@
     "testMatch": [
       "**/__tests__/**/*.test.js"
     ],
+    "setupFiles": [
+      "./__tests__/setup/testEnv.js"
+    ],
     "setupFilesAfterEnv": [
       "./__tests__/setup/jest.setup.js"
     ]
