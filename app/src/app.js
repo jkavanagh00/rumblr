@@ -309,7 +309,7 @@ function renderMismatches() {
                 .join("")}
             </select>
             <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">swords</span> Challenge</button>
-            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">block</span></button>
+            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">block</span> Block</button>
           </div>
         </article>
       `;
