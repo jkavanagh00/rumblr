@@ -142,8 +142,8 @@ label {
 
 .topbar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: start;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
   gap: 24px;
   margin-bottom: 22px;
 }
@@ -712,12 +712,13 @@ form {
     grid-template-columns: 1fr;
   }
 
-  #auth-form {
-    order: 1;
+  /* Put the login/signup form first on small screens; the journey blurb follows */
+  #auth-view > .panel:first-child {
+    order: 2;
   }
 
-  .intro-panel {
-    order: 2;
+  #auth-form {
+    order: 1;
   }
 
   #resume-panel {
@@ -729,19 +730,43 @@ form {
     grid-column: span 1;
   }
 
+  /* Logo and title share a row; account bar drops below them */
   .topbar {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .logo {
+    max-width: 96px;
+  }
+
+  .account {
+    grid-column: 1 / -1;
+  }
+
+  .panel-header {
+    align-items: flex-start;
   }
 
   .row,
-  .rumble-top,
-  .panel-header {
+  .rumble-top {
     align-items: stretch;
     flex-direction: column;
   }
 
   .actions {
     flex-wrap: wrap;
+  }
+
+  .rumble-top .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .rumble-top select {
+    min-width: 0;
   }
 
   .rumble-meta {
@@ -751,7 +776,15 @@ form {
 
 @media (max-width: 560px) {
   h1 {
-    font-size: 2.25rem;
+    font-size: 2rem;
+  }
+
+  .logo {
+    max-width: 84px;
+  }
+
+  .eyebrow {
+    margin-bottom: 4px;
   }
 
   .shell {
@@ -759,25 +792,78 @@ form {
     padding: 20px 0;
   }
 
+  .auth-grid,
+  .dashboard {
+    gap: 12px;
+  }
+
+  .panel,
+  .rumble-panel {
+    padding: 16px;
+  }
+
+  /* Keep the nested requests/blocks wrapper flush: outer panels draw their own padding */
+  .requests-and-blocks {
+    padding: 0;
+  }
+
   .sliders,
-  .password-row,
-  .message-form,
   .sliders label {
     grid-template-columns: 1fr;
   }
 
-  button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+  .statement {
+    font-size: 1.5rem;
   }
 
-  button .material-symbols-outlined {
-    font-size: 20px;
+  /* One choice per line with bigger tap targets */
+  .agreement-group {
+    gap: 12px;
+  }
+
+  .agreement-group label {
+    width: 100%;
+  }
+
+  .agreement-group input[type="radio"],
+  .agreement-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Mismatch actions: score + threat select on one line, challenge + block below */
+  .row .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .row .actions .score,
+  .row .actions [data-threat-select] {
+    width: 100%;
+  }
+
+  .row strong,
+  .mini-row strong {
+    overflow-wrap: anywhere;
+  }
+
+  .chat-shell {
+    padding: 8px;
+  }
+
+  .chat {
+    min-height: 240px;
+    max-height: 60vh;
+    padding: 10px;
   }
 
   .message {
-    max-width: 100%;
+    max-width: 88%;
+  }
+
+  .status {
+    right: 10px;
+    left: 10px;
+    max-width: none;
   }
 }

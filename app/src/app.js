@@ -313,7 +313,7 @@ function renderMismatches() {
                 .join("")}
             </select>
             <button data-start-request="${key}" data-user-id="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">swords</span> Challenge</button>
-            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">block</span></button>
+            <button class="ghost danger" data-block-user="${otherUserId}" ${state.loading ? "disabled" : ""}><span class="material-symbols-outlined" aria-hidden="true">block</span> Block</button>
           </div>
         </article>
       `;
@@ -677,7 +677,7 @@ async function createRequest(userId, threatLevel) {
       { method: "POST", body: JSON.stringify({ threat_level: threatLevel }) },
       state.session.accessToken
     );
-    showStatus("Rumble request sent.", "success");
+    showStatus("Challenge sent.", "success");
     await loadDashboard(false);
   } catch (err) {
     showStatus(err.message, "error");
@@ -694,7 +694,7 @@ async function updateRequest(requestId, action) {
       { method: "POST" },
       state.session.accessToken
     );
-    showStatus(`Request ${action === "accept" ? "accepted" : "declined"}.`, "success");
+    showStatus(`Challenge ${action === "accept" ? "accepted" : "declined"}.`, "success");
     await loadDashboard(false);
   } catch (err) {
     showStatus(err.message, "error");
@@ -789,8 +789,8 @@ function init() {
     state.showPassword = !state.showPassword;
     $("input-password").type = state.showPassword ? "text" : "password";
     $("btn-show-password").innerHTML = state.showPassword
-      ? '<span class="material-symbols-outlined" aria-hidden="true">visibility_off</span> Hide'
-      : '<span class="material-symbols-outlined" aria-hidden="true">visibility</span> Show';
+      ? '<span class="material-symbols-outlined" aria-hidden="true">visibility_off</span>'
+      : '<span class="material-symbols-outlined" aria-hidden="true">visibility</span>';
   });
 
   // Resume / logout

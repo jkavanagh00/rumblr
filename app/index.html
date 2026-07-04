@@ -40,7 +40,7 @@
             <p>Create your account and join the rumble. Make sure not to use your real name!</p>
           </div>
           <div class="flow-item">
-            <h3>Respond to Statments</h3>
+            <h3>Respond to Statements</h3>
             <p>We'll show you some controversial statements, you tell us whether you agree and how important your
               opinion is to you.</p>
           </div>
@@ -96,10 +96,10 @@
         </label>
 
         <fieldset class="agreement-group" id="field-threat-levels" hidden>
-          <legend>Threat levels you'll accept</legend>
-          <label class="threat-green"><input type="checkbox" value="green" checked /> Green</label>
-          <label class="threat-orange"><input type="checkbox" value="orange" /> Orange</label>
-          <label class="threat-red"><input type="checkbox" value="red" /> Red</label>
+          <legend>Allowed threat levels:</legend>
+          <label class="threat-green"><input type="checkbox" value="green" checked /> Green (polite)</label>
+          <label class="threat-orange"><input type="checkbox" value="orange" /> Orange (rude)</label>
+          <label class="threat-red"><input type="checkbox" value="red" /> Red (vicious)</label>
         </fieldset>
 
         <!-- Login-only field -->
@@ -113,9 +113,7 @@
           <div class="password-row">
             <input id="input-password" type="password" autocomplete="current-password" />
             <button class="ghost" type="button" id="btn-show-password">
-              <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
-              Show
-            </button>
+              <span class="material-symbols-outlined" aria-hidden="true">visibility</span></button>
           </div>
         </label>
 
@@ -194,9 +192,9 @@
       <section class="panel span-2" id="mismatches-panel">
         <h2>Mismatches</h2>
         <p class="subtle">See users you have mismatched with here. A higher percentage indicates a greater level of
-          disagreement. Send your preffered target a rumble request!</p>
+          disagreement. Send your preferred target a rumble request!</p>
         <div class="list" id="mismatches-list">
-          <p class="empty">No mismatches yet.</p>
+          <p class="empty">No mismatches yet. Complete onboarding or respond to more statements to find mismatches.</p>
         </div>
       </section>
 
@@ -233,7 +231,7 @@
           </div>
           <div class="actions">
             <select id="rumble-select">
-              <option value="">No active rumble</option>
+              <option value="">No rumbles</option>
             </select>
             <button class="ghost danger" id="btn-terminate-rumble" disabled>Terminate</button>
           </div>
