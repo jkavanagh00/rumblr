@@ -15,7 +15,7 @@ const options = {
         description: "Local development server",
       },
       {
-    url: "https://rumblr-backend-api.onrender.com",
+    url: "https://rumblr-backend-api.onrender.com/api",
     description: "Render production server",
   },
 ],
