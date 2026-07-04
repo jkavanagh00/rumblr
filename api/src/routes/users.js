@@ -188,7 +188,9 @@ router.get(
  *             $ref: '#/components/schemas/CreateUserReportBody'
  *     responses:
  *       201:
- *         description: User report created and rumble terminated
+ *         description: >
+ *           User report created. Any active rumble between the two users is
+ *           terminated and returned; `rumble` is null when there was none.
  *         content:
  *           application/json:
  *             schema:
@@ -197,15 +199,11 @@ router.get(
  *                 report:
  *                   $ref: '#/components/schemas/UserReport'
  *                 rumble:
- *                   $ref: '#/components/schemas/Rumble'
+ *                   nullable: true
+ *                   allOf:
+ *                     - $ref: '#/components/schemas/Rumble'
  *       400:
- *         description: Cannot report yourself, no active rumble, or invalid request body
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       404:
- *         description: Reported user not found
+ *         description: Cannot report yourself, reported user not found, or invalid request body
  *         content:
  *           application/json:
  *             schema:

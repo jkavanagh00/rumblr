@@ -3,6 +3,10 @@
  * @returns { Promise<void> }
  */
 export async function up(knex) {
+  // SQLite can't ALTER check constraints; fresh SQLite DBs already get
+  // shared_responses >= 10 from the create-table migration.
+  if (knex.client.config.client === "sqlite3") return;
+
   await knex.schema.alterTable("mismatches", (table) => {
     table.dropChecks(["mismatches_shared_responses_check"]);
   });
@@ -21,6 +25,8 @@ export async function up(knex) {
  * @returns { Promise<void> }
  */
 export async function down(knex) {
+  if (knex.client.config.client === "sqlite3") return;
+
   await knex.schema.alterTable("mismatches", (table) => {
     table.dropChecks(["mismatches_shared_responses_check"]);
   });

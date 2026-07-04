@@ -37,16 +37,21 @@ const options = {
         // ── Domain models ──────────────────────────────────────────────
         User: {
           type: "object",
+          description:
+            "User object as returned by the API — email and password_hash are never included",
           properties: {
             id: { type: "string", format: "uuid" },
             username: { type: "string" },
-            email: { type: "string", format: "email" },
             bio: { type: "string", nullable: true },
             status: {
               type: "string",
               enum: ["active", "inactive", "suspended"],
             },
             role: { type: "string", enum: ["user", "admin"] },
+            threat_levels: {
+              type: "array",
+              items: { type: "string", enum: ["green", "orange", "red"] },
+            },
             created_at: { type: "string", format: "date-time" },
           },
         },
@@ -63,6 +68,10 @@ const options = {
               enum: ["active", "inactive", "suspended"],
             },
             role: { type: "string", enum: ["user", "admin"] },
+            threat_levels: {
+              type: "array",
+              items: { type: "string", enum: ["green", "orange", "red"] },
+            },
             created_at: { type: "string", format: "date-time" },
           },
         },
@@ -91,7 +100,7 @@ const options = {
             user1_id: { type: "string", format: "uuid" },
             user2_id: { type: "string", format: "uuid" },
             mismatch_score: { type: "integer", minimum: 0, maximum: 100 },
-            shared_responses: { type: "integer", minimum: 20 },
+            shared_responses: { type: "integer", minimum: 10 },
             confidence: { type: "string", enum: ["low", "medium", "high"] },
             created_at: { type: "string", format: "date-time" },
             updated_at: { type: "string", format: "date-time" },
@@ -103,6 +112,7 @@ const options = {
             id: { type: "string", format: "uuid" },
             requester_id: { type: "string", format: "uuid" },
             receiver_id: { type: "string", format: "uuid" },
+            threat_level: { type: "string", enum: ["green", "orange", "red"] },
             status: {
               type: "string",
               enum: ["pending", "accepted", "declined"],
@@ -154,6 +164,9 @@ const options = {
             reason: { type: "string" },
             message_log: {
               type: "array",
+              nullable: true,
+              description:
+                "Snapshot of the rumble's messages at report time; null when there was no active rumble",
               items: { $ref: "#/components/schemas/Message" },
             },
             status: { type: "string", enum: ["open", "closed"] },
@@ -242,26 +255,6 @@ const options = {
             },
           },
         },
-        CreateRumbleBody: {
-          type: "object",
-          required: [
-            "rumble_request_id",
-            "requester_id",
-            "receiver_id",
-            "threat_level",
-          ],
-          properties: {
-            rumble_request_id: { type: "string", format: "uuid" },
-            requester_id: { type: "string", format: "uuid" },
-            receiver_id: { type: "string", format: "uuid" },
-            status: {
-              type: "string",
-              enum: ["active", "inactive", "terminated"],
-              default: "inactive",
-            },
-            threat_level: { type: "string", enum: ["green", "orange", "red"] },
-          },
-        },
         CreateRumbleRequestBody: {
           type: "object",
           required: ["threat_level"],
@@ -288,6 +281,12 @@ const options = {
         CreateStatementBody: {
           type: "object",
           required: ["content"],
+          properties: {
+            content: { type: "string" },
+          },
+        },
+        UpdateStatementBody: {
+          type: "object",
           properties: {
             content: { type: "string" },
           },
@@ -322,11 +321,12 @@ const options = {
       },
       responses: {
         Unauthorized: {
-          description: "Missing or invalid authentication token",
+          description:
+            "No bearer token provided. Note: an invalid or expired token returns 403 with `Invalid or expired token.`",
           content: {
             "application/json": {
               schema: { $ref: "#/components/schemas/Error" },
-              example: { error: "Unauthorized" },
+              example: { error: "Access denied. No token provided." },
             },
           },
         },
@@ -363,7 +363,9 @@ const options = {
           content: {
             "application/json": {
               schema: { $ref: "#/components/schemas/Error" },
-              example: { error: "Content violates our community guidelines" },
+              example: {
+                error: "This content violates our community guidelines",
+              },
             },
           },
         },

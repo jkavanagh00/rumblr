@@ -40,13 +40,15 @@ statementsRouter.use(authenticateToken);
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: An unanswered statement
+ *         description: >
+ *           An unanswered statement, or — when every statement has been
+ *           answered — an object with an `error` message instead.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Statement'
- *       204:
- *         description: All statements have been answered
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/Statement'
+ *                 - $ref: '#/components/schemas/Error'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
@@ -125,6 +127,20 @@ statementsRouter.post(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       409:
+ *         description: Onboarding statements must be answered in order
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                 nextNumber:
+ *                   type: integer
+ *             example:
+ *               error: You must answer onboarding statement 3 next
+ *               nextNumber: 3
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *       401:
@@ -184,12 +200,6 @@ statementsRouter.get("/onboarding/:number", getOnboardingStatement_controller);
  *                       type: boolean
  *                     hasPrev:
  *                       type: boolean
- *       404:
- *         description: No responses found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
@@ -310,7 +320,7 @@ statementsRouter.get(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateStatementBody'
+ *             $ref: '#/components/schemas/UpdateStatementBody'
  *     responses:
  *       200:
  *         description: Updated statement

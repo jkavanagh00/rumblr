@@ -1,211 +1,280 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rumblr Demo</title>
-  </head>
-  <body>
-    <main class="shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Rumblr customer demo</p>
-          <h1>Let's get ready to rumble!</h1>
-        </div>
-        <div class="account" id="account-bar" hidden>
-          <span id="account-username"></span>
-          <button class="ghost" id="btn-logout">Log out</button>
-        </div>
-      </header>
 
-      <p class="status" id="status-msg" hidden></p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=block,comment,done_outline,logout,refresh,send,skip_next,sports_mma,swords,thumb_down,thumb_up,thumbs_up_down,visibility,visibility_off" />
+  <title>Rumblr Demo</title>
+</head>
 
-      <!-- Auth view -->
-      <section class="auth-grid" id="auth-view">
-        <div class="intro-panel">
-          <h2>Backend flow preview</h2>
-          <p>A compact customer view of the path from opinion statements to mismatched debates.</p>
-          <div class="flow-list">
-            <span>Sign up</span>
-            <span>Answer</span>
-            <span>Mismatch</span>
-            <span>Request</span>
-            <span>Rumble</span>
-            <span>Block</span>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <img src="/images/rumblr-logo-bg.png" class="logo" alt="RUMBLR logo">
+      <div>
+        <p class="eyebrow">Rumblr customer demo</p>
+        <h1>Let's get ready<br>to rumble!</h1>
+      </div>
+      <div class="account" id="account-bar" hidden>
+        <span id="account-username"></span>
+        <button class="ghost" id="btn-logout">
+          <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+          Log out
+        </button>
+      </div>
+    </header>
+
+    <p class="status" id="status-msg" hidden></p>
+
+    <!-- Auth view -->
+    <section class="auth-grid" id="auth-view">
+      <div class="panel">
+        <h2>The User Journey</h2>
+        <div class="flow-list">
+          <div class="flow-item">
+            <h3>Sign up</h3>
+            <p>Create your account and join the rumble. Make sure not to use your real name!</p>
           </div>
-        </div>
-
-        <form class="panel" id="auth-form">
-          <div class="segmented">
-            <button type="button" id="btn-login-tab" class="active">Login</button>
-            <button type="button" id="btn-signup-tab">Sign up</button>
+          <div class="flow-item">
+            <h3>Respond to Statments</h3>
+            <p>We'll show you some controversial statements, you tell us whether you agree and how important your
+              opinion is to you.</p>
+          </div>
+          <div class="flow-item">
+            <h3>Find Mismatches</h3>
+            <p>Using your responses, we'll mismatch you with users with vastly different points of view, based on your
+              mismatch percentage.</p>
+          </div>
+          <div class="flow-item">
+            <h3>Issue Challenges</h3>
+            <p>When a mismatch catches your eye (and your ire) it's time to send them a challenge! Challenges can be
+              either green, orange or red, reflecting different levels of moderation.</p>
+          </div>
+          <div class="flow-item">
+            <h3>Time to Rumble!</h3>
+            <p>Go head-to-head in a private, one-on-one bout.</p>
+          </div>
+          <div class="flow-item">
+            <h3>Throw in the Towel</h3>
+            <p>Either you or your opponent can end the bout at any time, no questions asked.</p>
+          </div>
+          <div class="flow-item">
+            <h3>Block & Report</h3>
+            <p>If you're sick of hearing from a user, just block them, and if they've violated the terms of your bout,
+              send us a report.</p>
           </div>
 
-          <!-- Signup-only fields -->
-          <label id="field-username" hidden>
-            Username
-            <input id="input-username" autocomplete="username" />
-          </label>
-          <label id="field-email" hidden>
-            Email
-            <input id="input-email" type="email" autocomplete="email" />
-          </label>
-          <label id="field-bio" hidden>
-            Bio
-            <textarea id="input-bio"></textarea>
-          </label>
+        </div>
+      </div>
 
-          <!-- Login-only field -->
-          <label id="field-identifier">
-            Email or username
-            <input id="input-identifier" autocomplete="username" />
-          </label>
+      <form class="panel" id="auth-form">
+        <h2>Introduction</h2>
+        <p>RUMBLR is the world's first and only "online hating" site, where users respond to controversial statements
+          and get "mismatched" with other users with opposing views. If your mismatch accepts your challenge, the two of
+          you can join a private, one-on-one rumble in which either user can end the bout at any time.</p>
+        <div class="segmented">
+          <button type="button" id="btn-login-tab" class="active">Log In</button>
+          <button type="button" id="btn-signup-tab">Sign up</button>
+        </div>
 
-          <label>
-            Password
-            <div class="password-row">
-              <input id="input-password" type="password" autocomplete="current-password" />
-              <button class="ghost" type="button" id="btn-show-password">Show</button>
-            </div>
-          </label>
+        <!-- Signup-only fields -->
+        <label id="field-username" hidden>
+          Username
+          <input id="input-username" autocomplete="username" />
+        </label>
+        <label id="field-email" hidden>
+          Email
+          <input id="input-email" type="email" autocomplete="email" />
+        </label>
+        <label id="field-bio" hidden>
+          Bio
+          <textarea id="input-bio"></textarea>
+        </label>
 
-          <button type="submit" id="btn-auth-submit">Log in</button>
+        <fieldset class="agreement-group" id="field-threat-levels" hidden>
+          <legend>Threat levels you'll accept</legend>
+          <label class="threat-green"><input type="checkbox" value="green" checked /> Green</label>
+          <label class="threat-orange"><input type="checkbox" value="orange" /> Orange</label>
+          <label class="threat-red"><input type="checkbox" value="red" /> Red</label>
+        </fieldset>
+
+        <!-- Login-only field -->
+        <label id="field-identifier">
+          Email or username
+          <input id="input-identifier" autocomplete="username" />
+        </label>
+
+        <label>
+          Password
+          <div class="password-row">
+            <input id="input-password" type="password" autocomplete="current-password" />
+            <button class="ghost" type="button" id="btn-show-password">
+              <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+              Show
+            </button>
+          </div>
+        </label>
+
+        <button type="submit" id="btn-auth-submit">Log in</button>
+      </form>
+
+      <section class="panel resume-panel" id="resume-panel" hidden>
+        <h2 id="resume-heading">Welcome back</h2>
+        <p class="subtle">Create an account here, then head to the demo and start responding to statements.</p>
+        <div class="actions">
+          <button type="button" id="btn-continue">Continue to demo</button>
+          <button class="ghost" type="button" id="btn-logout-resume">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            Log out
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <!-- Dashboard view -->
+    <section class="dashboard" id="dashboard-view" hidden>
+
+      <!-- Responses panel -->
+      <section class="panel span-2" id="responses-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Responses</h2>
+            <p class="subtle" id="onboarding-progress" hidden></p>
+          </div>
+          <button class="ghost" id="btn-skip-statement" aria-label="Skip statement">
+            <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
+          </button>
+        </div>
+
+        <form id="response-form" hidden>
+          <p class="statement" id="statement-text"></p>
+          <div class="sliders">
+            <fieldset class="agreement-group">
+              <legend>Agreement</legend>
+              <label><input type="radio" name="agreement_score" value="1" /> Strongly disagree</label>
+              <label><input type="radio" name="agreement_score" value="2" /> Disagree</label>
+              <label><input type="radio" name="agreement_score" value="3" checked /> No opinion</label>
+              <label><input type="radio" name="agreement_score" value="4" /> Agree</label>
+              <label><input type="radio" name="agreement_score" value="5" /> Strongly agree</label>
+            </fieldset>
+            <label>
+              Importance
+              <input type="range" id="importance-score" min="1" max="5" value="3" />
+              <strong id="importance-display">3/5</strong>
+            </label>
+          </div>
+          <button type="submit" id="btn-submit-response">Submit response</button>
         </form>
-
-        <section class="panel resume-panel" id="resume-panel" hidden>
-          <h2 id="resume-heading">Welcome back</h2>
-          <p class="subtle">Start from the customer-facing main page, then continue into the backend demo when ready.</p>
-          <div class="actions">
-            <button type="button" id="btn-continue">Continue to demo</button>
-            <button class="ghost" type="button" id="btn-logout-resume">Log out</button>
-          </div>
-        </section>
       </section>
 
-      <!-- Dashboard view -->
-      <section class="dashboard" id="dashboard-view" hidden>
+      <!-- Backend snapshot panel -->
+      <section class="panel">
+        <h2>Backend snapshot</h2>
+        <div class="stats">
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">thumbs_up_down</span>
+              Mismatches</span><strong id="stat-mismatches">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">comment</span>
+              Responses saved</span><strong id="stat-answers">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">done_outline</span>
+              Onboarding completion</span><strong id="stat-onboarding">0/10</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">swords</span>
+              Challenges</span><strong id="stat-requests">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">sports_mma</span>
+              Active rumbles</span><strong id="stat-rumbles">0</strong></div>
+          <div class="stat"><span><span class="material-symbols-outlined" aria-hidden="true">block</span>
+              Users blocked</span><strong id="stat-blocked">0</strong></div>
+        </div>
+      </section>
 
-        <!-- Responses panel -->
-        <section class="panel span-2">
+      <!-- Mismatches panel -->
+      <section class="panel span-2" id="mismatches-panel">
+        <h2>Mismatches</h2>
+        <p class="subtle">See users you have mismatched with here. A higher percentage indicates a greater level of
+          disagreement. Send your preffered target a rumble request!</p>
+        <div class="list" id="mismatches-list">
+          <p class="empty">No mismatches yet.</p>
+        </div>
+      </section>
+
+      <!-- Requests & blocked panel -->
+      <section class="panel requests-and-blocks">
+        <div class="panel">
           <div class="panel-header">
             <div>
-              <h2>Responses</h2>
-              <p class="subtle" id="onboarding-progress" hidden></p>
+              <h2>Pending Challenges</h2>
+              <p class="subtle">See your pending challenges here. Once a challenge is accepted, a rumble will begin.
+              </p>
             </div>
-            <button class="ghost" id="btn-skip-statement">Skip</button>
+            <button class="ghost" id="btn-refresh-requests">
+              <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+            </button>
           </div>
-
-          <form id="response-form" hidden>
-            <p class="statement" id="statement-text"></p>
-            <div class="sliders">
-              <fieldset class="agreement-group">
-                <legend>Agreement</legend>
-                <label><input type="radio" name="agreement_score" value="1" /> Strongly disagree</label>
-                <label><input type="radio" name="agreement_score" value="2" /> Disagree</label>
-                <label><input type="radio" name="agreement_score" value="3" checked /> No opinion</label>
-                <label><input type="radio" name="agreement_score" value="4" /> Agree</label>
-                <label><input type="radio" name="agreement_score" value="5" /> Strongly agree</label>
-              </fieldset>
-              <label>
-                Importance
-                <input type="range" id="importance-score" min="1" max="5" value="3" />
-                <strong id="importance-display">3/5</strong>
-              </label>
-            </div>
-            <button type="submit" id="btn-submit-response">Submit response</button>
-          </form>
-        </section>
-
-        <!-- Backend snapshot panel -->
-        <section class="panel">
-          <h2>Backend snapshot</h2>
-          <div class="stats">
-            <div class="stat"><span>Mismatches</span><strong id="stat-mismatches">0</strong></div>
-            <div class="stat"><span>Answers saved</span><strong id="stat-answers">0</strong></div>
-            <div class="stat"><span>Onboarding</span><strong id="stat-onboarding">0/10</strong></div>
-            <div class="stat"><span>Requests</span><strong id="stat-requests">0</strong></div>
-            <div class="stat"><span>Active rumbles</span><strong id="stat-rumbles">0</strong></div>
-            <div class="stat"><span>Blocked</span><strong id="stat-blocked">0</strong></div>
+          <div class="list compact" id="requests-list">
+            <p class="empty">No pending challenges.</p>
           </div>
-        </section>
+        </div>
 
-        <!-- Mismatches panel -->
-        <section class="panel span-2" id="mismatches-panel">
-          <h2>Mismatches</h2>
-          <div class="list" id="mismatches-list">
-            <p class="empty">No mismatches yet.</p>
-          </div>
-        </section>
-
-        <!-- Requests & blocked panel -->
-        <section class="panel requests-and-blocks">
-          <div class="panel">
-            <div class="panel-header">
-              <div>
-                <h2>Pending Requests</h2>
-                <p class="subtle">See your pending rumble requests here. Once a request is accepted, a rumble will begin.</p>
-              </div>
-              <button class="ghost" id="btn-refresh-requests">Refresh</button>
-            </div>
-            <div class="list compact" id="requests-list">
-              <p class="empty">No pending requests.</p>
-            </div>
-          </div>
-
-          <div class="panel" id="blocked-users-panel" hidden>
-            <h2>Blocked users</h2>
-            <div class="list compact" id="blocked-list"></div>
-          </div>
-        </section>
-
-        <!-- Rumble panel -->
-        <section class="rumble-panel span-3">
-          <div class="rumble-top">
-            <div>
-              <p class="eyebrow">Live rumble</p>
-              <h2>Step into the ring!</h2>
-            </div>
-            <div class="actions">
-              <select id="rumble-select">
-                <option value="">No active rumble</option>
-              </select>
-              <button class="ghost danger" id="btn-terminate-rumble" disabled>Terminate</button>
-            </div>
-          </div>
-
-          <div class="rumble-meta">
-            <div>
-              <span>Opponent</span>
-              <strong id="rumble-opponent">No opponent yet</strong>
-            </div>
-            <div>
-              <span>Threat level</span>
-              <strong id="rumble-threat">green</strong>
-            </div>
-            <div>
-              <span>Status</span>
-              <strong id="rumble-status">waiting</strong>
-            </div>
-          </div>
-
-          <div class="chat-shell">
-            <div class="chat" id="chat-messages">
-              <div class="chat-empty">
-                <strong>Waiting for an active rumble</strong>
-                <p>Once an incoming request is accepted and the backend marks it active, messages will appear here.</p>
-              </div>
-            </div>
-            <form class="message-form" id="message-form">
-              <input id="message-input" placeholder="Write a message" />
-              <button type="submit" id="btn-send-message" disabled>Send</button>
-            </form>
-          </div>
-        </section>
-
+        <div class="panel" id="blocked-users-panel" hidden>
+          <h2>Blocked users</h2>
+          <div class="list compact" id="blocked-list"></div>
+        </div>
       </section>
-    </main>
 
-    <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
-    <script type="module" src="/src/app.js"></script>
-  </body>
+      <!-- Rumble panel -->
+      <section class="rumble-panel span-3">
+        <div class="rumble-top">
+          <div>
+            <p class="eyebrow">Rumbles</p>
+            <h2>Step into the ring</h2>
+          </div>
+          <div class="actions">
+            <select id="rumble-select">
+              <option value="">No active rumble</option>
+            </select>
+            <button class="ghost danger" id="btn-terminate-rumble" disabled>Terminate</button>
+          </div>
+        </div>
+
+        <div class="rumble-meta">
+          <div>
+            <span>Opponent</span>
+            <strong id="rumble-opponent">No opponent yet</strong>
+          </div>
+          <div>
+            <span>Threat level</span>
+            <strong id="rumble-threat" class="threat-green">green</strong>
+          </div>
+          <div>
+            <span>Status</span>
+            <strong id="rumble-status">waiting</strong>
+          </div>
+        </div>
+
+        <div class="chat-shell">
+          <div class="chat" id="chat-messages">
+            <div class="chat-empty">
+              <strong>Waiting for an active rumble</strong>
+              <p>Once an incoming request is accepted and the backend marks it active, messages will appear here.</p>
+            </div>
+          </div>
+          <form class="message-form" id="message-form">
+            <input id="message-input" placeholder="Write a message" />
+            <button type="submit" id="btn-send-message" disabled>
+              <span class="material-symbols-outlined" aria-hidden="true">send</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+  <script type="module" src="/src/app.js"></script>
+</body>
+
 </html>

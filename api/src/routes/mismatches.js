@@ -48,7 +48,9 @@ mismatchesRouter.use(authenticateToken);
  *         description: Number of items per page
  *     responses:
  *       200:
- *         description: Paginated list of mismatches
+ *         description: >
+ *           Paginated list of mismatches, ordered by mismatch score. Each item
+ *           also includes the usernames and threat levels of both users.
  *         content:
  *           application/json:
  *             schema:
@@ -78,9 +80,13 @@ mismatchesRouter.use(authenticateToken);
  *                 - id: "d8db8ca3-6d7f-4785-a67b-8bf3f31f87fd"
  *                   user1_id: "22cc44f9-8707-4600-9017-acfce7ece11e"
  *                   user2_id: "9eb700fe-4b40-48f5-9344-030ca5f9de30"
- *                   mismatch_score: 0.81
- *                   confidence: 0.72
+ *                   mismatch_score: 81
+ *                   confidence: "low"
  *                   shared_responses: 16
+ *                   user1_username: "alice_agrees"
+ *                   user2_username: "bob_objects"
+ *                   user1_threat_levels: ["green"]
+ *                   user2_threat_levels: ["green", "orange"]
  *               pagination:
  *                 page: 1
  *                 limit: 20
@@ -88,12 +94,6 @@ mismatchesRouter.use(authenticateToken);
  *                 totalPages: 1
  *                 hasNext: false
  *                 hasPrev: false
- *       404:
- *         description: No mismatches found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
@@ -146,7 +146,7 @@ mismatchesRouter.get("/requests", listRumbleRequests_controller);
  *         schema:
  *           type: string
  *           format: uuid
- *         description: ID of the mismatch to challenge
+ *         description: User ID of the mismatched user to challenge
  *     requestBody:
  *       required: true
  *       content:
@@ -161,11 +161,10 @@ mismatchesRouter.get("/requests", listRumbleRequests_controller);
  *             schema:
  *               $ref: '#/components/schemas/RumbleRequest'
  *       400:
- *         description: >-
- *           Request rejected. Possible reasons: an active rumble already exists
- *           with this user, another rumble request is already pending, the
- *           threat level is not accepted by the requester or receiver, or the
- *           rejection cooldown for this user has not yet expired.
+ *         description: >
+ *           A rumble request is already pending, a decline cooldown is still
+ *           active, or one of the users is not available for the requested
+ *           threat level
  *         content:
  *           application/json:
  *             schema:
@@ -232,6 +231,8 @@ mismatchesRouter.post(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
  */
 mismatchesRouter.post(
   "/:id/accept",
@@ -281,6 +282,8 @@ mismatchesRouter.post(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
  */
 mismatchesRouter.post(
   "/:id/decline",

@@ -7,14 +7,18 @@ jest.unstable_mockModule("../../../src/models/messages.js", () => ({
 
 jest.unstable_mockModule("../../../src/models/rumbles.js", () => ({
   getRumbleById_model: jest.fn(),
-  isUserParticipantInRumble_model: jest.fn(),
+}));
+
+jest.unstable_mockModule("../../../src/models/blocks.js", () => ({
+  getBlockBetweenUsers_model: jest.fn(),
 }));
 
 const { addMessage_model, getMessagesByRumbleId_model } = await import(
   "../../../src/models/messages.js"
 );
-const { getRumbleById_model, isUserParticipantInRumble_model } = await import(
-  "../../../src/models/rumbles.js"
+const { getRumbleById_model } = await import("../../../src/models/rumbles.js");
+const { getBlockBetweenUsers_model } = await import(
+  "../../../src/models/blocks.js"
 );
 const { addMessage_controller, getMessages_controller } = await import(
   "../../../src/controllers/messages.js"
@@ -49,7 +53,6 @@ describe("messages controller", () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Rumble not found" });
-      expect(isUserParticipantInRumble_model).not.toHaveBeenCalled();
       expect(addMessage_model).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
     });
@@ -67,9 +70,10 @@ describe("messages controller", () => {
 
       getRumbleById_model.mockResolvedValue({
         id: rumbleId,
+        requester_id: "88888888-8888-4888-8888-888888888888",
+        receiver_id: "99999999-9999-4999-8999-999999999999",
         status: "active",
       });
-      isUserParticipantInRumble_model.mockResolvedValue(false);
 
       await addMessage_controller(req, res, next);
 
@@ -108,9 +112,11 @@ describe("messages controller", () => {
 
       getRumbleById_model.mockResolvedValue({
         id: rumbleId,
+        requester_id: userId,
+        receiver_id: "33333333-3333-4333-8333-333333336784",
         status: "active",
       });
-      isUserParticipantInRumble_model.mockResolvedValue(true);
+      getBlockBetweenUsers_model.mockResolvedValue(null);
       addMessage_model.mockResolvedValue(message);
 
       await addMessage_controller(req, res, next);
@@ -148,8 +154,13 @@ describe("messages controller", () => {
         content: "Another message",
       };
 
-      getRumbleById_model.mockResolvedValue({ id: rumbleId, status: "active" });
-      isUserParticipantInRumble_model.mockResolvedValue(true);
+      getRumbleById_model.mockResolvedValue({
+        id: rumbleId,
+        requester_id: userId,
+        receiver_id: "33333333-3333-4333-8333-333333336784",
+        status: "active",
+      });
+      getBlockBetweenUsers_model.mockResolvedValue(null);
       addMessage_model.mockResolvedValue(message);
 
       await addMessage_controller(req, res, next);
@@ -209,8 +220,12 @@ describe("messages controller", () => {
       const res = createMockRes();
       const next = jest.fn();
 
-      getRumbleById_model.mockResolvedValue({ id: rumbleId, status: "active" });
-      isUserParticipantInRumble_model.mockResolvedValue(false);
+      getRumbleById_model.mockResolvedValue({
+        id: rumbleId,
+        requester_id: "88888888-8888-4888-8888-888888888888",
+        receiver_id: "99999999-9999-4999-8999-999999999999",
+        status: "active",
+      });
 
       await getMessages_controller(req, res, next);
 
@@ -241,8 +256,12 @@ describe("messages controller", () => {
         pagination: { page: 2, limit: 5 },
       };
 
-      getRumbleById_model.mockResolvedValue({ id: rumbleId, status: "active" });
-      isUserParticipantInRumble_model.mockResolvedValue(true);
+      getRumbleById_model.mockResolvedValue({
+        id: rumbleId,
+        requester_id: userId,
+        receiver_id: "33333333-3333-4333-8333-333333336784",
+        status: "active",
+      });
       getMessagesByRumbleId_model.mockResolvedValue(modelResult);
 
       await getMessages_controller(req, res, next);
