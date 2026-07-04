@@ -102,14 +102,18 @@ function setLoading(loading) {
   state.loading = loading;
   $("btn-auth-submit").disabled = loading;
   $("btn-submit-response").disabled = loading || !state.statement;
-  $("btn-send-message").disabled = loading || !getActiveRumble();
-  $("btn-terminate-rumble").disabled = loading || !getActiveRumble();
+  $("btn-send-message").disabled = loading || !canInteractWithRumble(getActiveRumble());
+  $("btn-terminate-rumble").disabled = loading || !canInteractWithRumble(getActiveRumble());
 }
 
 // --- Derived state ---
 
 function getActiveRumble() {
   return state.rumbles.find((r) => r.id === state.selectedRumbleId) || state.rumbles[0] || null;
+}
+
+function canInteractWithRumble(rumble) {
+  return Boolean(rumble) && rumble.status !== "terminated";
 }
 
 function getOpponentName(rumble) {
@@ -386,18 +390,19 @@ function renderRumbles() {
             rumble.requester_id === activeUserId
               ? rumble.receiver_username || rumble.receiver_id
               : rumble.requester_username || rumble.requester_id;
-          return `<option value="${rumble.id}" class="threat-${rumble.threat_level}" ${rumble.id === (activeRumble?.id || "") ? "selected" : ""}>vs. ${escapeHtml(opponentLabel)} · ${escapeHtml(rumble.threat_level)}</option>`;
+          const statusLabel = rumble.status === "active" ? "" : ` · ${escapeHtml(rumble.status)}`;
+          return `<option value="${rumble.id}" class="threat-${rumble.threat_level}" ${rumble.id === (activeRumble?.id || "") ? "selected" : ""}>vs. ${escapeHtml(opponentLabel)}`;
         })
         .join("")
-    : '<option value="">No active rumble</option>';
+    : '<option value="">No rumbles yet</option>';
 
   const activeThreatLevel = activeRumble?.threat_level || "green";
   $("rumble-opponent").textContent = getOpponentName(activeRumble);
   $("rumble-threat").textContent = activeThreatLevel.toUpperCase();
   $("rumble-threat").className = `threat-${activeThreatLevel}`;
   $("rumble-status").textContent = activeRumble?.status.toUpperCase() || "INACTIVE";
-  $("btn-terminate-rumble").disabled = state.loading || !activeRumble;
-  $("btn-send-message").disabled = state.loading || !activeRumble;
+  $("btn-terminate-rumble").disabled = state.loading || !canInteractWithRumble(activeRumble);
+  $("btn-send-message").disabled = state.loading || !canInteractWithRumble(activeRumble);
 }
 
 function renderMessages() {
@@ -408,13 +413,22 @@ function renderMessages() {
   const chat = $("chat-messages");
 
   if (!messages.length) {
+    const terminated = activeRumble?.status === "terminated";
     chat.innerHTML = `
       <div class="chat-empty">
-        <strong>${activeRumble ? "Your rumble has begun!" : "Waiting for an active rumble"}</strong>
+        <strong>${
+          terminated
+            ? "This rumble has ended"
+            : activeRumble
+              ? "Your rumble has begun!"
+              : "Waiting for an active rumble"
+        }</strong>
         <p>${
-          activeRumble
-            ? "Send them a message when you're ready."
-            : "You have no active rumbles, send someone a request or accept an incoming request."
+          terminated
+            ? "No messages were exchanged before it was terminated."
+            : activeRumble
+              ? "Send them a message when you're ready."
+              : "You have no active rumbles, send someone a request or accept an incoming request."
         }</p>
       </div>
     `;
@@ -477,9 +491,18 @@ async function loadDashboard(showErrors = true) {
     state.statement = nextStatement || null;
     state.mismatches = asArray(nextMismatches);
     state.requests = asArray(nextRequests);
+    // The API only returns active/inactive rumbles, so any rumble we already
+    // know about that is missing from the response has been terminated — keep
+    // it in the list so terminated rumbles stay visible.
     const loadedRumbles = asArray(nextRumbles);
-    state.rumbles = loadedRumbles;
-    if (!state.selectedRumbleId) state.selectedRumbleId = loadedRumbles[0]?.id || "";
+    const loadedIds = new Set(loadedRumbles.map((r) => r.id));
+    const terminatedRumbles = state.rumbles
+      .filter((r) => !loadedIds.has(r.id))
+      .map((r) => ({ ...r, status: "terminated" }));
+    state.rumbles = [...loadedRumbles, ...terminatedRumbles].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+    if (!state.selectedRumbleId) state.selectedRumbleId = state.rumbles[0]?.id || "";
     state.blockedUsers = asArray(nextBlockedUsers);
     state.onboarding = nextOnboarding;
     state.answerCount = nextResponses?.pagination?.total ?? asArray(nextResponses).length;
@@ -684,7 +707,7 @@ async function sendMessage(e) {
   e.preventDefault();
   const content = $("message-input").value.trim();
   const activeRumble = getActiveRumble();
-  if (!content || !activeRumble?.id) return;
+  if (!content || !canInteractWithRumble(activeRumble)) return;
 
   setLoading(true);
   try {
@@ -703,7 +726,7 @@ async function sendMessage(e) {
 
 async function terminateRumble() {
   const activeRumble = getActiveRumble();
-  if (!activeRumble?.id) return;
+  if (!canInteractWithRumble(activeRumble)) return;
 
   setLoading(true);
   try {
