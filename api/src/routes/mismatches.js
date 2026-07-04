@@ -217,7 +217,9 @@ mismatchesRouter.post(
  *             schema:
  *               $ref: '#/components/schemas/Rumble'
  *       403:
- *         description: Not authorized to accept this request
+ *         description: >-
+ *           Request rejected. Possible reasons: not authorized to accept this
+ *           request, or the two users have blocked each other.
  *         content:
  *           application/json:
  *             schema:
