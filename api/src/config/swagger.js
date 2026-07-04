@@ -14,7 +14,12 @@ const options = {
         url: "http://localhost:3001/api",
         description: "Local development server",
       },
-    ],
+      {
+    url: "https://rumblr-backend-api.onrender.com",
+    description: "Render production server",
+  },
+],
+
     tags: [
       { name: "Auth", description: "Signup and login" },
       { name: "Users", description: "User profile and blocking" },
