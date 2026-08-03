@@ -23,8 +23,8 @@ Rumblr API is the backend service for our debate-focused social app. It handles 
 
 ### Prerequisites
 
-- Node.js
-- npm
+- Node.js 20.12+
+- npm 10.5+
 - SQLite for local development. No separate local database server is required.
 - PostgreSQL for the deployed Render environment.
 
@@ -62,7 +62,16 @@ Rumblr API is the backend service for our debate-focused social app. It handles 
    DB_USE_NULL_AS_DEFAULT=true
    ```
 
-   Other required values, such as JWT and admin bootstrap values, should be set in `.env` or in Render environment variables. 
+   The API also uses the following variables. Set them in `.env` locally or in Render environment variables:
+
+   | Variable | Required | Description |
+   | --- | --- | --- |
+   | `ACCESS_TOKEN_SECRET` | Yes | Secret used to sign and verify JWT access tokens. Authenticated requests and Socket.IO connections fail without it. |
+   | `ACCESS_TOKEN_EXPIRES_IN` | No | Access token lifetime (e.g. `1h`, `7d`). |
+   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | For seeding | Credentials for the admin user created by `npm run db:seed`. |
+   | `CLIENT_ORIGIN` | For a frontend | Origin of the web app (e.g. `http://localhost:5173`). When unset, no CORS headers are sent and cross-origin Socket.IO connections are rejected. |
+   | `MODERATION_ENABLED` | No | Set to `true` to check user-submitted content (signup, profile updates, messages) with the OpenAI Moderation API. Flagged content is rejected with a `422` response. Off by default. |
+   | `OPENAI_API_KEY` | If moderation is on | API key used by the moderation service. |
 
 4. **Initialize the database:**
 
@@ -106,6 +115,8 @@ DB_USER=<render-postgres-user>
 DB_PASSWORD=<render-postgres-password>
 DB_DATABASE_NAME=<render-postgres-database>
 DB_USE_SSL=true
+ACCESS_TOKEN_SECRET=<jwt-secret>
+CLIENT_ORIGIN=<deployed-web-app-url>
 ```
 
 Keep JWT secrets, admin bootstrap credentials, and database credentials only in environment variables.
@@ -138,6 +149,7 @@ Keep JWT secrets, admin bootstrap credentials, and database credentials only in 
 | POST | `/api/statements/:id/respond` | Submit a response to a statement | Yes |
 | GET | `/api/statements/onboarding/:number` | Get onboarding statement by number | Yes |
 | GET | `/api/statements/responses` | Get current user's responses | Yes |
+| GET | `/api/statements/:id` | Get a statement by ID | Yes |
 | GET | `/api/statements/list` | List all statements | Admin |
 | POST | `/api/statements` | Create a statement | Admin |
 | PATCH | `/api/statements/:id` | Update a statement | Admin |
